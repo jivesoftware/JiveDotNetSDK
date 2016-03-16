@@ -86,6 +86,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Auth\SignedRequest.cs" />
+    <Compile Include="JiveRetrieval.cs" />
     <Compile Include="Models\Activity.cs" />
     <Compile Include="Models\Announcement.cs" />
     <Compile Include="Models\Attachment.cs" />
