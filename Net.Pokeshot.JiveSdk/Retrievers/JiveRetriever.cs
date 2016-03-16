@@ -8,7 +8,7 @@ using System.Net;
 
 namespace Net.Pokeshot.JiveSdk.Retrievers
 {
-    partial class JiveRetriever
+    public partial class JiveRetriever
     {
         public NetworkCredential Credential { get; set; }
         public string JiveCommunityUrl { get; set; }

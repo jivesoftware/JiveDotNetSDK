@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Net.Pokeshot.JiveSdk.Retrievers
 {
-    partial class JiveRetriever
+    public partial class JiveRetriever
     {
         /// <summary>
         /// 
