@@ -6,28 +6,18 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net;
 
-namespace Net.Pokeshot.JiveSdk
+namespace Net.Pokeshot.JiveSdk.Retrievers
 {
-    // Singleton class that will use the same credentials and baseUrl for all calls
-    public sealed class JiveRetrieval
+    partial class JiveRetriever
     {
-        private static readonly JiveRetrieval instance = new JiveRetrieval();
-
-        // having a private constructor stops others from instantiating the class
-        private JiveRetrieval() { Credential = null; JiveCommunityUrl = null; }
-
-        public static JiveRetrieval Instance
-        {
-            get
-            {
-                return instance;
-            }
-        }
-
-
         public NetworkCredential Credential { get; set; }
         public string JiveCommunityUrl { get; set; }
 
+        public JiveRetriever(string CommunityUrl, NetworkCredential cred)
+        {
+            JiveCommunityUrl = CommunityUrl;
+            Credential = cred;
+        }
 
         public string ExecuteAbsolute(string url)
         {
