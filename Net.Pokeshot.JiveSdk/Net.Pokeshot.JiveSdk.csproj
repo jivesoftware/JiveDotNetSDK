@@ -137,7 +137,6 @@
     <Compile Include="Models\JiveAddonRegistration.cs" />
     <Compile Include="Models\JiveContent.cs" />
     <Compile Include="Models\JiveInstance.cs" />
-    <Compile Include="Models\JiveObject.cs" />
     <Compile Include="Models\JivePlace.cs" />
     <Compile Include="Models\JiveResources.cs" />
     <Compile Include="Models\JiveSdkContext.cs" />
