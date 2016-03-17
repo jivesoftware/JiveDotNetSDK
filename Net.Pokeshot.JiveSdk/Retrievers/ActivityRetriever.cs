@@ -9,8 +9,10 @@ using Newtonsoft.Json.Linq;
 
 namespace Net.Pokeshot.JiveSdk.Retrievers
 {
-    public partial class JiveRetriever
+    public class ActivityRetriever : JiveRetriever
     {
+        public ActivityRetriever(string communityUrl, NetworkCredential credential) : base(communityUrl, credential) { }
+
         /// <summary>
         /// Queries Jive's Activities endpoint for all Activities after "time".
         /// </summary>
@@ -58,7 +60,7 @@ namespace Net.Pokeshot.JiveSdk.Retrievers
         /// <param name="max">The maximum number of new activity counts to return. Default is 50.</param>
         /// <param name="exclude">Flag indicating whether activity performed by the user should be omitted. Default is false.</param>
         /// <returns></returns>
-        public int GetActivityCount(DateTime after, int max = 50, bool exclude = false)
+        public int GetActivitiesCount(DateTime after, int max = 50, bool exclude = false)
         {
             string url = JiveCommunityUrl + "/api/core/v3/activities/count?";
             url += "after=" + after.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fff") + "%2B0000";
