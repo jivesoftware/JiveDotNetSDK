@@ -19,7 +19,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
             _credential = cred;
         }
 
-        protected string GetFromUrl(string url)
+        protected string GetAbsolute(string url)
         {
             HttpClientHandler jiveHandler = new HttpClientHandler();
 
