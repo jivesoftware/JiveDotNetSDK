@@ -8,10 +8,10 @@ using System.Net;
 
 namespace Net.Pokeshot.JiveSdk.Retrievers
 {
-    public partial class JiveRetriever
+    public abstract class JiveRetriever
     {
-        NetworkCredential Credential;
-        string JiveCommunityUrl;
+        private NetworkCredential Credential;
+        protected string JiveCommunityUrl;
 
         public JiveRetriever(string CommunityUrl, NetworkCredential cred)
         {
@@ -19,7 +19,7 @@ namespace Net.Pokeshot.JiveSdk.Retrievers
             Credential = cred;
         }
 
-        public string ExecuteAbsolute(string url)
+        protected string ExecuteAbsolute(string url)
         {
             HttpClientHandler jiveHandler = new HttpClientHandler();
 

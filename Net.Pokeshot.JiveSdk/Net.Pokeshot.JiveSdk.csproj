@@ -91,6 +91,7 @@
   <ItemGroup>
     <Compile Include="Auth\SignedRequest.cs" />
     <Compile Include="Retrievers\ActivityRetriever.cs" />
+    <Compile Include="Retrievers\AnnouncementRetriever.cs" />
     <Compile Include="Retrievers\JiveRetriever.cs" />
     <Compile Include="Models\Activity.cs" />
     <Compile Include="Models\Announcement.cs" />
