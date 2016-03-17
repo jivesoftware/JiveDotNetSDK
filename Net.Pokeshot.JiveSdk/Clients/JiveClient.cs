@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net;
 
-namespace Net.Pokeshot.JiveSdk.Retrievers
+namespace Net.Pokeshot.JiveSdk.Clients
 {
-    public abstract class JiveRetriever
+    public abstract class JiveClient
     {
         private NetworkCredential _credential;
         protected string JiveCommunityUrl;
 
-        public JiveRetriever(string communityUrl, NetworkCredential cred)
+        public JiveClient(string communityUrl, NetworkCredential cred)
         {
             JiveCommunityUrl = communityUrl;
             _credential = cred;
         }
 
-        protected string ExecuteAbsolute(string url)
+        protected string GetFromUrl(string url)
         {
             HttpClientHandler jiveHandler = new HttpClientHandler();
 
@@ -48,5 +48,8 @@ namespace Net.Pokeshot.JiveSdk.Retrievers
 
             return cleanResponseActivities;
         }
+
+
+        // TODO: Create PUT method
     }
 }

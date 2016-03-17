@@ -7,19 +7,22 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
-namespace Net.Pokeshot.JiveSdk.Retrievers
+namespace Net.Pokeshot.JiveSdk.Clients
 {
     /// <summary>
-    /// Can be used to make request to the Jive /activities endpoint
+    /// Can be used to make requests to the Jive /activities endpoint
     /// </summary>
-    public class ActivityRetriever : JiveRetriever
+    public class ActivitiesClient : JiveClient
     {
         /// <summary>
         /// Initializes a new instance of ActivityRetriever
         /// </summary>
         /// <param name="communityUrl">The url of the targeted Jive community (e.g. https://jivecommunity.jiveon.com)</param>
         /// <param name="credential">The NetworkCredential containing the username and password for a user in the given Jive Community</param>
-        public ActivityRetriever(string communityUrl, NetworkCredential credential) : base(communityUrl, credential) { }
+        public ActivitiesClient(string communityUrl, NetworkCredential credential) : base(communityUrl, credential) { }
+
+
+        //TODO: add PUT request
 
 
         /// <summary>
@@ -58,7 +61,7 @@ namespace Net.Pokeshot.JiveSdk.Retrievers
                 }
             }
 
-            string json = ExecuteAbsolute(url);
+            string json = GetFromUrl(url);
             JObject results = JObject.Parse(json);
 
             return results["list"].ToObject<List<Activity>>();
@@ -78,7 +81,7 @@ namespace Net.Pokeshot.JiveSdk.Retrievers
             url += "&max=" + ((max > 100000000) ? 100000000 : max).ToString();
             url += "&exclude=" + exclude.ToString();
 
-            string json = ExecuteAbsolute(url);
+            string json = GetFromUrl(url);
             JObject results = JObject.Parse(json);
 
             return int.Parse(results["count"].ToString());
@@ -99,7 +102,7 @@ namespace Net.Pokeshot.JiveSdk.Retrievers
                     url += fields.ToString() + ",";
                 }
             }
-            string json = ExecuteAbsolute(url);
+            string json = GetFromUrl(url);
             JObject results = JObject.Parse(json);
 
             return results["list"].ToObject<List<Activity>>();
@@ -134,7 +137,7 @@ namespace Net.Pokeshot.JiveSdk.Retrievers
             }
             url += "&abridged=" + abridged.ToString();
 
-            string json = ExecuteAbsolute(url);
+            string json = GetFromUrl(url);
             JObject results = JObject.Parse(json);
 
             return results["list"].ToObject<List<Content>>();
@@ -158,7 +161,7 @@ namespace Net.Pokeshot.JiveSdk.Retrievers
                 }
             }
             
-            string json = ExecuteAbsolute(url);
+            string json = GetFromUrl(url);
             JObject results = JObject.Parse(json);
 
             return results["list"].ToObject<List<Person>>();
@@ -182,7 +185,7 @@ namespace Net.Pokeshot.JiveSdk.Retrievers
                 }
             }
 
-            string json = ExecuteAbsolute(url);
+            string json = GetFromUrl(url);
             JObject results = JObject.Parse(json);
 
             return results["list"].ToObject<List<JivePlace>>();
@@ -220,7 +223,7 @@ namespace Net.Pokeshot.JiveSdk.Retrievers
             }
             url += "&abridged=" + abridged.ToString();
 
-            string json = ExecuteAbsolute(url);
+            string json = GetFromUrl(url);
             JObject results = JObject.Parse(json);
 
             return results["list"].ToObject<List<Content>>();
@@ -243,7 +246,7 @@ namespace Net.Pokeshot.JiveSdk.Retrievers
                 }
             }
 
-            string json = ExecuteAbsolute(url);
+            string json = GetFromUrl(url);
             JObject results = JObject.Parse(json);
 
             return results["list"].ToObject<List<Person>>();
@@ -267,7 +270,7 @@ namespace Net.Pokeshot.JiveSdk.Retrievers
                 }
             }
 
-            string json = ExecuteAbsolute(url);
+            string json = GetFromUrl(url);
             JObject results = JObject.Parse(json);
 
             return results["list"].ToObject<List<JivePlace>>();
@@ -293,7 +296,7 @@ namespace Net.Pokeshot.JiveSdk.Retrievers
                 }
             }
 
-            string json = ExecuteAbsolute(url);
+            string json = GetFromUrl(url);
             JObject results = JObject.Parse(json);
 
             return results["list"].ToObject<List<Activity>>();
@@ -317,7 +320,7 @@ namespace Net.Pokeshot.JiveSdk.Retrievers
                 }
             }
 
-            string json = ExecuteAbsolute(url);
+            string json = GetFromUrl(url);
             JObject results = JObject.Parse(json);
 
             return results["list"].ToObject<List<Person>>();

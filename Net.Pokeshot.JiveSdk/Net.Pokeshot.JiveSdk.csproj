@@ -91,9 +91,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Auth\SignedRequest.cs" />
-    <Compile Include="Retrievers\ActivityRetriever.cs" />
-    <Compile Include="Retrievers\AnnouncementRetriever.cs" />
-    <Compile Include="Retrievers\JiveRetriever.cs" />
+    <Compile Include="Clients\ActivitiesClient.cs" />
+    <Compile Include="Clients\AnnouncementClient.cs" />
+    <Compile Include="Clients\AttatchmentClient.cs" />
+    <Compile Include="Clients\CommentsClient.cs" />
+    <Compile Include="Clients\JiveClient.cs" />
     <Compile Include="Models\Activity.cs" />
     <Compile Include="Models\Announcement.cs" />
     <Compile Include="Models\Attachment.cs" />
