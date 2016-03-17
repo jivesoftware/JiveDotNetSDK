@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Net;
 using Newtonsoft.Json.Linq;
 using Net.Pokeshot.JiveSdk.Models;
+using System.Web;
 
 namespace Net.Pokeshot.JiveSdk.Clients
 {
@@ -33,7 +34,25 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 }
             }
 
-            string json = GetAbsolute(url);
+            string json;
+            try
+            {
+                json = GetAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.WebEventCode)
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "An input field is missing or malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "You are not allowed to access or mark this content as abusive");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "The specified content does not exist");
+                    default:
+                        throw;
+                }
+            }
             JObject results = JObject.Parse(json);
 
             return results["list"].ToObject<List<AbuseReport>>();
