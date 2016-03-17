@@ -69,7 +69,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
             }
             catch (HttpException e)
             {
-                switch (e.WebEventCode) {
+                switch (e.GetHttpCode()) {
                     case 400:
                         throw new HttpException(e.WebEventCode, "The specified stream ID is missing or malformed");
                     case 403:
@@ -106,7 +106,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
             }
             catch (HttpException e)
             {
-                switch (e.WebEventCode)
+                switch (e.GetHttpCode())
                 {
                     case 400:
                         throw new HttpException(e.WebEventCode, "An input field is missing or malformed");
@@ -142,7 +142,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
             }
             catch (HttpException e)
             {
-                switch (e.WebEventCode)
+                switch (e.GetHttpCode())
                 {
                     case 400:
                         throw new HttpException(e.WebEventCode, "Any required parameters are missing or malformed");
@@ -195,7 +195,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
             }
             catch (HttpException e)
             {
-                switch (e.WebEventCode)
+                switch (e.GetHttpCode())
                 {
                     case 400:
                         throw new HttpException(e.WebEventCode, "Any required parameters are missing or malformed");
@@ -237,7 +237,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
             }
             catch (HttpException e)
             {
-                switch (e.WebEventCode)
+                switch (e.GetHttpCode())
                 {
                     case 400:
                         throw new HttpException(e.WebEventCode, "Any required parameters are missing or malformed");
@@ -279,7 +279,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
             }
             catch (HttpException e)
             {
-                switch (e.WebEventCode)
+                switch (e.GetHttpCode())
                 {
                     case 400:
                         throw new HttpException(e.WebEventCode, "The required parameters are missing or malformed");
@@ -335,7 +335,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
             }
             catch (HttpException e)
             {
-                switch (e.WebEventCode)
+                switch (e.GetHttpCode())
                 {
                     case 400:
                         throw new HttpException(e.WebEventCode, "Any required parameters are missing or malformed");
@@ -377,7 +377,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
             }
             catch (HttpException e)
             {
-                switch (e.WebEventCode)
+                switch (e.GetHttpCode())
                 {
                     case 400:
                         throw new HttpException(e.WebEventCode, "Any required parameters are missing or malformed");
@@ -419,7 +419,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
             }
             catch (HttpException e)
             {
-                switch (e.WebEventCode)
+                switch (e.GetHttpCode())
                 {
                     case 400:
                         throw new HttpException(e.WebEventCode, "Any required parameters are missing or malformed");
@@ -463,7 +463,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
             }
             catch (HttpException e)
             {
-                switch (e.WebEventCode)
+                switch (e.GetHttpCode())
                 {
                     case 400:
                         throw new HttpException(e.WebEventCode, "An input field is malformed");
@@ -503,7 +503,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
             }
             catch (HttpException e)
             {
-                switch (e.WebEventCode)
+                switch (e.GetHttpCode())
                 {
                     case 400:
                         throw new HttpException(e.WebEventCode, "Any required parameters are missing or malformed");

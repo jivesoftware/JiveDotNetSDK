@@ -41,7 +41,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
             }
             catch (HttpException e)
             {
-                switch (e.WebEventCode)
+                switch (e.GetHttpCode())
                 {
                     case 400:
                         throw new HttpException(e.WebEventCode, "An input field is missing or malformed");
