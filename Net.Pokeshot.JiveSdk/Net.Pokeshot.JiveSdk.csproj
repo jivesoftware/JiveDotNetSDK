@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Net.Pokeshot.JiveSdk.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -91,6 +92,7 @@
   <ItemGroup>
     <Compile Include="Auth\SignedRequest.cs" />
     <Compile Include="Retrievers\ActivityRetriever.cs" />
+    <Compile Include="Retrievers\AnnouncementRetriever.cs" />
     <Compile Include="Retrievers\JiveRetriever.cs" />
     <Compile Include="Models\Activity.cs" />
     <Compile Include="Models\Announcement.cs" />
