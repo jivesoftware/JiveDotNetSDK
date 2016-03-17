@@ -10,8 +10,8 @@ namespace Net.Pokeshot.JiveSdk.Retrievers
 {
     public partial class JiveRetriever
     {
-        public NetworkCredential Credential { get; set; }
-        public string JiveCommunityUrl { get; set; }
+        NetworkCredential Credential;
+        string JiveCommunityUrl;
 
         public JiveRetriever(string CommunityUrl, NetworkCredential cred)
         {

@@ -12,7 +12,7 @@ namespace Net.Pokeshot.JiveSdk.Retrievers
     public partial class JiveRetriever
     {
         /// <summary>
-        /// 
+        /// Queries Jive's Activities endpoint for all Activities after "time".
         /// </summary>
         /// <param name="time">The time representing the earliest or lates time to consider (depending on the value of "after").</param>
         /// <param name="after">If true, the request will be made for the times after "time". If false, the request is made for times before "time".</param>
@@ -21,31 +21,55 @@ namespace Net.Pokeshot.JiveSdk.Retrievers
         /// <param name="fields">The fields to be included in returned activities</param>
         /// <param name="collapse">Whether collapse the results such that there is only one entry per jive object</param>
         /// <param name="oldestUnread">Effective only when "collapse" is true. When this flag is set to true, service includes oldest unread item in collapsed list</param>
-        public List<Activity> getActivities(DateTime time, bool after = true, int count = 1000, List<string> filters = null, List<string> fields = null)
+        public List<Activity> GetActivities(DateTime time, bool after = true, int count = 25, List<string> filters = null, List<string> fields = null)
         {
-            string activitiesUrl = JiveCommunityUrl + "/api/core/v3/activities?";
-            activitiesUrl += "&" + (after ? "after" : "before") + "=" + time.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fff") + "%2B0000";
+            string url = JiveCommunityUrl + "/api/core/v3/activities?";
+            url += (after ? "after" : "before") + "=" + time.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fff") + "%2B0000";
             // Reset any count greater than 1000 to 1000.
-            activitiesUrl += "&count=" + ((count > 1000) ? 1000 : count);
+            url += "&count=" + ((count > 1000) ? 1000 : count).ToString();
 
-            if (filters.Count > 0)
-                activitiesUrl += "&filter=";
-            foreach (var filter in filters)
+            if (filters != null && filters.Count > 0)
             {
-                activitiesUrl += filter + ",";
+                url += "&filter=";
+                foreach (var filter in filters)
+                {
+                    url += filter + ",";
+                }
             }
 
-            if (fields.Count > 0)
-                activitiesUrl += "&fields=";
-            foreach (var field in fields)
+            if (fields != null && fields.Count > 0)
             {
-                activitiesUrl += field + ",";
+                url += "&fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
             }
 
-            string activitiesJson = ExecuteAbsolute(activitiesUrl);
+            string activitiesJson = ExecuteAbsolute(url);
             JObject results = JObject.Parse(activitiesJson);
 
             return results["list"].ToObject<List<Activity>>();
+        }
+        /// <summary>
+        /// Queries the API for the number of Activities since "after".
+        /// </summary>
+        /// <param name="after">The oldest date to consider when counting the activities.</param>
+        /// <param name="max">The maximum number of new activity counts to return. Default is 50.</param>
+        /// <param name="exclude">Flag indicating whether activity performed by the user should be omitted. Default is false.</param>
+        /// <returns></returns>
+        public int GetActivityCount(DateTime after, int max = 50, bool exclude = false)
+        {
+            string url = JiveCommunityUrl + "/api/core/v3/activities/count?";
+            url += "after=" + after.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fff") + "%2B0000";
+            // Using max over 100000000 causes wierd errors, so we limit it to that number.
+            url += "&max=" + ((max > 100000000) ? 100000000 : max).ToString();
+            url += "&exclude=" + exclude.ToString();
+
+            string activitiesCountJson = ExecuteAbsolute(url);
+            JObject results = JObject.Parse(activitiesCountJson);
+
+            return int.Parse(results["count"].ToString());
         }
     }
 }
