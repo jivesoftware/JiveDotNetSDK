@@ -10,13 +10,13 @@ namespace Net.Pokeshot.JiveSdk.Retrievers
 {
     public abstract class JiveRetriever
     {
-        private NetworkCredential Credential;
+        private NetworkCredential _credential;
         protected string JiveCommunityUrl;
 
-        public JiveRetriever(string CommunityUrl, NetworkCredential cred)
+        public JiveRetriever(string communityUrl, NetworkCredential cred)
         {
-            JiveCommunityUrl = CommunityUrl;
-            Credential = cred;
+            JiveCommunityUrl = communityUrl;
+            _credential = cred;
         }
 
         protected string ExecuteAbsolute(string url)
@@ -24,13 +24,13 @@ namespace Net.Pokeshot.JiveSdk.Retrievers
             HttpClientHandler jiveHandler = new HttpClientHandler();
 
             //Setting credentials for our request. This needs to be done for every request as there are no persistent sessions for the REST Api  
-            Credential.Domain = JiveCommunityUrl + "/api/core/v3";
+            _credential.Domain = JiveCommunityUrl + "/api/core/v3";
             //Getting our credentials in Base64 encoded format  
-            string cre = String.Format("{0}:{1}", Credential.UserName, Credential.Password);
+            string cre = String.Format("{0}:{1}", _credential.UserName, _credential.Password);
             byte[] bytes = Encoding.UTF8.GetBytes(cre);
             string base64 = Convert.ToBase64String(bytes);
             //Set credentials and make sure we are pre-authenticating our request  
-            jiveHandler.Credentials = Credential;
+            jiveHandler.Credentials = _credential;
             jiveHandler.PreAuthenticate = true;
             jiveHandler.UseDefaultCredentials = true;
 
