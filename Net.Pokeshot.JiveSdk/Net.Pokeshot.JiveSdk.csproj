@@ -160,6 +160,7 @@
     <Compile Include="Clients\VitalsClient.cs" />
     <Compile Include="Clients\VotesClient.cs" />
     <Compile Include="Clients\WebhooksClient.cs" />
+    <Compile Include="Models\AbuseReport.cs" />
     <Compile Include="Models\Activity.cs" />
     <Compile Include="Models\Announcement.cs" />
     <Compile Include="Models\Attachment.cs" />

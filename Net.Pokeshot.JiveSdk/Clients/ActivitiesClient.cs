@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using System.Web;
 
 namespace Net.Pokeshot.JiveSdk.Clients
 {
@@ -39,7 +40,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
         public List<Activity> GetActivities(DateTime time, bool after = true, int count = 25, List<string> filter = null, List<string> fields = null)
         {
             string url = JiveCommunityUrl + "/api/core/v3/activities?";
-            url += (after ? "after" : "before") + "=" + time.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fff") + "%2B0000";
+            url += (after ? "after" : "before") + "=" + jiveDateFormat(time);
             // Reset any count greater than 1000 to 1000.
             url += "&count=" + ((count > 1000) ? 1000 : count).ToString();
 
@@ -50,6 +51,8 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 {
                     url += item + ",";
                 }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
             }
 
             if (fields != null && fields.Count > 0)
@@ -59,9 +62,28 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 {
                     url += field + ",";
                 }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
             }
 
-            string json = GetAbsolute(url);
+            string json;
+            try
+            {
+                json = GetAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode()) {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "The specified stream ID is missing or malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "The requesting user is not allowed to retrieve activities for the specified stream");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "The activities or the specified stream is not found");
+                    default:
+                        throw;
+                }
+            }
             JObject results = JObject.Parse(json);
 
             return results["list"].ToObject<List<Activity>>();
@@ -76,12 +98,26 @@ namespace Net.Pokeshot.JiveSdk.Clients
         public int GetActivitiesCount(DateTime after, int max = 50, bool exclude = false)
         {
             string url = JiveCommunityUrl + "/api/core/v3/activities/count?";
-            url += "after=" + after.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fff") + "%2B0000";
+            url += "after=" + jiveDateFormat(after);
             // Using max over 100000000 causes wierd errors, so we limit it to that number.
             url += "&max=" + ((max > 100000000) ? 100000000 : max).ToString();
             url += "&exclude=" + exclude.ToString();
 
-            string json = GetAbsolute(url);
+            string json;
+            try
+            {
+                json = GetAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "An input field is missing or malformed");
+                    default:
+                        throw;
+                }
+            }
             JObject results = JObject.Parse(json);
 
             return int.Parse(results["count"].ToString());
@@ -94,15 +130,36 @@ namespace Net.Pokeshot.JiveSdk.Clients
         public List<Activity> GetDiscoveryChannel(List<string> fields = null)
         {
             string url = JiveCommunityUrl + "/api/core/v3/activities/discovery";
-            if (fields != null  && fields.Count > 0)
+            if (fields != null && fields.Count > 0)
             {
                 url += "?fields=";
                 foreach (var field in fields)
                 {
                     url += fields.ToString() + ",";
                 }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
             }
-            string json = GetAbsolute(url);
+
+            string json;
+            try
+            {
+                json = GetAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "Any required parameters are missing or malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "The requesting user is not allowed to retrieve recently viewed places");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "The places are not found");
+                    default:
+                        throw;
+                }
+            }
             JObject results = JObject.Parse(json);
 
             return results["list"].ToObject<List<Activity>>();
@@ -126,6 +183,8 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 {
                     url += fields.ToString() + ",";
                 }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
             }
             if (filter != null && filter.Count > 0)
             {
@@ -134,10 +193,30 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 {
                     url += item.ToString() + ",";
                 }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
             }
             url += "&abridged=" + abridged.ToString();
 
-            string json = GetAbsolute(url);
+            string json;
+            try
+            {
+                json = GetAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "Any required parameters are missing or malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "The requesting user is not allowed to retrieve frequently viewed content");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "The content is not found");
+                    default:
+                        throw;
+                }
+            }
             JObject results = JObject.Parse(json);
 
             return results["list"].ToObject<List<Content>>();
@@ -159,9 +238,29 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 {
                     url += fields.ToString() + ",";
                 }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
             }
-            
-            string json = GetAbsolute(url);
+
+            string json;
+            try
+            {
+                json = GetAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "Any required parameters are missing or malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "The requesting user is not allowed to retrieve frequently viewed people");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "The people are not found");
+                    default:
+                        throw;
+                }
+            }
             JObject results = JObject.Parse(json);
 
             return results["list"].ToObject<List<Person>>();
@@ -183,9 +282,29 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 {
                     url += fields.ToString() + ",";
                 }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
             }
 
-            string json = GetAbsolute(url);
+            string json;
+            try
+            {
+                json = GetAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "The required parameters are missing or malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "The requesting user is not allowed to retrieve frequently viewed places");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "The places are not found");
+                    default:
+                        throw;
+                }
+            }
             JObject results = JObject.Parse(json);
 
             return results["list"].ToObject<List<JivePlace>>();
@@ -202,7 +321,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
         public List<Content> GetRecentContent(DateTime before, int count = 10, List<string> fields = null, List<string> filter = null, bool abridged = false)
         {
             string url = JiveCommunityUrl + "/api/core/v3/activities/recent/content";
-            url += "?before=" + before.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fff") + "%2B0000";
+            url += "?before=" + jiveDateFormat(before);
             // Reset any count greater than 1000 to 1000.
             url += "&count=" + ((count > 1000) ? 1000 : count).ToString();
             if (filter != null && filter.Count > 0)
@@ -212,6 +331,8 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 {
                     url += item + ",";
                 }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
             }
             if (fields != null && fields.Count > 0)
             {
@@ -220,10 +341,30 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 {
                     url += field + ",";
                 }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
             }
             url += "&abridged=" + abridged.ToString();
 
-            string json = GetAbsolute(url);
+            string json;
+            try
+            {
+                json = GetAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "Any required parameters are missing or malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "The requesting user is not allowed to retrieve recently viewed content");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "The content is not found");
+                    default:
+                        throw;
+                }
+            }
             JObject results = JObject.Parse(json);
 
             return results["list"].ToObject<List<Content>>();
@@ -234,7 +375,8 @@ namespace Net.Pokeshot.JiveSdk.Clients
         /// <param name="count">Maximum number of person entities to return in this request</param>
         /// <param name="fields">Fields to be included in returned person entities</param>
         /// <returns>Person[] representing recently viewed people</returns>
-        public List<Person> GetRecentPeople(int count = 25, List<string> fields = null) {
+        public List<Person> GetRecentPeople(int count = 25, List<string> fields = null)
+        {
             string url = JiveCommunityUrl + "/api/core/v3/activities/recent/people";
             url += "?count=" + count.ToString();
             if (fields != null && fields.Count > 0)
@@ -244,9 +386,29 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 {
                     url += field + ",";
                 }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
             }
 
-            string json = GetAbsolute(url);
+            string json;
+            try
+            {
+                json = GetAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "Any required parameters are missing or malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "The requesting user is not allowed to retrieve recently viewed people");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "The people are not found");
+                    default:
+                        throw;
+                }
+            }
             JObject results = JObject.Parse(json);
 
             return results["list"].ToObject<List<Person>>();
@@ -268,9 +430,29 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 {
                     url += field + ",";
                 }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
             }
 
-            string json = GetAbsolute(url);
+            string json;
+            try
+            {
+                json = GetAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "Any required parameters are missing or malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "The requesting user is not allowed to retrieve recently viewed places");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "The places are not found");
+                    default:
+                        throw;
+                }
+            }
             JObject results = JObject.Parse(json);
 
             return results["list"].ToObject<List<JivePlace>>();
@@ -285,7 +467,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
         public List<Activity> GetSocialNews(DateTime before, int count = 5, List<string> fields = null)
         {
             string url = JiveCommunityUrl + "/api/core/v3/activities/social/news";
-            url += "?before=" + before.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fff") + "%2B0000";
+            url += "?before=" + jiveDateFormat(before);
             url += "&count=" + ((count > 1000) ? 1000 : count).ToString();
             if (fields != null && fields.Count > 0)
             {
@@ -294,9 +476,27 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 {
                     url += field + ",";
                 }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
             }
 
-            string json = GetAbsolute(url);
+            string json;
+            try
+            {
+                json = GetAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "An input field is malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "The requesting user is not authorize to retrieve this information");
+                    default:
+                        throw;
+                }
+            }
             JObject results = JObject.Parse(json);
 
             return results["list"].ToObject<List<Activity>>();
@@ -318,9 +518,29 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 {
                     url += field + ",";
                 }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
             }
 
-            string json = GetAbsolute(url);
+            string json;
+            try
+            {
+                json = GetAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "Any required parameters are missing or malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "The requesting user is not allowed to retrieve frequently viewed people");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "The people are not found");
+                    default:
+                        throw;
+                }
+            }
             JObject results = JObject.Parse(json);
 
             return results["list"].ToObject<List<Person>>();

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net;
+using System.Web;
 
 namespace Net.Pokeshot.JiveSdk.Clients
 {
@@ -41,6 +42,16 @@ namespace Net.Pokeshot.JiveSdk.Clients
             HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
 
             HttpResponseMessage activityResponse = httpClient.SendAsync(requestMessage).Result;
+
+            if (!activityResponse.IsSuccessStatusCode)
+            {
+                // Calling methods should handle this exception on a case by case basis.
+                // The exception contains the returned status code. Jive documentation describes what to do in the case of each code.
+                string message = "Jive Request Failed. Got response " + ((int)activityResponse.StatusCode).ToString() + " " + activityResponse.StatusCode +
+                    " when making GET request to " + url + "\nUsername: " + _credential.UserName + "\nPassword: " + _credential.Password;
+                throw new HttpException((int)activityResponse.StatusCode, message);
+            }
+            
             String myActivityResponse = activityResponse.Content.ReadAsStringAsync().Result;
             //Remove the string Jive includes in every response from the REST API  
             string cleanResponseActivities = myActivityResponse.Replace("throw 'allowIllegalResourceCall is false.';", "");
@@ -49,7 +60,12 @@ namespace Net.Pokeshot.JiveSdk.Clients
             return cleanResponseActivities;
         }
 
-
+        
         // TODO: Create PUT method
+
+        protected string jiveDateFormat(DateTime time)
+        {
+            return time.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fff") + "%2B0000";
+        }
     }
 }
