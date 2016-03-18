@@ -5,42 +5,33 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net;
+using System.Web;
 
-namespace Net.Pokeshot.JiveSdk
+namespace Net.Pokeshot.JiveSdk.Clients
 {
-    // Singleton class that will use the same credentials and baseUrl for all calls
-    public sealed class JiveRetrieval
+    public abstract class JiveClient
     {
-        private static readonly JiveRetrieval instance = new JiveRetrieval();
+        private NetworkCredential _credential;
+        protected string JiveCommunityUrl;
 
-        // having a private constructor stops others from instantiating the class
-        private JiveRetrieval() { Credential = null; JiveCommunityUrl = null; }
-
-        public static JiveRetrieval Instance
+        public JiveClient(string communityUrl, NetworkCredential cred)
         {
-            get
-            {
-                return instance;
-            }
+            JiveCommunityUrl = communityUrl;
+            _credential = cred;
         }
 
-
-        public NetworkCredential Credential { get; set; }
-        public string JiveCommunityUrl { get; set; }
-
-
-        public string ExecuteAbsolute(string url)
+        protected string GetAbsolute(string url)
         {
             HttpClientHandler jiveHandler = new HttpClientHandler();
 
             //Setting credentials for our request. This needs to be done for every request as there are no persistent sessions for the REST Api  
-            Credential.Domain = JiveCommunityUrl + "/api/core/v3";
+            _credential.Domain = JiveCommunityUrl + "/api/core/v3";
             //Getting our credentials in Base64 encoded format  
-            string cre = String.Format("{0}:{1}", Credential.UserName, Credential.Password);
+            string cre = String.Format("{0}:{1}", _credential.UserName, _credential.Password);
             byte[] bytes = Encoding.UTF8.GetBytes(cre);
             string base64 = Convert.ToBase64String(bytes);
             //Set credentials and make sure we are pre-authenticating our request  
-            jiveHandler.Credentials = Credential;
+            jiveHandler.Credentials = _credential;
             jiveHandler.PreAuthenticate = true;
             jiveHandler.UseDefaultCredentials = true;
 
@@ -51,12 +42,30 @@ namespace Net.Pokeshot.JiveSdk
             HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
 
             HttpResponseMessage activityResponse = httpClient.SendAsync(requestMessage).Result;
+
+            if (!activityResponse.IsSuccessStatusCode)
+            {
+                // Calling methods should handle this exception on a case by case basis.
+                // The exception contains the returned status code. Jive documentation describes what to do in the case of each code.
+                string message = "Jive Request Failed. Got response " + ((int)activityResponse.StatusCode).ToString() + " " + activityResponse.StatusCode +
+                    " when making GET request to " + url + "\nUsername: " + _credential.UserName + "\nPassword: " + _credential.Password;
+                throw new HttpException((int)activityResponse.StatusCode, message);
+            }
+            
             String myActivityResponse = activityResponse.Content.ReadAsStringAsync().Result;
             //Remove the string Jive includes in every response from the REST API  
             string cleanResponseActivities = myActivityResponse.Replace("throw 'allowIllegalResourceCall is false.';", "");
 
 
             return cleanResponseActivities;
+        }
+
+        
+        // TODO: Create PUT method
+
+        protected string jiveDateFormat(DateTime time)
+        {
+            return time.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fff") + "%2B0000";
         }
     }
 }

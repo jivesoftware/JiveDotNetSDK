@@ -9,7 +9,7 @@ namespace Net.Pokeshot.JiveSdk.Models
     public class Content
     {
         public Person author { get; set; }
-        public Attachment attachments { get; set; }
+        public List<Attachment> attachments { get; set; }
         public List<string> categories { get; set; }
         public ContentBody content { get; set; }
         public string contentID { get; set; }
