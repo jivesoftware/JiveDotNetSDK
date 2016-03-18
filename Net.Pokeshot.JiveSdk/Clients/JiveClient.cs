@@ -48,7 +48,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 // Calling methods should handle this exception on a case by case basis.
                 // The exception contains the returned status code. Jive documentation describes what to do in the case of each code.
                 string message = "Jive Request Failed. Got response " + ((int)activityResponse.StatusCode).ToString() + " " + activityResponse.StatusCode +
-                    " when making GET request to " + url + "\nUsername: " + _credential.UserName + "\nPassword: " + _credential.Password; ;
+                    " when making GET request to " + url + "\nUsername: " + _credential.UserName + "\nPassword: " + _credential.Password;
                 throw new HttpException((int)activityResponse.StatusCode, message);
             }
             
@@ -60,7 +60,12 @@ namespace Net.Pokeshot.JiveSdk.Clients
             return cleanResponseActivities;
         }
 
-
+        
         // TODO: Create PUT method
+
+        protected string jiveDateFormat(DateTime time)
+        {
+            return time.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fff") + "%2B0000";
+        }
     }
 }

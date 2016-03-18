@@ -40,7 +40,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
         public List<Activity> GetActivities(DateTime time, bool after = true, int count = 25, List<string> filter = null, List<string> fields = null)
         {
             string url = JiveCommunityUrl + "/api/core/v3/activities?";
-            url += (after ? "after" : "before") + "=" + time.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fff") + "%2B0000";
+            url += (after ? "after" : "before") + "=" + jiveDateFormat(time);
             // Reset any count greater than 1000 to 1000.
             url += "&count=" + ((count > 1000) ? 1000 : count).ToString();
 
@@ -51,6 +51,8 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 {
                     url += item + ",";
                 }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
             }
 
             if (fields != null && fields.Count > 0)
@@ -60,6 +62,8 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 {
                     url += field + ",";
                 }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
             }
 
             string json;
@@ -94,7 +98,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
         public int GetActivitiesCount(DateTime after, int max = 50, bool exclude = false)
         {
             string url = JiveCommunityUrl + "/api/core/v3/activities/count?";
-            url += "after=" + after.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fff") + "%2B0000";
+            url += "after=" + jiveDateFormat(after);
             // Using max over 100000000 causes wierd errors, so we limit it to that number.
             url += "&max=" + ((max > 100000000) ? 100000000 : max).ToString();
             url += "&exclude=" + exclude.ToString();
@@ -133,6 +137,8 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 {
                     url += fields.ToString() + ",";
                 }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
             }
 
             string json;
@@ -177,6 +183,8 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 {
                     url += fields.ToString() + ",";
                 }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
             }
             if (filter != null && filter.Count > 0)
             {
@@ -185,6 +193,8 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 {
                     url += item.ToString() + ",";
                 }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
             }
             url += "&abridged=" + abridged.ToString();
 
@@ -228,6 +238,8 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 {
                     url += fields.ToString() + ",";
                 }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
             }
 
             string json;
@@ -270,6 +282,8 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 {
                     url += fields.ToString() + ",";
                 }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
             }
 
             string json;
@@ -307,7 +321,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
         public List<Content> GetRecentContent(DateTime before, int count = 10, List<string> fields = null, List<string> filter = null, bool abridged = false)
         {
             string url = JiveCommunityUrl + "/api/core/v3/activities/recent/content";
-            url += "?before=" + before.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fff") + "%2B0000";
+            url += "?before=" + jiveDateFormat(before);
             // Reset any count greater than 1000 to 1000.
             url += "&count=" + ((count > 1000) ? 1000 : count).ToString();
             if (filter != null && filter.Count > 0)
@@ -317,6 +331,8 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 {
                     url += item + ",";
                 }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
             }
             if (fields != null && fields.Count > 0)
             {
@@ -325,6 +341,8 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 {
                     url += field + ",";
                 }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
             }
             url += "&abridged=" + abridged.ToString();
 
@@ -368,6 +386,8 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 {
                     url += field + ",";
                 }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
             }
 
             string json;
@@ -410,6 +430,8 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 {
                     url += field + ",";
                 }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
             }
 
             string json;
@@ -445,7 +467,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
         public List<Activity> GetSocialNews(DateTime before, int count = 5, List<string> fields = null)
         {
             string url = JiveCommunityUrl + "/api/core/v3/activities/social/news";
-            url += "?before=" + before.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fff") + "%2B0000";
+            url += "?before=" + jiveDateFormat(before);
             url += "&count=" + ((count > 1000) ? 1000 : count).ToString();
             if (fields != null && fields.Count > 0)
             {
@@ -454,6 +476,8 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 {
                     url += field + ",";
                 }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
             }
 
             string json;
@@ -494,6 +518,8 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 {
                     url += field + ",";
                 }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
             }
 
             string json;
