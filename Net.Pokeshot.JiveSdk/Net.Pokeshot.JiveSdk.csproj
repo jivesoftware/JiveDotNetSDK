@@ -169,8 +169,6 @@
     <Compile Include="Models\Content.cs" />
     <Compile Include="Models\ContentBody.cs" />
     <Compile Include="Models\ContentVideo.cs" />
-    <Compile Include="Models\Discussion.cs" />
-    <Compile Include="Models\Document.cs" />
     <Compile Include="Models\Dto\ErrorDto.cs" />
     <Compile Include="Models\Dto\HealthStatusDto.cs" />
     <Compile Include="Models\Dto\JiveAddonRegistrationDto.cs" />
@@ -195,9 +193,7 @@
     <Compile Include="Models\Dto\WebhookActivityDto.cs" />
     <Compile Include="Models\Dto\WorkflowDefinitionDto.cs" />
     <Compile Include="Models\ExternalStreamActivity.cs" />
-    <Compile Include="Models\Favorite.cs" />
     <Compile Include="Models\Field.cs" />
-    <Compile Include="Models\File.cs" />
     <Compile Include="Models\GenericContent.cs" />
     <Compile Include="Models\Idea.cs" />
     <Compile Include="Models\Image.cs" />
