@@ -218,6 +218,8 @@
     <Compile Include="Models\Poll.cs" />
     <Compile Include="Models\PollOptionImage.cs" />
     <Compile Include="Models\Post.cs" />
+    <Compile Include="Models\Resources\Resource.cs" />
+    <Compile Include="Models\Resources\Resources.cs" />
     <Compile Include="Models\Slide.cs" />
     <Compile Include="Models\Stage.cs" />
     <Compile Include="Models\Summary.cs" />
