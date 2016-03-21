@@ -212,7 +212,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
         /// <param name="fields">Fields to be returned</param>
         /// <param name="abridged">Flag indicating that if content.text is requested, it will be abridged (length shortened, HTML tags removed)</param>
         /// <returns>Content containing the specified content</returns>
-        public Content GetContent(int contentID, List<string> fields = null, bool abridged = false)
+        public GenericContent GetContent(int contentID, List<string> fields = null, bool abridged = false)
         {
             string url = contentUrl + "/" + contentID.ToString();
             url += "?abridged=" + abridged.ToString();
@@ -249,7 +249,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
 
             JObject results = JObject.Parse(json);
 
-            return results.ToObject<Content>();
+            return results.ToObject<GenericContent>();
         }
 
         // public byte[] GetContentData(int ContentID)
@@ -395,10 +395,10 @@ namespace Net.Pokeshot.JiveSdk.Clients
         /// <param name="abridged">Flag indicating that if content.text is requested, it will be abridged (length shortened, HTML tags removed)</param>
         /// <param name="includeBlogs">Flag indicating that filters should include blog containers</param>
         /// <returns>Content[] of the matched content objects</returns>
-        public List<Content> GetContents(Tuple<DateTime, DateTime> creationDate = null, Tuple<DateTime, DateTime> modificationDate = null, int count = 25, List<string> filter = null,
+        public List<GenericContent> GetContents(Tuple<DateTime, DateTime> creationDate = null, Tuple<DateTime, DateTime> modificationDate = null, int count = 25, List<string> filter = null,
             string sort = "dateCreatedDesc", int startIndex = 0, List<string> fields = null, bool abridged = false, bool includeBlogs = true)
         {
-            List<Content> contentList = new List<Content>();
+            List<GenericContent> contentList = new List<GenericContent>();
 
             if (filter == null)
                 filter = new List<string>();
@@ -480,7 +480,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
 
                 JObject results = JObject.Parse(json);
 
-                contentList.AddRange(results["list"].ToObject<List<Content>>());
+                contentList.AddRange(results["list"].ToObject<List<GenericContent>>());
 
                 if (results["links"] == null || results["links"]["next"] == null)
                     break;
@@ -504,9 +504,9 @@ namespace Net.Pokeshot.JiveSdk.Clients
         /// <param name="filter">The filter criteria used to select content objects</param>
         /// <param name="fields">The fields to be returned on each content</param>
         /// <returns>Content[] of the matched content objects</returns>
-        public List<Content> GetFeaturedContent(List<string> places, int count = 25, bool abridged = false, List<string> filter = null, List<string> fields = null)
+        public List<GenericContent> GetFeaturedContent(List<string> places, int count = 25, bool abridged = false, List<string> filter = null, List<string> fields = null)
         {
-            List<Content> contentList = new List<Content>();
+            List<GenericContent> contentList = new List<GenericContent>();
 
             if (filter == null)
                 filter = new List<string>();
@@ -569,7 +569,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
 
                 JObject results = JObject.Parse(json);
 
-                contentList.AddRange(results["list"].ToObject<List<Content>>());
+                contentList.AddRange(results["list"].ToObject<List<GenericContent>>());
 
                 if (results["links"] == null || results["links"]["next"] == null)
                     break;
@@ -591,7 +591,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
         /// <param name="abridged">Flag indicating that if content.text is requested, it will be abridged (length shortened, HTML tags removed)</param>
         /// <param name="fields">The fields to be returned on each content</param>
         /// <returns>Content[] of the matched content objects</returns>
-        public List<Content> GetPopularContent(bool abridged = false, List<string> fields = null)
+        public List<GenericContent> GetPopularContent(bool abridged = false, List<string> fields = null)
         {
             string url = contentUrl + "/popular";
             url += "?abridged=" + abridged.ToString();
@@ -624,7 +624,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
 
             JObject results = JObject.Parse(json);
 
-            return results["list"].ToObject<List<Content>>();
+            return results["list"].ToObject<List<GenericContent>>();
         }
 
         //public GetPreviewImage()
