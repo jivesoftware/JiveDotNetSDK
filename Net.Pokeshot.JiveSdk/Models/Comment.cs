@@ -8,7 +8,7 @@ namespace Net.Pokeshot.JiveSdk.Models
 {
      public class Comment
      {
-         public Person autor { get; set; }
+         public Person author { get; set; }
          public ContentBody content { get; set; }
          public List<Image> contentImages { get; set; }
          public List<ContentVideo> contentVideos { get; set; }

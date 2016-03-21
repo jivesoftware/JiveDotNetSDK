@@ -33,7 +33,7 @@ namespace Net.Pokeshot.JiveSdk.Models
         public Boolean parentVisible { get; set; }
         public DateTime published { get; set; }
         public int replyCount { get; set; }
-        public Object recources { get; set; }
+        public Resources.Resources resources { get; set; }
         public string status { get; set; }
         public string subject { get; set; }
         public List<string> tags { get; set; }
