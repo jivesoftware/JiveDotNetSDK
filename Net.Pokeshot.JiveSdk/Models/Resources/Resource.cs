@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Net.Pokeshot.JiveSdk.Models.Resources
 {
-    public abstract class Resource
+    public class Resource
     {
         public List<string> allowed { get; set; }
         public string @ref { get; set; }
