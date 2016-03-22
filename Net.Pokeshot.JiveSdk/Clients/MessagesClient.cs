@@ -148,6 +148,21 @@ namespace Net.Pokeshot.JiveSdk.Clients
 
             return results.ToObject<Message>();
         }
+        /// <summary>
+        /// Return the specified message with the specified fields.
+        /// </summary>
+        /// <param name="messageUrl">Url of the message to be returned. Must be a message Url.</param>
+        /// <param name="abridged">Flag indicating that if content.text is requested, it will be abridged (length shortened, HTML tags removed)</param>
+        /// <param name="fields">Fields to be returned</param>
+        /// <returns>Message containing the specified message</returns>
+        public Message GetMessage(string messageUrl, bool abridged = false, List<string> fields = null)
+        {
+            List<string> urlParts = messageUrl.Split('/').ToList();
+            // id is the last string in the list.
+            int id = int.Parse(urlParts[urlParts.Count - 1]);
+
+            return GetMessage(id, abridged, fields);
+        }
 
         //GetMessageLikes()
         //GetMessageOutcomes()
