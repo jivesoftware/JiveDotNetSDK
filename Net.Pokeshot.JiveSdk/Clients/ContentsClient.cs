@@ -251,7 +251,13 @@ namespace Net.Pokeshot.JiveSdk.Clients
 
             return results.ToObject<GenericContent>();
         }
+        public GenericContent GetContent(string contentUrl, List<string> fields = null, bool abridged = false) {
+            List<string> urlParts = contentUrl.Split('/').ToList();
+            // id is the last string in the list.
+            int id = int.Parse(urlParts[urlParts.Count - 1]);
 
+            return GetContent(id, fields, abridged);
+        }
         // public byte[] GetContentData(int ContentID)
 
         /// <summary>
