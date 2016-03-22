@@ -211,6 +211,7 @@
     <Compile Include="Models\JiveSdkContext.cs" />
     <Compile Include="Models\JiveTileInstance.cs" />
     <Compile Include="Models\JiveTileRegistration.cs" />
+    <Compile Include="Models\Message.cs" />
     <Compile Include="Models\OAuthRequest.cs" />
     <Compile Include="Models\OutcomeType.cs" />
     <Compile Include="Models\Person.cs" />
