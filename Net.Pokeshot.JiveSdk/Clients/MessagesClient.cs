@@ -16,6 +16,18 @@ namespace Net.Pokeshot.JiveSdk.Clients
 
         public MessagesClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
 
+        /// <summary>
+        /// Return a list of messages for the specified content object, which must be a discussion, optionally limiting the results to direct replies only.
+        /// </summary>
+        /// <param name="contentID">ID of the content object (must be a discussion) for which to return reply messages</param>
+        /// <param name="count">Maximum number of messages to be returned (default is 25)</param>
+        /// <param name="excludeReplies">Flag indicating whether to exclude replies (and therefore return direct replies only) (default is false)</param>
+        /// <param name="filter">The filter criteria used to select reply messages</param>
+        /// <param name="hierarchical">Flag indicating that replies should be returned in hierarchical order instead of chronological order. (default is true) Since v3.1</param>
+        /// <param name="startIndex">Zero-relative index of the first message to be returned (default is 0)</param>
+        /// <param name="anchor">optional URI for a message to anchor at. Specifying a anchor will try to return the page containing the anchor. If the anchor could not be found then the first page of messages will be returned.</param>
+        /// <param name="fields">Fields to be returned in the selected messages</param>
+        /// <returns>Message[] containing the requested messages</returns>
         public List<Message> GetContentReplies(int contentID, int count = 25, bool excludeReplies = false, List<string> filter = null, bool hierarchical = true,
             int startIndex = 0, string anchor = null, List<string> fields = null)
         {
@@ -82,6 +94,59 @@ namespace Net.Pokeshot.JiveSdk.Clients
                     url = results["links"]["next"].ToString();
             }
             return messageList;
+        }
+
+        //GetEditableMessages()
+        //GetExtendedProperties()
+        //GetExtendedPropertiesForAddon()
+        //GetHaveMarkedHelpful()
+        //GetHaveMarkedUnhelpful()
+
+        /// <summary>
+        /// Return the specified message with the specified fields.
+        /// </summary>
+        /// <param name="messageID">ID of the message to be returned</param>
+        /// <param name="abridged">Flag indicating that if content.text is requested, it will be abridged (length shortened, HTML tags removed)</param>
+        /// <param name="fields">Fields to be returned</param>
+        /// <returns>Message containing the specified message</returns>
+        public Message GetMessage(int messageID, bool abridged = false, List<string> fields = null)
+        {
+            string url = messagesUrl + "/" + messageID.ToString();
+            url += "?abridged=" + abridged.ToString();
+            if (fields != null && fields.Count > 0)
+            {
+                url += "&fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+
+            string json;
+            try
+            {
+                json = GetAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "An input field is missing or malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "You are not allowed to access the specified comment");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "The specified comment does not exist");
+                    default:
+                        throw;
+                }
+            }
+
+            JObject results = JObject.Parse(json);
+
+            return results.ToObject<Message>();
         }
     }
 }
