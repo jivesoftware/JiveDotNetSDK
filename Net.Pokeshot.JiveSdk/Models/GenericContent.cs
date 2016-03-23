@@ -20,7 +20,7 @@ namespace Net.Pokeshot.JiveSdk.Models
         public bool restrictReplies { get; set; }
 
         // Specific to Documents
-        public Person approvers { get; set; }
+        public List<Person> approvers { get; set; }
         public string authorship { get; set; }
         public Person editingBy { get; set; }
         public string fromQuest { get; set; }
