@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Net.Pokeshot.JiveSdk.Models
 {
      public class Document: Content{
-         public Person approvers {get;set;}
+         public List<Person> approvers {get;set;}
          public string authorship {get;set;}
          public Person editingBy {get;set;}
          public string fromQuest {get;set;}
