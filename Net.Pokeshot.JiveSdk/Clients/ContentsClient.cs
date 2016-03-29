@@ -252,20 +252,6 @@ namespace Net.Pokeshot.JiveSdk.Clients
             return results.ToObject<GenericContent>();
         }
 
-        /// <summary>
-        /// Return the specified content object with the specified fields.
-        /// </summary>
-        /// <param name="contentUrl">Url of the content object to be returned</param>
-        /// <param name="fields">Fields to be returned</param>
-        /// <param name="abridged">Flag indicating that if content.text is requested, it will be abridged (length shortened, HTML tags removed)</param>
-        /// <returns>Content containing the specified content</returns>
-        public GenericContent GetContent(string contentUrl, List<string> fields = null, bool abridged = false) {
-            List<string> urlParts = contentUrl.Split('/').ToList();
-            // id is the last string in the list.
-            int id = int.Parse(urlParts[urlParts.Count - 1]);
-
-            return GetContent(id, fields, abridged);
-        }
         // public byte[] GetContentData(int ContentID)
 
         /// <summary>
