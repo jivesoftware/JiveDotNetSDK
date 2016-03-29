@@ -9,11 +9,18 @@ namespace Net.Pokeshot.JiveSdk.Models.Resources
     public class Resources
     {
         public Resource abuseReports { get; set; }
+        public Resource activity { get; set; }
         public Resource attachments { get; set; }
+        public Resource announcements { get; set; }
+        public Resource avatar { get; set; }
+        public Resource blog { get; set; }
+        public Resource categories { get; set; }
         public Resource childOutcomeTypes { get; set; }
+        public Resource contents { get; set; }
         public Resource editHTML { get; set; }
         public Resource entitlements { get; set; }
         public Resource extprops { get; set; }
+        public Resource featuredContent { get; set; }
         public Resource followers { get; set; }
         public Resource followingIn { get; set; }
         public Resource html { get; set; }
@@ -22,8 +29,10 @@ namespace Net.Pokeshot.JiveSdk.Models.Resources
         public Resource outcomes { get; set; }
         public Resource outcomeTypes { get; set; }
         public Resource pdf { get; set; }
+        public Resource places { get; set; }
         public Resource read { get; set; }
         public Resource sameQuestion { get; set; }
         public Resource self { get; set; }
+        public Resource statics { get; set; }
     }
 }
