@@ -15,6 +15,7 @@ namespace Net.Pokeshot.JiveSdk.Models.Resources
         public Resource avatar { get; set; }
         public Resource blog { get; set; }
         public Resource categories { get; set; }
+        public Resource checkpoints { get; set; }
         public Resource childOutcomeTypes { get; set; }
         public Resource contents { get; set; }
         public Resource editHTML { get; set; }
@@ -36,5 +37,6 @@ namespace Net.Pokeshot.JiveSdk.Models.Resources
         public Resource sameQuestion { get; set; }
         public Resource self { get; set; }
         public Resource statics { get; set; }
+        public Resource tasks { get; set; }
     }
 }
