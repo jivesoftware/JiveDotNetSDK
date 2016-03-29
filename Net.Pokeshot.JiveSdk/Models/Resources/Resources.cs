@@ -24,7 +24,9 @@ namespace Net.Pokeshot.JiveSdk.Models.Resources
         public Resource followers { get; set; }
         public Resource followingIn { get; set; }
         public Resource html { get; set; }
+        public Resource invites { get; set; }
         public Resource likes { get; set; }
+        public Resource members { get; set; }
         public Resource messages { get; set; }
         public Resource outcomes { get; set; }
         public Resource outcomeTypes { get; set; }
