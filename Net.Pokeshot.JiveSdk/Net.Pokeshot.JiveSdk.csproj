@@ -107,6 +107,8 @@
     <Compile Include="Clients\CommentsClient.cs" />
     <Compile Include="Clients\ContentsClient.cs" />
     <Compile Include="Clients\DeletedObjectsClient.cs" />
+    <Compile Include="Models\Blog.cs" />
+    <Compile Include="Models\Carousel.cs" />
     <Compile Include="Models\Discussion.cs" />
     <Compile Include="Clients\DmsClient.cs" />
     <Compile Include="Models\Document.cs" />
@@ -199,6 +201,8 @@
     <Compile Include="Models\ExternalStreamActivity.cs" />
     <Compile Include="Models\Field.cs" />
     <Compile Include="Models\GenericContent.cs" />
+    <Compile Include="Models\GenericPlace.cs" />
+    <Compile Include="Models\Group.cs" />
     <Compile Include="Models\Idea.cs" />
     <Compile Include="Models\Image.cs" />
     <Compile Include="Models\ImageList.cs" />
@@ -216,9 +220,11 @@
     <Compile Include="Models\OutcomeType.cs" />
     <Compile Include="Models\Person.cs" />
     <Compile Include="Models\PeopleList.cs" />
+    <Compile Include="Models\Place.cs" />
     <Compile Include="Models\Poll.cs" />
     <Compile Include="Models\PollOptionImage.cs" />
     <Compile Include="Models\Post.cs" />
+    <Compile Include="Models\Project.cs" />
     <Compile Include="Models\Resources\Resource.cs" />
     <Compile Include="Models\Resources\Resources.cs" />
     <Compile Include="Models\Slide.cs" />
