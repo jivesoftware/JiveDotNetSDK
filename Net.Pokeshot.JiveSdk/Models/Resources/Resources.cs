@@ -12,12 +12,14 @@ namespace Net.Pokeshot.JiveSdk.Models.Resources
         public Resource activity { get; set; }
         public Resource attachments { get; set; }
         public Resource announcements { get; set; }
+        public Resource answeredQuestion { get; set; }
         public Resource avatar { get; set; }
         public Resource blog { get; set; }
         public Resource categories { get; set; }
         public Resource checkpoints { get; set; }
         public Resource childOutcomeTypes { get; set; }
         public Resource contents { get; set; }
+        public Resource correctAnswer { get; set; }
         public Resource editHTML { get; set; }
         public Resource entitlements { get; set; }
         public Resource extprops { get; set; }
