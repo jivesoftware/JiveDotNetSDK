@@ -29,7 +29,7 @@ namespace Net.Pokeshot.JiveSdk.Models
          public string publishedCalendarDate {get;set;}
          public string publishedTime {get;set;}
          public int replyCount {get;set;}
-         public Object recources {get;set;}
+         public Resources.Resources recources {get;set;}
          public string rootExternalID {get;set;}
          public string rootType {get;set;}
          public string rootURI {get;set;}

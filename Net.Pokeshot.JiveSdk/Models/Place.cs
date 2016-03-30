@@ -23,7 +23,7 @@ namespace Net.Pokeshot.JiveSdk.Models
         public string placeID { get; set; }
         public List<PlaceTopic> placeTopics { get; set; }
         public DateTime published { get; set; }
-        public Object resources { get; set; }
+        public Resources.Resources resources { get; set; }
         public Object searchRankings { get; set; }
         public string status { get; set; }
         public DateTime updated { get; set; }
