@@ -24,9 +24,12 @@ namespace Net.Pokeshot.JiveSdk.Models.Resources
         public Resource featuredContent { get; set; }
         public Resource followers { get; set; }
         public Resource followingIn { get; set; }
+        public Resource helpful { get; set; }
         public Resource html { get; set; }
         public Resource invites { get; set; }
         public Resource likes { get; set; }
+        public Resource markedHelpful { get; set; }
+        public Resource markedUnhelpful { get; set; }
         public Resource members { get; set; }
         public Resource messages { get; set; }
         public Resource outcomes { get; set; }
@@ -38,5 +41,7 @@ namespace Net.Pokeshot.JiveSdk.Models.Resources
         public Resource self { get; set; }
         public Resource statics { get; set; }
         public Resource tasks { get; set; }
+        public Resource unhelpful { get; set; }
+
     }
 }
