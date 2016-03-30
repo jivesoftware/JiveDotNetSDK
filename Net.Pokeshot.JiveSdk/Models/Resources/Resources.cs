@@ -18,16 +18,19 @@ namespace Net.Pokeshot.JiveSdk.Models.Resources
         public Resource categories { get; set; }
         public Resource checkpoints { get; set; }
         public Resource childOutcomeTypes { get; set; }
+        public Resource comments { get; set; }
         public Resource contents { get; set; }
         public Resource correctAnswer { get; set; }
         public Resource editHTML { get; set; }
         public Resource entitlements { get; set; }
+        public Resource externalURLs { get; set; }
         public Resource extprops { get; set; }
         public Resource featuredContent { get; set; }
         public Resource followers { get; set; }
         public Resource followingIn { get; set; }
         public Resource helpful { get; set; }
         public Resource html { get; set; }
+        public Resource images { get; set; }
         public Resource invites { get; set; }
         public Resource likes { get; set; }
         public Resource markedHelpful { get; set; }
@@ -44,6 +47,8 @@ namespace Net.Pokeshot.JiveSdk.Models.Resources
         public Resource statics { get; set; }
         public Resource tasks { get; set; }
         public Resource unhelpful { get; set; }
+        public Resource versions { get; set; }
+        public Resource votes { get; set; }
 
     }
 }
