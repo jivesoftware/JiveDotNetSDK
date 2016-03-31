@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Net.Pokeshot.JiveSdk.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -46,6 +47,10 @@
     </Reference>
     <Reference Include="NewRelic.Api.Agent">
       <HintPath>..\packages\NewRelic.Agent.Api.3.9.146.0\lib\NewRelic.Api.Agent.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -86,6 +91,82 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Auth\SignedRequest.cs" />
+    <Compile Include="Clients\AbuseReportsClient.cs" />
+    <Compile Include="Clients\AcclaimClient.cs" />
+    <Compile Include="Clients\ActionsClient.cs" />
+    <Compile Include="Clients\ActivitiesClient.cs" />
+    <Compile Include="Clients\AddOnsClient.cs" />
+    <Compile Include="Clients\Admin_Plugins_Client.cs" />
+    <Compile Include="Clients\Admin_ProfileFields_Client.cs" />
+    <Compile Include="Clients\Admin_Properties_Client.cs" />
+    <Compile Include="Clients\AnnouncementClient.cs" />
+    <Compile Include="Clients\AttatchmentClient.cs" />
+    <Compile Include="Clients\CalendarClient.cs" />
+    <Compile Include="Clients\CheckpointsClient.cs" />
+    <Compile Include="Clients\CollaborationsClient.cs" />
+    <Compile Include="Clients\CommentsClient.cs" />
+    <Compile Include="Clients\ContentsClient.cs" />
+    <Compile Include="Clients\DeletedObjectsClient.cs" />
+    <Compile Include="Models\Blog.cs" />
+    <Compile Include="Models\Carousel.cs" />
+    <Compile Include="Models\Discussion.cs" />
+    <Compile Include="Clients\DmsClient.cs" />
+    <Compile Include="Models\Document.cs" />
+    <Compile Include="Clients\EventsClient.cs" />
+    <Compile Include="Clients\EventTypesClient.cs" />
+    <Compile Include="Clients\ExecuteBatchClient.cs" />
+    <Compile Include="Clients\ExtpropsClient.cs" />
+    <Compile Include="Clients\ExtstreamDefsClient.cs" />
+    <Compile Include="Clients\ExtstreamsClient.cs" />
+    <Compile Include="Models\Favorite.cs" />
+    <Compile Include="Models\File.cs" />
+    <Compile Include="Clients\IdeaVotesClient.cs" />
+    <Compile Include="Clients\ImagesClient.cs" />
+    <Compile Include="Clients\InboxClient.cs" />
+    <Compile Include="Clients\InvitesClient.cs" />
+    <Compile Include="Clients\Invites_Event_Client.cs" />
+    <Compile Include="Clients\JiveClient.cs" />
+    <Compile Include="Clients\MembersClient.cs" />
+    <Compile Include="Clients\MentionsClient.cs" />
+    <Compile Include="Clients\MessagesClient.cs" />
+    <Compile Include="Clients\Metadata_Locales_Client.cs" />
+    <Compile Include="Clients\Metadata_Objects_Client.cs" />
+    <Compile Include="Clients\Metadata_Properties_Client.cs" />
+    <Compile Include="Clients\Metadata_Properties_Public_Client.cs" />
+    <Compile Include="Clients\Metadata_Resources_Client.cs" />
+    <Compile Include="Clients\Metadata_Timezones_Client.cs" />
+    <Compile Include="Clients\ModerationClient.cs" />
+    <Compile Include="Clients\OembedClient.cs" />
+    <Compile Include="Clients\PagesClient.cs" />
+    <Compile Include="Clients\PeopleClient.cs" />
+    <Compile Include="Clients\PlacesClient.cs" />
+    <Compile Include="Clients\PlaceTemplateCategoriesClient.cs" />
+    <Compile Include="Clients\PlaceTemplatesClient.cs" />
+    <Compile Include="Clients\PlaceTopicsClient.cs" />
+    <Compile Include="Clients\ProfileImagesClient.cs" />
+    <Compile Include="Clients\PublicationsClient.cs" />
+    <Compile Include="Clients\QuestionsClient.cs" />
+    <Compile Include="Clients\RsvpClient.cs" />
+    <Compile Include="Clients\SearchClient.cs" />
+    <Compile Include="Clients\SecurityGroupsClient.cs" />
+    <Compile Include="Clients\SharesClient.cs" />
+    <Compile Include="Clients\SlidesClient.cs" />
+    <Compile Include="Clients\Solutions_SupportCenter_Client.cs" />
+    <Compile Include="Clients\StagesClient.cs" />
+    <Compile Include="Clients\StaticsClient.cs" />
+    <Compile Include="Clients\StreamEntriesClient.cs" />
+    <Compile Include="Clients\StreamsClient.cs" />
+    <Compile Include="Clients\TagsClient.cs" />
+    <Compile Include="Clients\TileDefsClient.cs" />
+    <Compile Include="Clients\TilesClient.cs" />
+    <Compile Include="Clients\Tiles_Categories_Client.cs" />
+    <Compile Include="Clients\UrlsClient.cs" />
+    <Compile Include="Clients\VersionsClient.cs" />
+    <Compile Include="Clients\VideosClient.cs" />
+    <Compile Include="Clients\VitalsClient.cs" />
+    <Compile Include="Clients\VotesClient.cs" />
+    <Compile Include="Clients\WebhooksClient.cs" />
+    <Compile Include="Models\AbuseReport.cs" />
     <Compile Include="Models\Activity.cs" />
     <Compile Include="Models\Announcement.cs" />
     <Compile Include="Models\Attachment.cs" />
@@ -94,8 +175,6 @@
     <Compile Include="Models\Content.cs" />
     <Compile Include="Models\ContentBody.cs" />
     <Compile Include="Models\ContentVideo.cs" />
-    <Compile Include="Models\Discussion.cs" />
-    <Compile Include="Models\Document.cs" />
     <Compile Include="Models\Dto\ErrorDto.cs" />
     <Compile Include="Models\Dto\HealthStatusDto.cs" />
     <Compile Include="Models\Dto\JiveAddonRegistrationDto.cs" />
@@ -120,10 +199,10 @@
     <Compile Include="Models\Dto\WebhookActivityDto.cs" />
     <Compile Include="Models\Dto\WorkflowDefinitionDto.cs" />
     <Compile Include="Models\ExternalStreamActivity.cs" />
-    <Compile Include="Models\Favorite.cs" />
     <Compile Include="Models\Field.cs" />
-    <Compile Include="Models\File.cs" />
     <Compile Include="Models\GenericContent.cs" />
+    <Compile Include="Models\GenericPlace.cs" />
+    <Compile Include="Models\Group.cs" />
     <Compile Include="Models\Idea.cs" />
     <Compile Include="Models\Image.cs" />
     <Compile Include="Models\ImageList.cs" />
@@ -136,14 +215,20 @@
     <Compile Include="Models\JiveSdkContext.cs" />
     <Compile Include="Models\JiveTileInstance.cs" />
     <Compile Include="Models\JiveTileRegistration.cs" />
+    <Compile Include="Models\Message.cs" />
     <Compile Include="Models\OAuthRequest.cs" />
     <Compile Include="Models\OutcomeType.cs" />
     <Compile Include="Models\Person.cs" />
     <Compile Include="Models\PeopleList.cs" />
+    <Compile Include="Models\Place.cs" />
     <Compile Include="Models\Poll.cs" />
     <Compile Include="Models\PollOptionImage.cs" />
     <Compile Include="Models\Post.cs" />
+    <Compile Include="Models\Project.cs" />
+    <Compile Include="Models\Resources\Resource.cs" />
+    <Compile Include="Models\Resources\Resources.cs" />
     <Compile Include="Models\Slide.cs" />
+    <Compile Include="Models\Space.cs" />
     <Compile Include="Models\Stage.cs" />
     <Compile Include="Models\Summary.cs" />
     <Compile Include="Models\Task.cs" />
