@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net;
+using Net.Pokeshot.JiveSdk.Models;
+using System.Web;
+using Newtonsoft.Json.Linq;
 
 namespace Net.Pokeshot.JiveSdk.Clients
 {
@@ -13,19 +16,14 @@ namespace Net.Pokeshot.JiveSdk.Clients
 
         public VotesClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
 
-        public List<Votes> GetVotes(int contentID)
+        /// <summary>
+        /// Return the number of votes cast for each poll option.
+        /// </summary>
+        /// <param name="contentID">ID of the poll for which to retrieve votes</param>
+        /// <returns>JSON array where each entry has an option attribute and a count attribute that holds the number of votes the option received.</returns>
+        public List<Vote> GetVotes(int contentID)
         {
             string url = votesUrl + "/" + contentID.ToString();
-            if (fields != null && fields.Count > 0)
-            {
-                url += "?fields=";
-                foreach (var field in fields)
-                {
-                    url += field + ",";
-                }
-                // remove last comma
-                url = url.Remove(url.Length - 1);
-            }
 
             string json;
             try
@@ -37,11 +35,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "An input field is malformed");
+                        throw new HttpException(e.WebEventCode, "An input field is missing or malformed");
                     case 403:
-                        throw new HttpException(e.WebEventCode, "You are not allowed to access the specified place");
+                        throw new HttpException(e.WebEventCode, "You are not allowed to access the specified poll");
                     case 404:
-                        throw new HttpException(e.WebEventCode, "The specified place does not exist");
+                        throw new HttpException(e.WebEventCode, "The specified poll does not exist");
                     default:
                         throw;
                 }
@@ -49,7 +47,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
 
             JObject results = JObject.Parse(json);
 
-            return results.ToObject<GenericPlace>();
+            return results["list"].ToObject<List<Vote>>();
         }
     }
 }
