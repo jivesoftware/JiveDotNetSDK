@@ -235,6 +235,7 @@
     <Compile Include="Models\Update.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\Dto\WebhookDto.cs" />
+    <Compile Include="Models\Vote.cs" />
     <Compile Include="Models\Webhook.cs" />
     <Compile Include="Models\WebhookActivity.cs" />
     <Compile Include="Models\Workflow.cs" />
