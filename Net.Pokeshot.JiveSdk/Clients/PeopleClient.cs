@@ -4,11 +4,357 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net;
+using Net.Pokeshot.JiveSdk.Models;
+using System.Web;
+using Newtonsoft.Json.Linq;
 
 namespace Net.Pokeshot.JiveSdk.Clients
 {
-    class PeopleClient : JiveClient
+    public class PeopleClient : JiveClient
     {
+        string peopleUrl { get { return JiveCommunityUrl + "/api/core/v3/people"; } }
         public PeopleClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
+
+
+        //GetActivity()
+        //GetAllPeople()
+        //GetAvatar()
+        //GetAvatarDeactivated()
+        //GetBlog()
+        //GetColleagues()
+        //GetCommonBidirectional()
+        //GetExtProps()
+        //GetExrPropsForAddOn()
+        //GetFeaturedContent()
+        //GetFilterableFields()
+        //GetFollowers()
+        //GetFollowing()
+        //GetFollowingIn()
+        //GetFollowingPerson()
+        //GetManager()
+        //GetMetadata()
+        //GetNews()
+        //GetPages()
+        //GetPagesPrototype()
+        //GetPendingExpertiseTags()
+
+
+        /// <summary>
+        /// Return a list of Persons for users that match the specified criteria.
+        /// </summary>
+        /// <param name="ids">List of Person IDs of the individual people to be returned</param>
+        /// <param name="query">List of Query strings containing search terms (or null for no search criteria)</param>
+        /// <param name="startIndex">Zero-relative index of the first instance to be returned</param>
+        /// <param name="count">Maximum number of instances to be returned (i.e. the page size)</param>
+        /// <param name="fields">Fields to be returned (or null for summary fields)</param>
+        /// <param name="sort">Optional sort to apply to the search results
+        /// Sort Options: dateJoinedAsc--Sort by joined date in ascending order.
+        /// dateJoinedDesc--Sort by joined date in descending order.
+        /// firstNameAsc--Sort by first name in ascending order. This is the default sort order.
+        /// lastNameAsc--Sort by last name in ascending order.
+        /// lastProfileUpdateAsc--Sort by last profile update date/time in ascending order.
+        /// lastProfileUpdateDesc--Sort by last profile update date/time in descending order.
+        /// relevanceDesc--Sort by relevance, in descending order.
+        /// statusLevelDesc--Sort by status level in descending order.
+        /// updatedAsc--Sort by the date this person was most recently updated, in ascending order.
+        /// updatedDesc--Sort by the date this person was most recently updated, in descending order.</param>
+        /// <param name="company">Single value to match against the Company profile field.</param>
+        /// <param name="deparment">Single value to match against the Department profile field.</param>
+        /// <param name="hireDate">One or two dates in ISO-8601 format. One date indicates selection of all people hired on or after the specified date. Two dates indicates selection of all people hired between the specified dates.</param>
+        /// <param name="includeDisabled">Optional boolean value indicating whether disabled users should be returned (without a filter, defaults to false).</param>
+        /// <param name="includeExternal">Optional boolean value indicating whether external (non-person) users should be returned (without a filter, defaults to false).</param>
+        /// <param name="includeOnline">Optional boolean value indicating whether only online users should be returned (without a filter, defaults to false).</param>
+        /// <param name="includePartner">Optional boolean value indicating whether partner (external contributor) users should be returned (without a filter, defaults to true).</param>
+        /// <param name="lastProfileUpdate">One or two timestamps in ISO-8601 format. If one timestamp is specified, all persons who have updated their profile since that timestamp will be selected. If two timestamps are specified, all persons who updated their profile in the specified range will be selected.</param>
+        /// <param name="location">Single value to match against the Location profile field.</param>
+        /// <param name="nameonly">Optional boolean value indicating whether or not to limit search results to only people that match by name. Without a filter, defaults to false.</param>
+        /// <param name="published">One or two timestamps in ISO-8601 format. If one timestamp is specified, all persons created since that timestamp will be selected. If two timestamps are specified, all persons created in the specified range will be selected.</param>
+        /// <param name="search">One or more search terms. You must escape any of the following special characters embedded in the search terms: comma (","), backslash ("\"), left parenthesis ("("), and right parenthesis (")") by preceding them with a backslash.</param>
+        /// <param name="tag">One or more tag values. A match on any of the tags will cause this person to be returned.	</param>
+        /// <param name="title">Single value to match against the Title profile field.</param>
+        /// <param name="updated">One or two timestamps in ISO-8601 format. If one timestamp is specified, all persons updated since that timestamp will be selected. If two timestamps are specified, all persons updated in the specified range will be selected.</param>
+        /// <returns></returns>
+        public List<Person> GetPeople(List<string> ids = null, List<string> query = null, int startIndex = 0, int count = 25, List<string> fields = null,
+            string sort = "firstNameAsc", string company = null, string deparment = null, Tuple<DateTime, DateTime?> hireDate = null, bool includeDisabled = false,
+            bool includeExternal = false, bool includeOnline = false, bool includePartner = true, Tuple<DateTime, DateTime?> lastProfileUpdate = null, string location = null, bool nameonly = false,
+            Tuple<DateTime, DateTime?> published = null, List<string> search = null, List<string> tag = null, string title = null, Tuple<DateTime, DateTime?> updated = null)
+        {
+            List<Person> peopleList = new List<Person>();
+
+            List<string> filter = new List<string>();
+            if (company != null)
+            {
+                filter.Add("company(" + company + ")");
+            }
+            if (deparment != null)
+            {
+                filter.Add("deparment(" + deparment + ")");
+            }
+            if (title != null)
+            {
+                filter.Add("title(" + title + ")");
+            }
+            if (hireDate != null)
+            {
+                string dateString = "hire-date(";
+                dateString += jiveDateFormat(hireDate.Item1);
+                dateString += (hireDate.Item2 != null ? ("," + jiveDateFormat(hireDate.Item2.Value)) : "") + ")";
+                filter.Add(dateString);
+            }
+            if (lastProfileUpdate != null)
+            {
+                string dateString = "lastProfileUpdate(";
+                dateString += jiveDateFormat(lastProfileUpdate.Item1);
+                dateString += (lastProfileUpdate.Item2 != null ? ("," + jiveDateFormat(lastProfileUpdate.Item2.Value)) : "") + ")";
+                filter.Add(dateString);
+            }
+            if (published != null)
+            {
+                string dateString = "published(";
+                dateString += jiveDateFormat(published.Item1);
+                dateString += (published.Item2 != null ? ("," + jiveDateFormat(published.Item2.Value)) : "") + ")";
+                filter.Add(dateString);
+            }
+            if (updated != null)
+            {
+                string dateString = "updated(";
+                dateString += jiveDateFormat(updated.Item1);
+                dateString += (updated.Item2 != null ? ("," + jiveDateFormat(updated.Item2.Value)) : "") + ")";
+                filter.Add(dateString);
+            }
+            if (includeDisabled != false)
+                filter.Add("include-disabled(" + includeDisabled.ToString() + ")");
+            if (includeExternal != false)
+                filter.Add("include-external(" + includeExternal.ToString() + ")");
+            if (includeOnline != false)
+                filter.Add("include-online(" + includeOnline.ToString() + ")");
+            if (includePartner != true)
+                filter.Add("include-partner(" + includePartner.ToString() + ")");
+
+            filter.Add("nameonly(" + nameonly.ToString() + ")");
+
+            if (search != null && search.Count > 0)
+            {
+                string searchString = "";
+                foreach (var item in search)
+                {
+                    searchString += item + ",";
+                }
+                // remove last comma
+                searchString = searchString.Remove(searchString.Length - 1);
+                filter.Add("search(" + searchString + ")");
+            }
+            if (tag != null && tag.Count > 0)
+            {
+                string tagString = "";
+                foreach (var item in search)
+                {
+                    tagString += item + ",";
+                }
+                // remove last comma
+                tagString = tagString.Remove(tagString.Length - 1);
+                filter.Add("tag(" + tagString + ")");
+            }
+
+
+            if (ids != null && ids.Count > 0)
+            {
+                string idString = "&ids=";
+                foreach (var id in ids)
+                {
+                    idString += id + ",";
+                }
+                // remove last comma
+                idString = idString.Remove(idString.Length - 1);
+            }
+
+            string url = peopleUrl;
+            url += "?sort=" + sort;
+            url += "&startIndex=" + startIndex.ToString();
+            url += "&count=" + (count > 100 ? 100 : count).ToString();
+            if (ids != null && ids.Count > 0)
+            {
+                url += "&ids=";
+                foreach (var id in ids)
+                {
+                    url += id + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+            if (query != null)
+            {
+                url += "&query=" + query;
+            }
+            if (filter != null && filter.Count > 0)
+            {
+                url += "&filter=";
+                foreach (var item in filter)
+                {
+                    url += item + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+            if (fields != null && fields.Count > 0)
+            {
+                url += "&fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+
+            while (true)
+            {
+                string json;
+                try
+                {
+                    json = GetAbsolute(url);
+                }
+                catch (HttpException e)
+                {
+                    Console.WriteLine(e.Message);
+                    switch (e.GetHttpCode())
+                    {
+                        case 400:
+                            throw new HttpException(e.WebEventCode, "Request criteria are malformed");
+                        case 403:
+                            throw new HttpException(e.WebEventCode, "Requesting user is not authorize to retrieve this user information");
+                        default:
+                            throw;
+                    }
+                }
+
+                JObject results = JObject.Parse(json);
+
+                peopleList.AddRange(results["list"].ToObject<List<Person>>());
+
+                if (results["links"] == null || results["links"]["next"] == null)
+                    break;
+                else
+                    url = results["links"]["next"].ToString();
+            }
+            return peopleList;
+        }
+        /// <summary>
+        /// Return a Person describing the requested Jive user by ID.
+        /// </summary>
+        /// <param name="personID">ID of the requested Jive user</param>
+        /// <param name="fields">Field names to be returned (default is all)</param>
+        /// <returns>Person</returns>
+        public Person GetPerson(int personID, List<string> fields = null)
+        {
+            string url = peopleUrl + "/" + personID.ToString();
+            if (fields != null && fields.Count > 0)
+            {
+                url += "&fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+
+            string json;
+            try
+            {
+                json = GetAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                Console.WriteLine(e.Message);
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "Specified ID is malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "Requesting user is not authorize to retrieve this user");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "ID does not identify a valid user");
+                    default:
+                        throw;
+                }
+            }
+
+            JObject results = JObject.Parse(json);
+
+            return results.ToObject<Person>();
+        }
+        /// <summary>
+        /// Return a Person describing the requested Jive user by email address.
+        /// </summary>
+        /// <param name="email">Email address of the requested Jive user</param>
+        /// <param name="fields">Field names to be returned (default is @all)</param>
+        /// <returns>Person</returns>
+        public Person GetPersonByEmail(string email, List<string> fields = null)
+        {
+            string url = peopleUrl + "/email/" + email;
+            if (fields != null && fields.Count > 0)
+            {
+                url += "&fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+
+            string json;
+            try
+            {
+                json = GetAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                Console.WriteLine(e.Message);
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "Specified email address is malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "Requesting user is not authorize to retrieve this user");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "ID does not identify a valid user");
+                    default:
+                        throw;
+                }
+            }
+
+            JObject results = JObject.Parse(json);
+
+            return results.ToObject<Person>();
+        }
+
+        //GetPersonByExternalIdentity()
+        //GetPersonByUsername()
+        //GetProfileFieldPrivacy()
+        //GetProfileFieldsPrivacy()
+        //GetProfileImage()
+        //GetProfileImageData()
+        //GetProfileImages()
+        //GetRecognition()
+        //GetRecommendedPeople()
+        //GetReport()
+        //GetReports()
+        //GetResources()
+        //GetRoles()
+        //GetSecurityGroups()
+        //GetSocialUsers()
+        //GetStreams()
+        //GetSupportedFields()
+        //GetTagsUserTaggedOnUser()
+        //GetTasks()
+        //GetTermsAndConditions()
+        //GetTopExpertise()
+        //GetTrendingContent()
+        //GetTrendingPeople()
+        //GetTrendingPlaces()
+        //GetUsersByExpertise()
+        //GetWhoEndorsed()
     }
 }
