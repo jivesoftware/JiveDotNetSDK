@@ -43,13 +43,10 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 url += "&anchor=" + anchor;
             if (filter != null && filter.Count > 0)
             {
-                url += "&filter=";
                 foreach (var item in filter)
                 {
-                    url += item + ",";
+                    url += "&filter=" + item;
                 }
-                // remove last comma
-                url = url.Remove(url.Length - 1);
             }
             if (fields != null && fields.Count > 0)
             {
@@ -182,13 +179,10 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 url += "&anchor=" + anchor;
             if (filter != null && filter.Count > 0)
             {
-                url += "&filter=";
                 foreach (var item in filter)
                 {
-                    url += item + ",";
+                    url += "&filter=" + item;
                 }
-                // remove last comma
-                url = url.Remove(url.Length - 1);
             }
             if (fields != null && fields.Count > 0)
             {
