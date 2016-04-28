@@ -151,13 +151,10 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 url += "&anchor=" + anchor;
             if (filter != null && filter.Count > 0)
             {
-                url += "&filter=";
                 foreach (var item in filter)
                 {
-                    url += item + ",";
+                    url += "&filter=" + item;
                 }
-                // remove last comma
-                url = url.Remove(url.Length - 1);
             }
             if (fields != null && fields.Count > 0)
             {
@@ -410,7 +407,8 @@ namespace Net.Pokeshot.JiveSdk.Clients
                     filter.Add("creationDate(" + (creationDate.Item2 == null ? "null" : jiveDateFormat(creationDate.Item2)) + "," +
                         (creationDate.Item1 == null ? "null" : jiveDateFormat(creationDate.Item1) + ")"));
                 }
-                else {
+                else
+                {
                     DateTime earliest = (creationDate.Item1 < creationDate.Item2) ? creationDate.Item1 : creationDate.Item2;
                     DateTime latest = (earliest == creationDate.Item1) ? creationDate.Item2 : creationDate.Item1;
                     filter.Add("creationDate(" + jiveDateFormat(latest) + "," + jiveDateFormat(earliest) + ")");
@@ -424,7 +422,8 @@ namespace Net.Pokeshot.JiveSdk.Clients
                     filter.Add("creationDate(" + (modificationDate.Item2 == null ? "null" : jiveDateFormat(creationDate.Item2)) + "," +
                         (modificationDate.Item1 == null ? "null" : jiveDateFormat(creationDate.Item1) + ")"));
                 }
-                else {
+                else
+                {
                     DateTime earliest = (modificationDate.Item1 < modificationDate.Item2) ? modificationDate.Item1 : modificationDate.Item2;
                     DateTime latest = (earliest == modificationDate.Item1) ? modificationDate.Item2 : modificationDate.Item1;
                     filter.Add("modificationDate(" + jiveDateFormat(latest) + "," + jiveDateFormat(earliest) + ")");
@@ -440,13 +439,10 @@ namespace Net.Pokeshot.JiveSdk.Clients
             url += "&includeBlogs=" + includeBlogs.ToString();
             if (filter != null && filter.Count > 0)
             {
-                url += "&filter=";
                 foreach (var item in filter)
                 {
-                    url += item + ",";
+                    url += "&filter=" + item;
                 }
-                // remove last comma
-                url = url.Remove(url.Length - 1);
             }
             if (fields != null && fields.Count > 0)
             {
@@ -526,13 +522,10 @@ namespace Net.Pokeshot.JiveSdk.Clients
             url += "&abridged=" + abridged.ToString();
             if (filter != null && filter.Count > 0)
             {
-                url += "&filter=";
                 foreach (var item in filter)
                 {
-                    url += item + ",";
+                    url += "&filter=" + item;
                 }
-                // remove last comma
-                url = url.Remove(url.Length - 1);
             }
             if (fields != null && fields.Count > 0)
             {
