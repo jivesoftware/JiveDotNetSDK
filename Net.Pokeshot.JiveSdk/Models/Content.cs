@@ -22,6 +22,7 @@ namespace Net.Pokeshot.JiveSdk.Models
         public string highlightTags { get; set; }
         public string iconCss { get; set; }
         public string id { get; set; }
+        public DateTime lastActivityDate { get; set; }
         public int likeCount { get; set; }
         public Object outcomeCounts { get; set; }
         public List<string> outcomeTypeNames { get; set; }
