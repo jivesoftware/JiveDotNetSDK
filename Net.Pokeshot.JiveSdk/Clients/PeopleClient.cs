@@ -15,8 +15,67 @@ namespace Net.Pokeshot.JiveSdk.Clients
         string peopleUrl { get { return JiveCommunityUrl + "/api/core/v3/people"; } }
         public PeopleClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
 
+        /// <summary>
+        /// Return the specified profile activities for the specified user.
+        /// </summary>
+        /// <param name="personID">ID of the user for which to return profile activities</param>
+        /// <param name="time">The time representing the earliest or lates time to consider (depending on the value of "after").</param>
+        /// <param name="after">If true, the request will be made for the times after "time". If false, the request is made for times before "time".</param>
+        /// <param name="count">Maximum number of activities to return in this request (you may get more activities than this in order to get all of the activities in the last collection)</param>
+        /// <param name="filter">Filter expression(s) used to select matching results</param>
+        /// <param name="fields">Fields to be included in the returned activities</param>
+        /// <returns>Activity[]</returns>
+        public List<Activity> GetActivity(int personID, DateTime? time = null, bool after = false, int count = 25, List<string> filter = null, List<string> fields = null)
+        {
+            string url = JiveCommunityUrl + "/api/core/v3/people/";
+            url += personID.ToString() + "/activities?";
+            url += (after ? "after" : "before") + "=" + jiveDateFormat(time ?? DateTime.UtcNow);
+            // Reset any count greater than 1000 to 1000.
+            url += "&count=" + ((count > 1000) ? 1000 : count).ToString();
 
-        //GetActivity()
+            if (filter != null && filter.Count > 0)
+            {
+                foreach (var item in filter)
+                {
+                    url += "&filter=" + item;
+                }
+            }
+
+            if (fields != null && fields.Count > 0)
+            {
+                url += "&fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+
+            string json;
+            try
+            {
+                json = GetAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "Specified user ID is missing or malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "The requesting user is not allowed to retrieve activities for the specified user");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "The activities or the specified user is not found");
+                    default:
+                        throw;
+                }
+            }
+            JObject results = JObject.Parse(json);
+
+            return results["list"].ToObject<List<Activity>>();
+        }        
+        
         //GetAllPeople()
         //GetAvatar()
         //GetAvatarDeactivated()
