@@ -16,6 +16,8 @@ namespace Net.Pokeshot.JiveSdk.Clients
 
         public ContentsClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
 
+        //public List<AbuseReport> CreateAbuseReports(int contentID, List<AbuseReport> abuse_report);
+
         /// <summary>
         /// Retrieve the abuse reports for the specified content
         /// </summary>
@@ -58,7 +60,9 @@ namespace Net.Pokeshot.JiveSdk.Clients
             JObject results = JObject.Parse(json);
 
             return results["list"].ToObject<List<AbuseReport>>();
-        }/// <summary>
+        }
+       
+        /// <summary>
          /// Return a paginated list of the possible OutcomeTypes for the children of the specified object.
          /// </summary>
          /// <param name="contentID">ID of the content object's children to get the outcome types for</param>
@@ -119,6 +123,10 @@ namespace Net.Pokeshot.JiveSdk.Clients
             }
             return outcomeList;
         }
+
+        //public Comment CreateComment(int contentID, bool author = false, string published = null, string updated = null,
+            //string fields = null, Comment comment);
+
         /// <summary>
         /// Return a paginated list of comments to the specified content object, optionally limiting the returned results to direct replies only. The specified content object type must support comments, or be a comment itself (in which case replies to this comment only are returned).
         /// </summary>
@@ -202,6 +210,10 @@ namespace Net.Pokeshot.JiveSdk.Clients
             }
             return commentList;
         }
+
+        //public GenericContent CreateContent(string published = null, string updated = null, string fields = null, GenericContent content);
+        //public void DestroyContent(int contentID, bool hardDelete = false);
+
         /// <summary>
         /// Return the specified content object with the specified fields.
         /// </summary>
@@ -311,7 +323,9 @@ namespace Net.Pokeshot.JiveSdk.Clients
             return personList;
         }
 
-        // GetContentFollowingIn
+        // GetContentFollowingIna
+        // public void CreateContentLike(int contentID);
+        // public void DestroyContentLike(int contentID);
 
         /// <summary>
         /// Return a paginated list of the people who like the specified content object.
@@ -373,6 +387,10 @@ namespace Net.Pokeshot.JiveSdk.Clients
 
             return personList;
         }
+
+        //unsure of the type of content parameter below
+        //public GenericContent UploadNewContent(string published = null, string updated = null, string fields = null, List<GenericContent> content);
+
         /// <summary>
         /// Return a list of content objects that match the specified filter criteria.
         /// </summary>
@@ -486,6 +504,10 @@ namespace Net.Pokeshot.JiveSdk.Clients
             return contentList;
         }
 
+        //public CreateExtProps()
+        //public CreateExtPropsForAddon()
+        //public DestroyExtProps()
+        //public DestroyExtPropsForAddon()
         //public GetExtProps()
         //public GetExpPropsForAddon()
 
@@ -574,8 +596,9 @@ namespace Net.Pokeshot.JiveSdk.Clients
         }
 
         //public GetMyEntitlements()
-        //public GetOutcomes
-        //public getOutcomeTypes
+        //public CreateOutcome()
+        //public GetOutcomes()
+        //public GetOutcomeTypes()
 
         /// <summary>
         /// Return a list of popular content objects for the authenticated user. Use this service when recommendation is disabled. Do a GET to /api/core/v3/metadata/properties/feature.recommender.enabled to figure out whether recommendation service is enabled or not.
@@ -620,6 +643,10 @@ namespace Net.Pokeshot.JiveSdk.Clients
             return results["list"].ToObject<List<GenericContent>>();
         }
 
+        //public void CreateContentHelpful(int contentID);
+        //public void CreateContentUnhelpful(int contentID);
+        //public void DestroyContentHelpful()
+        //public void DestroyContentUnhelpful()
         //public GetPreviewImage()
         //public List<Content> GetRecentContent()
         //public List<Content> GetRecommendedContent()
