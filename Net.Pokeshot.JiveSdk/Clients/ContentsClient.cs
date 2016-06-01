@@ -158,8 +158,55 @@ namespace Net.Pokeshot.JiveSdk.Clients
             return outcomeList;
         }
 
-        //public Comment CreateComment(int contentID, bool author = false, string published = null, string updated = null,
-            //string fields = null, Comment comment);
+        public Comment CreateComment(int contentID, Comment comment, bool author = false, string published = null, string updated = null,
+            List<string> fields = null)
+        {
+            string url = contentUrl + "/" + contentID.ToString() + "/comments";
+            url += "?author=" + author.ToString();
+            if (published != null)
+            {
+                url += "&published=" + published.ToString();
+            }
+            if (updated != null)
+            {
+                url += "&updated=" + updated.ToString();
+            }
+            if (fields != null && fields.Count > 0) {
+                url += "&fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+
+                }
+                //remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+
+            string json = JsonConvert.SerializeObject(comment, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            string result = "";
+            try
+            {
+                result = PostAbsolute(url, json); //makes the HTTP request
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "An input field is missing or malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "You are not allowed to perform this operation");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "The specified parent content object (or comment) cannot be found");
+                    default:
+                        throw;
+                }
+            }
+
+            JObject Json = JObject.Parse(result);
+            return Json.ToObject<Comment>();
+
+        }
 
         /// <summary>
         /// Return a paginated list of comments to the specified content object, optionally limiting the returned results to direct replies only. The specified content object type must support comments, or be a comment itself (in which case replies to this comment only are returned).
