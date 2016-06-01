@@ -158,9 +158,24 @@ namespace Net.Pokeshot.JiveSdk.Clients
             return outcomeList;
         }
 
+        /// <summary>
+        /// Create a new comment as a reply to the specified content object. The parent field (if any) in the incoming entity will be ignored.
+        /// Instead, it will be set to the URI of the specified content object.
+        /// </summary>
+        /// <param name="contentID">ID of the content object this comment applies to</param>
+        /// <param name="comment">a Comment object describing the comment to be created</param>
+        /// <param name="author">Flag indicating if new comment is an author comment or a regular comment (only valid for documents).
+        /// By default a regular document will be created.</param>
+        /// <param name="published">Date and time when this content object was originally created. Set 'updated' param as well.
+        /// Only set this field when importing content.</param>
+        /// <param name="updated">Date and time when this content object was most recently updated. Set 'published' param as well.
+        /// Only set this field when importing content.</param>
+        /// <param name="fields">Fields to include in the returned Comment object</param>
+        /// <returns>Comment object representing the newly created comment</returns>
         public Comment CreateComment(int contentID, Comment comment, bool author = false, string published = null, string updated = null,
             List<string> fields = null)
         {
+            //create url with the user specified options added
             string url = contentUrl + "/" + contentID.ToString() + "/comments";
             url += "?author=" + author.ToString();
             if (published != null)
