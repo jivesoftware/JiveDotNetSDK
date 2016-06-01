@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Net.Pokeshot.JiveSdk.Models;
 using System.Web;
@@ -16,7 +17,40 @@ namespace Net.Pokeshot.JiveSdk.Clients
 
         public ContentsClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
 
-        //public List<AbuseReport> CreateAbuseReports(int contentID, List<AbuseReport> abuse_report);
+        /// <summary>
+        /// Register that the requesting person considers the specified content as abusive.
+        /// </summary>
+        /// <param name="contentID">ID of the content marked as abusive</param>
+        /// <param name="abuse_report">an AbuseReport object containing the abuse report information</param>
+        /// <returns>an AbuseReport object containing the newly created abuse report</returns>
+        public AbuseReport CreateAbuseReport(int contentID, AbuseReport abuse_report)
+        {
+            string url = contentUrl + "/" + contentID.ToString() + "/abuseReports";
+
+            string json = JsonConvert.SerializeObject(abuse_report, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            string result = "";
+            try
+            {
+                result = PostAbsolute(url, json); //makes the HTTP request
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "An input field is missing or malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "You are not allowed to access or mark this content as abusive");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "The specified content does not exist");
+                    default:
+                        throw;
+                }
+            }
+
+            JObject Json = JObject.Parse(result);
+            return Json.ToObject<AbuseReport>();
+        }
 
         /// <summary>
         /// Retrieve the abuse reports for the specified content
@@ -211,8 +245,107 @@ namespace Net.Pokeshot.JiveSdk.Clients
             return commentList;
         }
 
-        //public GenericContent CreateContent(string published = null, string updated = null, string fields = null, GenericContent content);
-        //public void DestroyContent(int contentID, bool hardDelete = false);
+        /// <summary>
+        /// Create a new content object with specified characteristics, and return an entity representing the newly created content object.
+        /// </summary>
+        /// <param name="published">Date and time when this content object was originally created. Set 'updated' param as well. Only set this field when importing content.</param>
+        /// <param name="updated">Date and time when this content object was most recently updated. Set 'published' param as well. Only set this field when importing content.</param>
+        /// <param name="fields">The fields to include in the returned entity</param>
+        /// <param name="content">The content object to be created</param>
+        /// <returns></returns>
+        // remember to use the jiveDateFormat(DateTime time) function to use the correct format
+        public GenericContent CreateContent(GenericContent content, string published = null, string updated = null, List<string> fields = null)
+        {
+            //adds the query strings to the url if present
+            string url = contentUrl;
+            bool first = true;
+            if (published != null)
+            {
+                url += "?published=" + published;
+                first = false;
+            }
+            if (updated != null)
+            {
+                if (first == true)
+                {
+                    url += "?updated=" + updated;
+                    first = false;
+                }
+                else
+                {
+                    url += "&updated=" + updated;
+                }
+            }
+            if (fields != null && fields.Count > 0)
+            {
+                if (first == true)
+                {
+                    url += "?fields=";
+                    first = false;
+                }
+                else url += "&fields=";
+
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                //remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+
+            string json = JsonConvert.SerializeObject(content, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            string result = "";
+            try
+            {
+                result = PostAbsolute(url, json); //makes the HTTP request
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "An input field is malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "You are not allowed to access the specified content");
+                    case 409:
+                        throw new HttpException(e.WebEventCode, "The new entity would conflict with system restrictions (such as two contents of the same type with the same name)");
+                }
+            }
+
+            JObject Json = JObject.Parse(result);
+            return Json.ToObject<GenericContent>();
+        }
+
+        /// <summary>
+        /// Delete the specified content object.
+        /// </summary>
+        /// <param name="contentID">ID of the content object to be deleted</param>
+        /// <param name="hardDelete">Boolean indicating whether a soft or hard delete should be performed. Only used for content that supports hard/soft delete (default is false). Ignored otherwise.</param>
+        /// <returns></returns>
+        public string DestroyContent(int contentID, bool hardDelete = false)
+        {
+            string url = contentUrl + "/" + contentID.ToString();
+            url += "?hardDelete=" + hardDelete.ToString();
+
+            string checkString = "";
+            try
+            {
+                checkString = DeleteAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode()){
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "An input field is malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "You are not allowed to access the specified content object");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "The specified content does not exist");
+                }
+            }
+
+            return checkString; //in my limited testing, checkString was always blank for delete call
+        }
 
         /// <summary>
         /// Return the specified content object with the specified fields.
