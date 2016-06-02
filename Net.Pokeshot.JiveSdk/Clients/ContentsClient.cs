@@ -519,8 +519,71 @@ namespace Net.Pokeshot.JiveSdk.Clients
         }
 
         // GetContentFollowingIna
-        // public void CreateContentLike(int contentID);
-        // public void DestroyContentLike(int contentID);
+
+
+        /// <summary>
+        /// Register that the requesting person likes the specified content object.
+        /// </summary>
+        /// <param name="contentID">ID of the content object to be liked</param>
+        public void CreateContentLike(int contentID)
+        {
+            string url = contentUrl + "/" + contentID.ToString() + "/likes";
+
+            try
+            {
+                PostAbsolute(url, "");
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "An input field is malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "You are not allowed to access or like this content object");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "The specified content object does not exist");
+                    case 409:
+                        throw new HttpException(e.WebEventCode, "You are not allowed to like this content object (e.g. own content cannot be liked)");
+                    default:
+                        throw;
+                }
+            }
+
+            return;
+        }
+
+        /// <summary>
+        /// Delete the like of the specified content object by the requesting user.
+        /// </summary>
+        /// <param name="contentID">The ID of the content object for which a like is being removed</param>
+        public void DestroyContentLike(int contentID)
+        {
+            string url = contentUrl + "/" + contentID.ToString() + "/likes";
+
+            try
+            {
+                DeleteAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "An input field is malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "You are not allowed to access or unlike this content object");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "The specified content object does not exist");
+                    case 409:
+                        throw new HttpException(e.WebEventCode, "You do not currently have a like registered for this content object");
+                    default:
+                        throw;
+                }
+            }
+
+            return;
+        }
 
         /// <summary>
         /// Return a paginated list of the people who like the specified content object.
