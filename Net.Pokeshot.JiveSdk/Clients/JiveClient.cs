@@ -62,6 +62,42 @@ namespace Net.Pokeshot.JiveSdk.Clients
             return cleanResponseActivities;
         }
 
+        protected Byte[] GetBytesAbsolute(string url)
+        {
+            HttpClientHandler jiveHandler = new HttpClientHandler();
+
+            //Setting credentials for our request. This needs to be done for every request as there are no persistent sessions for the REST Api  
+            _credential.Domain = JiveCommunityUrl + "/api/core/v3";
+            //Getting our credentials in Base64 encoded format  
+            string cre = String.Format("{0}:{1}", _credential.UserName, _credential.Password);
+            byte[] bytes = Encoding.UTF8.GetBytes(cre);
+            string base64 = Convert.ToBase64String(bytes);
+            //Set credentials and make sure we are pre-authenticating our request  
+            jiveHandler.Credentials = _credential;
+            jiveHandler.PreAuthenticate = true;
+            jiveHandler.UseDefaultCredentials = true;
+
+            HttpClient httpClient = new HttpClient(jiveHandler);
+            httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", base64);
+
+            HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
+
+            HttpResponseMessage activityResponse = httpClient.SendAsync(requestMessage).Result;
+
+            if (!activityResponse.IsSuccessStatusCode)
+            {
+                // Calling methods should handle this exception on a case by case basis.
+                // The exception contains the returned status code. Jive documentation describes what to do in the case of each code.
+                string message = "Jive Request Failed. Got response " + ((int)activityResponse.StatusCode).ToString() + " " + activityResponse.StatusCode +
+                    " when making GET request to " + url + "\nUsername: " + _credential.UserName + "\nPassword: " + _credential.Password;
+                throw new HttpException((int)activityResponse.StatusCode, message);
+            }
+
+            Byte[] myActivityResponse = activityResponse.Content.ReadAsByteArrayAsync().Result;
+
+            return myActivityResponse;
+        }
+
         //PostAbsolute takes its JSON content as a string, similar to the string returned by the GetAbsolute method
         protected string PostAbsolute(string url, string json)
         {
