@@ -590,7 +590,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
         /// </summary>
         /// <param name="contentID">ID of the content object for which to return liking people</param>
         /// <param name="startIndex">Zero-relative index of the first person to be returned</param>
-        /// <param name="count">Maximum number of people to be returned</param>
+        /// <param name="count">Maximum number of people to be returned per Jive HTTP request</param>
         /// <param name="fields">Fields to be returned on liking people</param>
         /// <returns>Person[] listing people who like the specified content object</returns>
         public List<Person> GetContentLikes(int contentID, int startIndex = 0, int count = 25, List<string> fields = null)
@@ -646,8 +646,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
             return personList;
         }
 
-        //unsure of the type of content parameter below
-        //public GenericContent UploadNewContent(string published = null, string updated = null, string fields = null, List<GenericContent> content);
+        //public GenericContent UploadNewContent(GenericContent content, List<Attachment> attachments, string published = null, string updated = null, string fields = null);
 
         /// <summary>
         /// Return a list of content objects that match the specified filter criteria.
@@ -775,7 +774,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
         /// <param name="places">A list of URIs of places to consider when queying the featured content.
         /// (e.g. http://domain/api/core/v3/places/1006)
         /// Do not specify a place filter in the filter parameter!</param>
-        /// <param name="count">The maximum number of contents to be returned</param>
+        /// <param name="count">The maximum number of contents to be returned per Jive HTTP request</param>
         /// <param name="abridged">Flag indicating that if content.text is requested, it will be abridged (length shortened, HTML tags removed)</param>
         /// <param name="filter">The filter criteria used to select content objects</param>
         /// <param name="fields">The fields to be returned on each content</param>
@@ -901,12 +900,263 @@ namespace Net.Pokeshot.JiveSdk.Clients
             return results["list"].ToObject<List<GenericContent>>();
         }
 
-        //public void CreateContentHelpful(int contentID);
-        //public void CreateContentUnhelpful(int contentID);
-        //public void DestroyContentHelpful()
-        //public void DestroyContentUnhelpful()
-        //public GetPreviewImage()
-        //public List<Content> GetRecentContent()
+        /// <summary>
+        /// Register that the requesting person considers the specified content helpful.
+        /// Note: If this is the first time the specified content has been marked helpful a helpful outcome will be created.
+        /// Note: This is only valid on a select few types of content, such as messages.
+        /// </summary>
+        /// <param name="contentID">ID of the content to be marked as helpful</param>
+        public void CreateContentHelpful(int contentID)
+        {
+            string url = contentUrl + "/" + contentID.ToString() + "/helpful";
+
+            try
+            {
+                PostAbsolute(url, "");
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "An input field is missing or malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "You are not allowed to access or mark this content as helpful");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "The specified content object does not exist");
+                    case 409:
+                        throw new HttpException(e.WebEventCode, "This type of content cannot be marked as helpful");
+                    default:
+                        throw;
+                }
+            }
+
+            return;
+        }
+
+        /// <summary>
+        /// Register that the requesting person considers the specified content unhelpful.
+        /// Note: This is only valid on a select few types of content, such as messages.
+        /// </summary>
+        /// <param name="contentID">ID of the content to be marked as unhelpful</param>
+        public void CreateContentUnhelpful(int contentID)
+        {
+            string url = contentUrl + "/" + contentID.ToString() + "/unhelpful";
+
+            try
+            {
+                PostAbsolute(url, "");
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "An input field is missing or malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "You are not allowed to access or mark this content as unhelpful");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "The specified content object does not exist");
+                    case 409:
+                        throw new HttpException(e.WebEventCode, "This type of content cannot be marked as unhelpful");
+                    default:
+                        throw;
+                }
+            }
+
+            return;
+        }
+
+        /// <summary>
+        /// Delete the registration of the specified content as helpful by the requesting user.
+        /// </summary>
+        /// <param name="contentID">ID of the content for which a helpful registration is being removed</param>
+        public void DestroyContentHelpful(int contentID)
+        {
+            string url = contentUrl + "/" + contentID.ToString() + "/helpful";
+
+            try
+            {
+                DeleteAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "An input field is malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "You are not allowed to access or remove the registration of this content as helpful");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "The specified content does not exist");
+                    case 409:
+                        throw new HttpException(e.WebEventCode, "You do not currently have a helpful mark registered for this content");
+                    default:
+                        throw;
+                }
+            }
+
+            return;
+        }
+
+        /// <summary>
+        /// Delete the registration of the specified content as unhelpful by the requesting user.
+        /// </summary>
+        /// <param name="contentID">ID of the content for which a unhelpful registration is being removed</param>
+        public void DestroyContentUnhelpful(int contentID)
+        {
+            string url = contentUrl + "/" + contentID.ToString() + "/unhelpful";
+
+            try
+            {
+                DeleteAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "An input field is malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "You are not allowed to access or remove the registration of this content as unhelpful");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "The specified content does not exist");
+                    case 409:
+                        throw new HttpException(e.WebEventCode, "You do not currently have a unhelpful mark registered for this content");
+                    default:
+                        throw;
+                }
+            }
+
+            return;
+        }
+
+        /// <summary>
+        /// Return a preview image that represents a content item.
+        /// If returnDefaultImageWhenNoPreviewAvailable is true and no preview exists for the specified content item, a default preview image will be displayed.
+        /// For content created in a place, the default image will represent the place where the content was created. For personal content,
+        /// the default image will represent the creator of the content item. If false, a not found response will be returned if no preview is available for this content.
+        /// Defaults to false, if no value for this param is provided.
+        /// </summary>
+        /// <param name="contentID">ID of the content that the preview represents</param>
+        /// <param name="size">Preferred size ("original", "small", "medium", "large"), default is "original" resolution.
+        /// Certain content may not support size parameters and will always return the same size image</param>
+        /// <param name="returnDefaultImageWhenNoPreviewAvailable">When true, if there is no preview available for the content item a default image representing
+        /// the content item will be returned. Otherwise, a not found response will be returned.</param>
+        /// <returns>the binary content of the image representing a preview of the content</returns>
+        public byte[] GetPreviewImage(int contentID, string size = "original", string returnDefaultImageWhenNoPreviewAvailable = "false")
+        {
+            string url = contentUrl + "/" + contentID.ToString() + "/previewImage";
+            url += "?size=" + size;
+            url += "&returnDefaultImageWhenNoPreviewAvailable=" + returnDefaultImageWhenNoPreviewAvailable;
+
+            Byte[] image;
+            try
+            {
+                image = GetBytesAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "An input field is malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "You are not allowed to view the content or its preview");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "The specified content does not exist or a preview does not exist for the content item");
+                    default:
+                        throw;
+                }
+            }
+
+            return image;
+        }
+
+        /// <summary>
+        /// Return a list of recently updated content objects that match the specified filter criteria.
+        /// The returned list may contain a mixture of content entities of various types.
+        /// On any given content object, use the type field to determine the type of that particular content.
+        /// </summary>
+        /// <param name="abridged">Flag indicating that if content.text is requested, it will be abridged (length shortened, HTML tags removed)</param>
+        /// <param name="filter">The filter criteria used to select content objects. Parameters, when used, should be wrapped in parentheses,
+        /// and multiple values separated by commas. This service supports the following filters:
+        /// place - only one place URI where the content lives, e.g. 'place(http://domain/api/core/v3/places/1006)'
+        /// type - one or more object types of desired contained content objects separated by commas, e.g. 'type(document,discussion)'</param>
+        /// <param name="startIndex">The zero relative index of the first content object to be returned</param>
+        /// <param name="count">The maximum number of content objects to be returned per Jive HTTP request</param>
+        /// <param name="fields">The fields to be returned on each content object
+        /// Note: unlike other Get methods, this will not return all fields without specifying them</param>
+        /// <returns>a list of GenericContent objects of the matched content objects</returns>
+        public List<GenericContent> GetRecentContent(bool abridged = false, List<string> filter = null, int startIndex = 0, int count = 25, List<string> fields = null)
+        {
+            List<GenericContent> contentList = new List<GenericContent>();
+
+            //formats the url for the HTTP request based on the user's specifications
+            string url = contentUrl + "/recent";
+            url += "?abridged=" + abridged.ToString();
+            url += "&count=" + (count > 100 ? 100 : count).ToString(); //caps the count parameter of the HTTP request to 100 to prevent error
+            if (startIndex != 0)
+            {
+                url += "&startIndex=" + startIndex.ToString();
+            }
+            if (filter != null && filter.Count > 0)
+            {
+                foreach (var item in filter)
+                {
+                    url += "&filter=" + item;
+                }
+            }
+            if (fields != null && fields.Count > 0)
+            {
+                url += "&fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+
+            string json;
+            while (true)
+            {
+                //this loop repeats as many times as necessary to retrieve the requested number of objects
+                try
+                {
+                    json = GetAbsolute(url); //makes the HTTP request
+                }
+                catch (HttpException e)
+                {
+                    Console.WriteLine(e.Message);
+                    switch (e.GetHttpCode())
+                    {
+                        case 400:
+                            throw new HttpException(e.WebEventCode, "An input field is malformed");
+                        case 403:
+                            throw new HttpException(e.WebEventCode, "You are not allowed to access the specified content object");
+                        case 404:
+                            throw new HttpException(e.WebEventCode, "The specified place in the filter does not exist");
+                        case 410:
+                            throw new HttpException(e.WebEventCode, "Recommendation feature is disabled");
+                        default:
+                            throw;
+                    }
+                }
+
+                JObject results = JObject.Parse(json);
+
+                contentList.AddRange(results["list"].ToObject<List<GenericContent>>());
+
+                if (results["links"] == null || results["links"]["next"] == null)
+                    break;
+                else
+                    url = results["links"]["next"].ToString();
+            }
+
+            return contentList;
+        }
+
         //public List<Content> GetRecommendedContent()
         //public List<Content> GetTrendingContent()
         //public GetUserEntitlements()
