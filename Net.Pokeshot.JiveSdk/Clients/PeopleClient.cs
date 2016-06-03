@@ -306,7 +306,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
             string url = peopleUrl + "/" + personID.ToString();
             if (fields != null && fields.Count > 0)
             {
-                url += "&fields=";
+                url += "?fields=";
                 foreach (var field in fields)
                 {
                     url += field + ",";
