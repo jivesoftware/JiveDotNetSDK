@@ -456,7 +456,37 @@ namespace Net.Pokeshot.JiveSdk.Clients
             return results.ToObject<GenericContent>();
         }
 
-        // public byte[] GetContentData(int ContentID)
+        /// <summary>
+        /// Return the binary content of the specified file (returns ConflictException on any other content object type).
+        /// </summary>
+        /// <param name="ContentID">ID of the content object for which binary content should be returned</param>
+        /// <returns>Byte[] of the binary content of the file</returns>
+        public byte[] GetContentData(int ContentID)
+        {
+            string url = contentUrl + "/" + ContentID.ToString() + "/data";
+
+            Byte[] data;
+            try
+            {
+                data = GetBytesAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "The requesting user is not allowed to retrieve this binary data");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "Specified content object does not exist");
+                    case 409:
+                        throw new HttpException(e.WebEventCode, "Attempted to return binary data for a non-file content object");
+                    default:
+                        throw;
+                }
+            }
+
+            return data;
+        }
 
         /// <summary>
         /// Return a paginated list of Persons about people who are following the specified content.
@@ -518,8 +548,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
             return personList;
         }
 
-        // GetContentFollowingIna
-
+        // GetContentFollowingIn
 
         /// <summary>
         /// Register that the requesting person likes the specified content object.
@@ -855,7 +884,69 @@ namespace Net.Pokeshot.JiveSdk.Clients
         //public GetMyEntitlements()
         //public CreateOutcome()
         //public GetOutcomes()
-        //public GetOutcomeTypes()
+
+        /// <summary>
+        /// Return a paginated list of the possible OutcomeTypes for the specified content object.
+        /// </summary>
+        /// <param name="contentID">ID of the content object to get the outcome types for</param>
+        /// <param name="startIndex">Zero-relative index of the first outcome type to be returned</param>
+        /// <param name="count">Maximum number of outcome types to be returned per Jive HTTP request</param>
+        /// <param name="fields">Fields to be returned on outcome types</param>
+        /// <returns>a List of OutcomeTypes listing the outcome types who like the specified comment</returns>
+        public List<OutcomeType> GetOutcomeTypes(int contentID, int startIndex = 0, int count = 25, List<String> fields = null)
+        {
+            List<OutcomeType> typeList = new List<OutcomeType>();
+            string url = contentUrl + "/" + contentID.ToString() + "/outcomeTypes";
+            url += "?count=" + (count > 100 ? 100 : count).ToString();
+            if (startIndex != 0)
+            {
+                url += "&startIndex=" + startIndex.ToString();
+            }
+            if (fields != null && fields.Count > 0)
+            {
+                url += "&fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+
+            string json;
+            JObject results;
+            while (true)
+            {
+                try
+                {
+                    json = GetAbsolute(url);
+                }
+                catch (HttpException e)
+                {
+                    switch (e.GetHttpCode())
+                    {
+                        case 400:
+                            throw new HttpException(e.WebEventCode, "An input field is missing or malformed");
+                        case 403:
+                            throw new HttpException(e.WebEventCode, "You are not allowed to access this comment");
+                        case 404:
+                            throw new HttpException(e.WebEventCode, "The specified comment does not exist");
+                        default:
+                            throw;
+                    }
+                }
+
+                results = JObject.Parse(json);
+                typeList.AddRange(results["list"].ToObject<List<OutcomeType>>());
+
+                if (results["links"] == null || results["links"]["next"] == null)
+                    break;
+                else
+                    url = results["links"]["next"].ToString();
+            }
+
+            return typeList;
+        }
 
         /// <summary>
         /// Return a list of popular content objects for the authenticated user. Use this service when recommendation is disabled. Do a GET to /api/core/v3/metadata/properties/feature.recommender.enabled to figure out whether recommendation service is enabled or not.
@@ -1157,8 +1248,147 @@ namespace Net.Pokeshot.JiveSdk.Clients
             return contentList;
         }
 
-        //public List<Content> GetRecommendedContent()
-        //public List<Content> GetTrendingContent()
+        /// <summary>
+        /// Return a list of recommended content objects for the authenticated user. When recommender service is not enabled in the Jive instance
+        /// then predefined recommended content is going to be returned instead. Do a GET to /api/core/v3/metadata/properties/feature.recommender.enabled
+        /// to figure out whether recommendation service is enabled or not. The returned list may contain a mixture of content entities of various types.
+        /// On any given content object entity, use the type field to determine the type of that particular content.
+        /// </summary>
+        /// <param name="abridged">Flag indicating that if content.text is requested, it will be abridged (length shortened, HTML tags removed)</param>
+        /// <param name="count">The maximum number of contents to be returned per Jive HTTP request</param>
+        /// <param name="fields">The fields to be returned on each content</param>
+        /// <returns>a List of GenericContent objects of the matched content objects</returns>
+        public List<GenericContent> GetRecommendedContent(bool abridged = false, int count = 25, List<string> fields = null)
+        {
+            List<GenericContent> contentList = new List<GenericContent>();
+
+            string url = contentUrl + "/recommended";
+            url += "?abridged=" + abridged.ToString();
+            url += "&count=" + count.ToString();
+            if (fields != null && fields.Count > 0)
+            {
+                url += "&fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+
+            string json;
+            JObject results;
+            while (true)
+            {
+                //this loop repeats as many times as necessary to retrieve the requested number of objects
+                try
+                {
+                    json = GetAbsolute(url); //makes the HTTP request
+                }
+                catch (HttpException e)
+                {
+                    Console.WriteLine(e.Message);
+                    switch (e.GetHttpCode())
+                    {
+                        case 403:
+                            throw new HttpException(e.WebEventCode, "You are not allowed to access the specified content object");
+                        default:
+                            throw;
+                    }
+                }
+
+                results = JObject.Parse(json);
+
+                contentList.AddRange(results["list"].ToObject<List<GenericContent>>());
+
+                if (results["links"] == null || results["links"]["next"] == null)
+                    break;
+                else
+                    url = results["links"]["next"].ToString();
+            }
+
+            return contentList;
+        }
+
+        /// <summary>
+        /// Return a list of trending content objects that match the specified filter criteria. It's possible for some Jiva instances to have recommendation disabled,
+        /// for these cases use getPopularContent(abridged, fields) instead. Do a GET to /api/core/v3/metadata/properties/feature.recommender.enabled
+        /// to figure out whether recommendation service is enabled or not.
+        /// </summary>
+        /// <param name="abridged">Flag indicating that if content.text is requested, it will be abridged (length shortened, HTML tages removed)</param>
+        /// <param name="filter">The filter criteria used to select content objects. Parameters, when used, should be wrapped in parentheses,
+        /// and multiple values separated by commas. This service supports the following filters:
+        /// place - only one place URI where the content lives, e.g. 'place(http://domain/api/core/v3/places/1006)'
+        /// type - one or more object types of desired contained content objects separated by commas, e.g. 'type(document,discussion)'</param>
+        /// <param name="count">The maximum number of contents to be returned per Jive HTTP request</param>
+        /// <param name="fields">The fields to be returned on each content</param>
+        /// <returns>a List of GenericContents of the matched content objects</returns>
+        public List<GenericContent> GetTrendingContent(bool abridged = false, List<string> filter = null, int count = 25, List<string> fields = null)
+        {
+            List<GenericContent> contentList = new List<GenericContent>();
+
+            //formats the url for the HTTP request based on the user's specifications
+            string url = contentUrl + "/trending";
+            url += "?abridged=" + abridged.ToString();
+            url += "&count=" + (count > 100 ? 100 : count).ToString(); //caps the count parameter of the HTTP request to 100 to prevent error
+            if (filter != null && filter.Count > 0)
+            {
+                foreach (var item in filter)
+                {
+                    url += "&filter=" + item;
+                }
+            }
+            if (fields != null && fields.Count > 0)
+            {
+                url += "&fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+
+            string json;
+            JObject results;
+            while (true)
+            {
+                //this loop repeats as many times as necessary to retrieve the requested number of objects
+                try
+                {
+                    json = GetAbsolute(url); //makes the HTTP request
+                }
+                catch (HttpException e)
+                {
+                    Console.WriteLine(e.Message);
+                    switch (e.GetHttpCode())
+                    {
+                        case 400:
+                            throw new HttpException(e.WebEventCode, "An input field is malformed");
+                        case 403:
+                            throw new HttpException(e.WebEventCode, "You are not allowed to access the specified content object");
+                        case 404:
+                            throw new HttpException(e.WebEventCode, "The specified place in the filter does not exist");
+                        case 410:
+                            throw new HttpException(e.WebEventCode, "Recommendation feature is disabled");
+                        default:
+                            throw;
+                    }
+                }
+
+                results = JObject.Parse(json);
+
+                contentList.AddRange(results["list"].ToObject<List<GenericContent>>());
+
+                if (results["links"] == null || results["links"]["next"] == null)
+                    break;
+                else
+                    url = results["links"]["next"].ToString();
+            }
+
+            return contentList;
+        }
+
         //public GetUserEntitlements()
     }
 }
