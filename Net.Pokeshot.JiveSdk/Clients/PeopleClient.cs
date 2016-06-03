@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Net;
 using Net.Pokeshot.JiveSdk.Models;
 using System.Web;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Net.Pokeshot.JiveSdk.Clients
@@ -14,6 +15,166 @@ namespace Net.Pokeshot.JiveSdk.Clients
     {
         string peopleUrl { get { return JiveCommunityUrl + "/api/core/v3/people"; } }
         public PeopleClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
+
+        /// <summary>
+        /// Accept the terms and conditions for the authenticated user.
+        /// </summary>
+        /// <param name="personID">Authenticated user. User @me or the ID of the authenticated user.</param>
+        public void AcceptTermsAndConditions(string personID)
+        {
+            string url = peopleUrl;
+            url += "/" + personID.ToString() + "/acceptTermsAndConditions";
+
+            try
+            {
+                PostAbsolute(url, "");
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "Specified user is not the authenticated user");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "Specified user does not exist");
+                    default:
+                        throw;
+                }
+            }
+
+            return;
+        }
+
+        /// <summary>
+        /// Add expertise tag(s) to a person
+        /// </summary>
+        /// <param name="personID">ID of the person</param>
+        /// <param name="tags">a string list of tags, limited to 200 tags per call</param>
+        public void AddExpertiseTags(int personID, List<string> tags)
+        {
+            string url = peopleUrl + "/" + personID.ToString() + "/expertise/endorse";
+
+            JArray tagList = new JArray();
+            foreach (var tag in tags)
+            {
+                tagList.Add((JToken)tag);
+            }
+
+            string json = JsonConvert.SerializeObject(tagList, Formatting.Indented);
+            try
+            {
+                PostAbsolute(url, json);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "An input field was malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "You are not allowed to perfrom this operation");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "Specified user does not exist");
+                    case 410:
+                        throw new HttpException(e.WebEventCode, "Expertise feature is disabled");
+                    default:
+                        throw;
+                }
+            }
+
+            return;
+        }
+
+        /// <summary>
+        /// Used to approve a tag that user has been endorsed with. The current user and the specified user must be the same or an authorization error will occur.
+        /// </summary>
+        /// <param name="personID">Current user ID</param>
+        /// <param name="tagName">Name of the tag to approve endorsements for</param>
+        public void ApproveExpertiseTag(int personID, string tagName)
+        {
+            string url = peopleUrl + "/" + personID.ToString() + "/expertise/endorse/" + tagName;
+
+            try
+            {
+                PutAbsolute(url, "");
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "You are not allowed to perform this operation");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "Specified tag or person does not exist");
+                    case 410:
+                        throw new HttpException(e.WebEventCode, "Expertise feature is disabled");
+                    default:
+                        throw;
+                }
+            }
+
+            return;
+        }
+
+        /// <summary>
+        /// Remove an expertise tag from a person.
+        /// Note: backslashes are not allowed in the tagName string.
+        /// </summary>
+        /// <param name="personID">ID of the person</param>
+        /// <param name="tagName">Name of the tag</param>
+        public void DestroyExpertiseTag(int personID, string tagName)
+        {
+            string url = peopleUrl + "/" + personID.ToString() + "/expertise/" + tagName;
+
+            try
+            {
+                DeleteAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "You are not allowed to perform this operation");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "Specified tag or person does not exist");
+                    default:
+                        throw;
+                }
+            }
+
+            return;
+        }
+
+        /// <summary>
+        /// Remove an expertise tag from a person, where the name of the tag is specified via a query string.
+        /// This alternative version allows backslashes in the tag name.
+        /// </summary>
+        /// <param name="personID">ID of the person</param>
+        /// <param name="tagName">Name of the tag</param>
+        public void DestroyExpertiseTag2(int personID, string tagName)
+        {
+            string url = peopleUrl + "/" + personID.ToString() + "/expertise?tagName=" + tagName;
+
+            try
+            {
+                DeleteAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "You are not allowed to perform this operation");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "Specified tag or person does not exist");
+                    default:
+                        throw;
+                }
+            }
+
+            return;
+        }
 
         /// <summary>
         /// Return the specified profile activities for the specified user.
