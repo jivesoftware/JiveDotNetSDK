@@ -219,6 +219,7 @@
     <Compile Include="Models\GenericPlace.cs" />
     <Compile Include="Models\Group.cs" />
     <Compile Include="Models\Idea.cs" />
+    <Compile Include="Models\IdeaVote.cs" />
     <Compile Include="Models\Image.cs" />
     <Compile Include="Models\ImageList.cs" />
     <Compile Include="Models\JiveAddon.cs" />
