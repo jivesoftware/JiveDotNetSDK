@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Web;
 
@@ -23,7 +24,54 @@ namespace Net.Pokeshot.JiveSdk.Clients
         public ActivitiesClient(string communityUrl, NetworkCredential credential) : base(communityUrl, credential) { }
 
 
-        //TODO: add PUT request
+        /// <summary>
+        /// Create a new activity stream entry based on the characteristics in the "activity" object.
+        /// Note: if the published and/or updated fields in the Activity are set, they must be have the time down to the second with the DateTimeKind field set
+        /// </summary>
+        /// <param name="activity">an Activity object containing the required data to construct a new activity stream entry</param>
+        /// <param name="fields">Names of the fields to be returned</param>
+        /// <returns>an Activity object representing the newly created activity or activity stream entry</returns>
+        public Activity CreateActivity(Activity activity, List<string> fields = null)
+        {
+            //since DateTime is a non-nullable type, if one or both of the published and published fields in the inputs are the default, sets them to a valid value
+            if (activity.published == default(DateTime) && activity.updated == default(DateTime))
+            {
+                activity.published = DateTime.UtcNow;
+                activity.updated = DateTime.UtcNow;
+            }
+            else if (activity.published == default(DateTime))
+            {
+                activity.published = activity.updated;
+            }
+            else if (activity.updated == default(DateTime))
+            {
+                activity.updated = activity.published;
+            }
+
+            string url = JiveCommunityUrl + "/api/core/v3/activities";
+
+            string json = JsonConvert.SerializeObject(activity, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            string result;
+            try
+            {
+                result = PostAbsolute(url, json);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "An input field is missing or malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "You are not allowed to create this activity stream entry");
+                    default:
+                        throw;
+                }
+            }
+
+            JObject Json = JObject.Parse(result);
+            return Json.ToObject<Activity>();
+        }
 
 
         /// <summary>
