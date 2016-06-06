@@ -146,6 +146,100 @@ namespace Net.Pokeshot.JiveSdk.Clients
         }
 
         /// <summary>
+        /// Create a new Page object for a user based on the contents of the specified Page. Only modifiable fields that actually provide a value
+        /// in the incoming entity are processed.
+        /// </summary>
+        /// <param name="personID">Authenticated user. Use @me or the ID of the authenticated user</param>
+        /// <param name="page">the Page object containing the information on the page to be created</param>
+        public void CreatePage(string personID, Page page)
+        {
+            string url = peopleUrl + "/" + personID.ToString() + "/pages";
+
+            string json = JsonConvert.SerializeObject(page, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
+            try
+            {
+                PostAbsolute(url, json);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "An input field was malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "Specified user is not the authenticated user");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "Specified user does not exist");
+                    case 409:
+                        throw new HttpException(e.WebEventCode, "Requested change would cause business rules to be violated");
+                    default:
+                        throw;
+                }
+            }
+
+            return;
+        }
+
+        /// <summary>
+        /// Create a Person object for a new user based on the contents of the specified Person. Only modifiable fields that actually provide a value
+        /// in the incoming entity are processed.
+        /// </summary>
+        /// <param name="new_person">the Person object containing information describing the new user</param>
+        /// <param name="welcome">Flag indicating that a welcome email should be sent to the newly created user</param>
+        /// <param name="published">Date and time when this person was originally created. Only set this field when importing people, and must set down to the second in UTC.</param>
+        /// <param name="fields">The fields to include in the returned entity</param>
+        /// <returns>a Person object representing the created user</returns>
+        public Person CreatePerson(Person new_person, bool welcome = false, string published = null, List<string> fields = null)
+        {
+            string url = peopleUrl;
+            url += "?welcome=" + welcome.ToString();
+            if (published != null)
+            {
+                url += "&published=" + published.ToString();
+            }
+            if (fields != null && fields.Count > 0)
+            {
+                url += "&fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+
+            string json = JsonConvert.SerializeObject(new_person, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore, Formatting = Formatting.Indented });
+            string result;
+            try
+            {
+                result = PostAbsolute(url, json);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "Any of the input fields are malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "Requesting user is not authorized to make changes to the specified user");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "Specified user does not exist");
+                    case 409:
+                        throw new HttpException(e.WebEventCode, "Requested change would cause business rules to be violated (such as more than one user with the same email address");
+                    case 500:
+                        throw new HttpException(e.WebEventCode, "Internal server error (e.g. username must be valid email address");
+                    case 501:
+                        throw new HttpException(e.WebEventCode, "User creation is not supported in this Jive instance");
+                    default:
+                        throw;
+                }
+            }
+
+            JObject Json = JObject.Parse(result);
+            return Json.ToObject<Person>();
+        }
+
+        /// <summary>
         /// Remove an expertise tag from a person.
         /// Note: backslashes are not allowed in the tagName string.
         /// </summary>
