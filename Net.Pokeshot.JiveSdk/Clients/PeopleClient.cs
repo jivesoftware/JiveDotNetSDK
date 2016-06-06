@@ -117,6 +117,35 @@ namespace Net.Pokeshot.JiveSdk.Clients
         }
 
         /// <summary>
+        /// Create a following relationship between the specified user the specified followed user.
+        /// </summary>
+        /// <param name="personID">ID of the user who will be following</param>
+        /// <param name="followedPersonID">ID of the user who will be followed</param>
+        public void UpdateFollowing(int personID, int followedPersonID)
+        {
+            string url = peopleUrl + "/" + personID.ToString() + "/@following/" + followedPersonID.ToString();
+
+            try
+            {
+                PutAbsolute(url, "");
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "Requesting user is not allowed to create this relationship");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "One of both of the specified users cannot be found");
+                    default:
+                        throw;
+                }
+            }
+
+            return;
+        }
+
+        /// <summary>
         /// Remove an expertise tag from a person.
         /// Note: backslashes are not allowed in the tagName string.
         /// </summary>
@@ -168,6 +197,37 @@ namespace Net.Pokeshot.JiveSdk.Clients
                         throw new HttpException(e.WebEventCode, "You are not allowed to perform this operation");
                     case 404:
                         throw new HttpException(e.WebEventCode, "Specified tag or person does not exist");
+                    default:
+                        throw;
+                }
+            }
+
+            return;
+        }
+
+        /// <summary>
+        /// Delete a following relationship between the specified user and the specified followed user.
+        /// </summary>
+        /// <param name="personID">ID of the user who is following</param>
+        /// <param name="followedPersonID">ID of the user who is followed</param>
+        public void DestoryFollowing(int personID, int followedPersonID)
+        {
+            string url = peopleUrl + "/" + personID.ToString() + "/@following/" + followedPersonID.ToString();
+
+            try
+            {
+                DeleteAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "Requesting user is not allowed to delete this relationship");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "One of both of the specified users cannot be found");
+                    case 409:
+                        throw new HttpException(e.WebEventCode, "Following relationship does not exist between these two users");
                     default:
                         throw;
                 }
