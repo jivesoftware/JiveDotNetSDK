@@ -186,16 +186,20 @@ namespace Net.Pokeshot.JiveSdk.Clients
         /// </summary>
         /// <param name="new_person">the Person object containing information describing the new user</param>
         /// <param name="welcome">Flag indicating that a welcome email should be sent to the newly created user</param>
-        /// <param name="published">Date and time when this person was originally created. Only set this field when importing people, and must set down to the second in UTC.</param>
+        /// <param name="published">Date and time when this person was originally created. Only set this field when importing people.</param>
         /// <param name="fields">The fields to include in the returned entity</param>
         /// <returns>a Person object representing the created user</returns>
-        public Person CreatePerson(Person new_person, bool welcome = false, string published = null, List<string> fields = null)
+        public Person CreatePerson(Person new_person, bool welcome = false, DateTime? published = null, List<string> fields = null)
         {
+            DateTime tmp;
+            
+            //construct the url for the HTTP request based on the user's specifications
             string url = peopleUrl;
             url += "?welcome=" + welcome.ToString();
             if (published != null)
             {
-                url += "&published=" + published.ToString();
+                tmp = (DateTime)published;
+                url += "&published=" + jiveDateFormat(tmp);
             }
             if (fields != null && fields.Count > 0)
             {

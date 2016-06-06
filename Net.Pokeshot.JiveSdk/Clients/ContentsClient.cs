@@ -27,7 +27,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
         {
             string url = contentUrl + "/" + contentID.ToString() + "/abuseReports";
 
-            string json = JsonConvert.SerializeObject(abuse_report, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            string json = JsonConvert.SerializeObject(abuse_report, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
             string result = "";
             try
             {
@@ -172,19 +172,22 @@ namespace Net.Pokeshot.JiveSdk.Clients
         /// Only set this field when importing content.</param>
         /// <param name="fields">Fields to include in the returned Comment object</param>
         /// <returns>Comment object representing the newly created comment</returns>
-        public Comment CreateComment(int contentID, Comment comment, bool author = false, string published = null, string updated = null,
+        public Comment CreateComment(int contentID, Comment comment, bool author = false, DateTime? published = null, DateTime? updated = null,
             List<string> fields = null)
         {
+            DateTime tmp;
             //create url with the user specified options added
             string url = contentUrl + "/" + contentID.ToString() + "/comments";
             url += "?author=" + author.ToString();
             if (published != null)
             {
-                url += "&published=" + published.ToString();
+                tmp = (DateTime)published;
+                url += "&published=" + jiveDateFormat(tmp);
             }
             if (updated != null)
             {
-                url += "&updated=" + updated.ToString();
+                tmp = (DateTime)updated;
+                url += "&updated=" + jiveDateFormat(tmp);
             }
             if (fields != null && fields.Count > 0) {
                 url += "&fields=";
@@ -197,7 +200,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 url = url.Remove(url.Length - 1);
             }
 
-            string json = JsonConvert.SerializeObject(comment, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            string json = JsonConvert.SerializeObject(comment, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
             string result = "";
             try
             {
@@ -316,26 +319,29 @@ namespace Net.Pokeshot.JiveSdk.Clients
         /// <param name="content">The content object to be created</param>
         /// <returns></returns>
         // remember to use the jiveDateFormat(DateTime time) function to use the correct format
-        public GenericContent CreateContent(GenericContent content, string published = null, string updated = null, List<string> fields = null)
+        public GenericContent CreateContent(GenericContent content, DateTime? published = null, DateTime? updated = null, List<string> fields = null)
         {
+            DateTime tmp;
             //adds the query strings to the url if present
             string url = contentUrl;
             bool first = true;
             if (published != null)
             {
-                url += "?published=" + published;
+                tmp = (DateTime)published;
+                url += "?published=" + jiveDateFormat(tmp);
                 first = false;
             }
             if (updated != null)
             {
+                tmp = (DateTime)updated;
                 if (first == true)
                 {
-                    url += "?updated=" + updated;
+                    url += "?updated=" + jiveDateFormat(tmp);
                     first = false;
                 }
                 else
                 {
-                    url += "&updated=" + updated;
+                    url += "&updated=" + jiveDateFormat(tmp);
                 }
             }
             if (fields != null && fields.Count > 0)
@@ -355,7 +361,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 url = url.Remove(url.Length - 1);
             }
 
-            string json = JsonConvert.SerializeObject(content, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            string json = JsonConvert.SerializeObject(content, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
             string result = "";
             try
             {
