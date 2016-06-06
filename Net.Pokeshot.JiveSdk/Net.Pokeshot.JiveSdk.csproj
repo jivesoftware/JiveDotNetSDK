@@ -234,6 +234,7 @@
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\OAuthRequest.cs" />
     <Compile Include="Models\OutcomeType.cs" />
+    <Compile Include="Models\Page.cs" />
     <Compile Include="Models\Person.cs" />
     <Compile Include="Models\PeopleList.cs" />
     <Compile Include="Models\Place.cs" />
