@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Net;
 using Net.Pokeshot.JiveSdk.Models;
 using System.Web;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Net.Pokeshot.JiveSdk.Clients
@@ -14,6 +15,88 @@ namespace Net.Pokeshot.JiveSdk.Clients
     {
         string placesUrl { get { return JiveCommunityUrl + "/api/core/v3/places"; } }
         public PlacesClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
+
+        /// <summary>
+        /// Create a new category for a place with specified characteristics, and return an entity representing the newly created category.
+        /// </summary>
+        /// <param name="placeID">ID of the place for which to create a category</param>
+        /// <param name="new_category">Category object describing the category to be created</param>
+        /// <param name="autoCategorize">Flag indicating whether existing content of the place will be categorized under the new category</param>
+        /// <param name="fields">Fields to be returned (default is @all)</param>
+        /// <returns>Category object representing the newly created category</returns>
+        public Category CreatePlaceCategory(int placeID, Category new_category, bool autoCategorize = false, List<string> fields = null)
+        {
+            //construct the url for the HTTP request based on the user specifications
+            string url = placesUrl + "/" + placeID.ToString() + "/categories";
+            url += "?autoCategorize=" + autoCategorize.ToString();
+            if (fields != null && fields.Count > 0)
+            {
+                url += "&fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+
+            //convert the Category object to JSON format and post via HTTP
+            string json = JsonConvert.SerializeObject(new_category, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore, Formatting = Formatting.Indented });
+            string result;
+            try
+            {
+                result = PostAbsolute(url, json);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "An input field is malformed or max number of categories has been reached");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "You are not allowed to manage categories for the place");
+                    case 409:
+                        throw new HttpException(e.WebEventCode, "The new entity would conflict with system restrictions (such as two categories with the same name");
+                    default:
+                        throw;
+                }
+            }
+
+            //convert the returned JSON into a Category object and return to the user
+            JObject Json = JObject.Parse(result);
+            return Json.ToObject<Category>();
+        }
+
+        /// <summary>
+        /// Delete the existing category for the specified place. Only admins of the place can manage place categories.
+        /// </summary>
+        /// <param name="placeID">ID of the place for which the category is to be deleted</param>
+        /// <param name="categoryID">ID of the category to delete</param>
+        public void DestroyPlaceCategory(int placeID, int categoryID)
+        {
+            string url = placesUrl + "/" + placeID.ToString() + "/categories/" + categoryID.ToString();
+
+            try
+            {
+                DeleteAbsolute(url); //makes the HTTP DELETE call
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "An input field is malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "You are not allowed to delete this image");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "The specified place or image does not exist");
+                    default:
+                        throw;
+                }
+            }
+
+            return;
+        }
 
         //GetActivity()
         //GetAppliedEntitlements()
@@ -70,8 +153,106 @@ namespace Net.Pokeshot.JiveSdk.Clients
 
         //GetPlaceAnnouncements()
         //GetPlaceAvatar()
-        //GetPlaceCatagories()
-        //GetPlaceCategory()
+   
+        /// <summary>
+        /// Return categories associated to the specified place.
+        /// </summary>
+        /// <param name="placeID">ID of the place to return the categories of</param>
+        /// <param name="fields">Fields to be returned (default is @all)</param>
+        /// <returns>a Category object list of the categories for the given place</returns>
+        public List<Category> GetPlaceCategories(int placeID, List<string> fields = null)
+        {
+            List<Category> categoryList = new List<Category>();
+
+            //creates the url for the HTTP request based on the user specifications
+            string url = placesUrl + "/" + placeID.ToString() + "/categories";
+            if (fields != null && fields.Count > 0)
+            {
+                url += "?fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+
+            // jive returns a paginated list, so we have to loop through all of the pages.
+            string json;
+            JObject results;
+            while (true)
+            {
+                try
+                {
+                    json = GetAbsolute(url);
+                }
+                catch (HttpException e)
+                {
+                    switch (e.GetHttpCode())
+                    {
+                        case 400:
+                            throw new HttpException(e.WebEventCode, "An input field is malformed");
+                        default:
+                            throw;
+                    }
+                }
+                results = JObject.Parse(json);
+
+                categoryList.AddRange(results["list"].ToObject<List<Category>>());
+
+                if (results["links"] == null || results["links"]["next"] == null)
+                    break;
+                else
+                    url = results["links"]["next"].ToString();
+            }
+
+            return categoryList;
+        }
+        
+        /// <summary>
+        /// Return the specified category of a place.
+        /// </summary>
+        /// <param name="placeID">ID of the place that is associated to the category</param>
+        /// <param name="categoryID">ID of the category to return</param>
+        /// <param name="fields">Fields to be returned (default is @all)</param>
+        /// <returns>a Category object containing the specified category</returns>
+        public Category GetPlaceCategory(int placeID, int categoryID, List<string> fields = null)
+        {
+            //creates the url for the HTTP request based on the user specifications
+            string url = placesUrl + "/" + placeID.ToString() + "/categories/" + categoryID.ToString();
+            if (fields != null && fields.Count > 0)
+            {
+                url += "?fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+
+            //makes the HTTP GET request and parses the result into a Category object before returning
+            string result;
+            try
+            {
+                result = GetAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "An input field is malformed");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "If the specified category does not exist");
+                    default:
+                        throw;
+                }
+            }
+            JObject Json = JObject.Parse(result);
+            return Json.ToObject<Category>();
+        }
+
         //GetPlaceFollowers()
         //GetPlaceFollowingIn()
         //GetPlacePermissions()
