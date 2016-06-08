@@ -17,6 +17,51 @@ namespace Net.Pokeshot.JiveSdk.Clients
         public PlacesClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
 
         /// <summary>
+        /// Checks for the presence of the given categories in the given Place, and creates any that are not present.
+        /// Note: will throw an HttpException if the max number of categories has been reached.
+        /// </summary>
+        /// <param name="placeID">ID of the Place the categories are supposed to be found or created</param>
+        /// <param name="categories">a list of the categories to be found or created</param>
+        /// <returns>a string List of the categories that were successfully created</returns>
+        public List<string> CheckAndCreateCategories(int placeID, List<string> categories)
+        {
+            //pulls all of the current categories for the defined Place
+            List<Category> categoryList = GetPlaceCategories(placeID);
+
+            //list of categories that are created
+            List<string> addedList = new List<string>();
+
+            bool found;
+            Category newCategory;
+            foreach (var category in categories)
+            {
+                found = false;
+                foreach (var oldCategory in categoryList)
+                {
+                    if (category == oldCategory.name) found = true;
+                }
+                if (!found)
+                {
+                    newCategory = new Category();
+                    newCategory.name = category;
+                    newCategory.type = "category";
+                    try
+                    {
+                        CreatePlaceCategory(placeID, newCategory);
+                    }
+                    catch (HttpException e)
+                    {
+                        if (e.GetHttpCode() == 400) throw;
+                    }
+                    addedList.Add(category);
+                }
+            }
+
+            return addedList;
+        }
+
+
+        /// <summary>
         /// Create a new content object with specified characteristics, and return an entity representing the newly created content object.
         /// </summary>
         /// <param name="placeID">ID of the place the content should be added to</param>
@@ -308,7 +353,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
 
         //GetPlaceAnnouncements()
         //GetPlaceAvatar()
-   
+
         /// <summary>
         /// Return categories associated to the specified place.
         /// </summary>
@@ -363,7 +408,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
 
             return categoryList;
         }
-        
+
         /// <summary>
         /// Return the specified category of a place.
         /// </summary>
