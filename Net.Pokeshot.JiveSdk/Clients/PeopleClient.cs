@@ -670,7 +670,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
             string url = peopleUrl + "/email/" + email;
             if (fields != null && fields.Count > 0)
             {
-                url += "&fields=";
+                url += "?fields=";
                 foreach (var field in fields)
                 {
                     url += field + ",";
@@ -694,7 +694,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
                     case 403:
                         throw new HttpException(e.WebEventCode, "Requesting user is not authorize to retrieve this user");
                     case 404:
-                        throw new HttpException(e.WebEventCode, "ID does not identify a valid user");
+                        throw new HttpException(e.WebEventCode, "Email address does not identify a valid user");
                     default:
                         throw;
                 }
@@ -706,7 +706,53 @@ namespace Net.Pokeshot.JiveSdk.Clients
         }
 
         //GetPersonByExternalIdentity()
-        //GetPersonByUsername()
+        
+        /// <summary>
+        /// Return a Person object describing the requested Jive user by username.
+        /// </summary>
+        /// <param name="username">Username of the requested Jive user</param>
+        /// <param name="fields">Field names to be returned (default is all)</param>
+        /// <returns>a Person object representing the requested user</returns>
+        public Person GetPersonByUsername(string username, List<string> fields = null)
+        {
+            string url = peopleUrl + "/username/" + username;
+            if (fields != null && fields.Count > 0)
+            {
+                url += "?fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+
+            string json;
+            try
+            {
+                json = GetAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                Console.WriteLine(e.Message);
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "Specified username is malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "Requesting user is not authorize to retrieve this user");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "username does not identify a valid user");
+                    default:
+                        throw;
+                }
+            }
+
+            JObject results = JObject.Parse(json);
+
+            return results.ToObject<Person>();
+        }
+
         //GetProfileFieldPrivacy()
         //GetProfileFieldsPrivacy()
         //GetProfileImage()
