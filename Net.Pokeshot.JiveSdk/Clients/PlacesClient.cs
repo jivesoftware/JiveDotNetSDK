@@ -194,7 +194,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
             string url = placesUrl + "/" + placeID.ToString() + "/contents";
             url += "?sort=" + sort;
             url += "&abridged=" + abridged.ToString();
-            url += "&count=" + count.ToString();
+            url += "&count=" + (count > 100 ? 100 : count).ToString();
             if (startIndex != 0) url += "&startIndex=" + startIndex.ToString();
             if (type != null && type.Count > 0)
             {
