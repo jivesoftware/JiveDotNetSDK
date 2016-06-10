@@ -24,6 +24,7 @@ namespace Net.Pokeshot.JiveSdk.Models
         public List<ProfileEntry> photos { get; set; }
         public DateTime published { get; set; }
         public List<string> tags { get; set; }
+        public string type { get; set; }
         public JiveResources resources { get; set; }
 
 
