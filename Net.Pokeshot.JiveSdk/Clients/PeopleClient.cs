@@ -17,6 +17,65 @@ namespace Net.Pokeshot.JiveSdk.Clients
         public PeopleClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
 
         /// <summary>
+        /// Method used for importing content from another site and an author for the content is required. The method first checks to see if any user
+        /// with any of the external user's emails is already present on the site, and returns it if present, otherwise getting or creating and returning
+        /// a default "anonymous" user to be used for the import.
+        /// Note: this will print an error message to the console for every email tried that isn't present, this can be commented out in GetAbsolute in JiveClient
+        /// </summary>
+        /// <param name="extPerson">the Person object from the external site (usually the author of the external content)</param>
+        /// <returns>a Person object that can be used as the author for the newly imported content</returns>
+        public Person FindPerson(Person extPerson)
+        {
+            Person person = null;
+            bool found = false;
+            if (extPerson.emails != null)
+            {
+                foreach (var address in extPerson.emails)
+                {
+                    if (!found)
+                    {
+                        try
+                        {
+                            person = GetPersonByEmail(address.value);
+                            found = true;
+                        }
+                        catch (HttpException)
+                        {
+                            found = false; //shouldn't be necessary, but just to make sure found isn't set to true when no user is found
+                        }
+                    }
+                }
+            }
+            if (!found)
+            {
+                try
+                {
+                    person = GetPersonByUsername("anonymous@test.com");
+                }
+                catch (HttpException)
+                {
+                    person = new Person();
+                    person.emails = new List<ProfileEntry>();
+                    person.emails.Add(new ProfileEntry());
+                    person.emails[0].value = "anonymous@test.com"; //use some dummy address here, Jive requires this field not be null
+                    person.emails[0].jive_label = "Email";
+                    person.emails[0].primary = true;
+                    person.emails[0].type = "work";
+                    person.jive = new JivePerson();
+                    person.jive.username = "anonymous@test.com";
+                    person.jive.password = "guest";
+                    person.name = new Name();
+                    person.name.familyName = "Guest";
+                    person.name.givenName = "Anonymous";
+                    person.type = "person";
+                    person = CreatePerson(person);
+                }
+            }
+
+            return person;
+        }
+
+        /// <summary>
         /// Accept the terms and conditions for the authenticated user.
         /// </summary>
         /// <param name="personID">Authenticated user. User @me or the ID of the authenticated user.</param>
@@ -192,7 +251,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
         public Person CreatePerson(Person new_person, bool welcome = false, DateTime? published = null, List<string> fields = null)
         {
             DateTime tmp;
-            
+
             //construct the url for the HTTP request based on the user's specifications
             string url = peopleUrl;
             url += "?welcome=" + welcome.ToString();
@@ -231,7 +290,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
                     case 409:
                         throw new HttpException(e.WebEventCode, "Requested change would cause business rules to be violated (such as more than one user with the same email address");
                     case 500:
-                        throw new HttpException(e.WebEventCode, "Internal server error (e.g. username must be valid email address");
+                        throw new HttpException(e.WebEventCode, "Internal server error (e.g. username must be valid email address)");
                     case 501:
                         throw new HttpException(e.WebEventCode, "User creation is not supported in this Jive instance");
                     default:
@@ -393,8 +452,8 @@ namespace Net.Pokeshot.JiveSdk.Clients
             JObject results = JObject.Parse(json);
 
             return results["list"].ToObject<List<Activity>>();
-        }        
-        
+        }
+
         //GetAllPeople()
         //GetAvatar()
         //GetAvatarDeactivated()
@@ -706,7 +765,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
         }
 
         //GetPersonByExternalIdentity()
-        
+
         /// <summary>
         /// Return a Person object describing the requested Jive user by username.
         /// </summary>
