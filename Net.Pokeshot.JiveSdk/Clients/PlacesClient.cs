@@ -132,6 +132,126 @@ namespace Net.Pokeshot.JiveSdk.Clients
         }
 
         /// <summary>
+        /// Create a new place with specified characteristics, and return an entity representing the newly created place.
+        /// Note: type of input Place must match generic type of method call and must be a subtype of Place
+        /// </summary>
+        /// <param name="new_place">Place object describing the place to be created
+        /// Note: the displayName and name fields are required, and must be unique within the parent place.
+        /// Note: if the parent field is not included, the root space will be the default parent of the new place.</param>
+        /// <param name="published">Date and time when this place was originally created. Set 'updated' param as well. Only set this field when importing content.</param>
+        /// <param name="updated">Date and time when this place was most recently updated. Set 'published' param as well. Only set this field when importing content.</param>
+        /// <param name="fields">Fields to include in the returned entity</param>
+        /// <returns>Place object representing the newly created place</returns>
+        public T CreatePlace<T>(T new_place, DateTime? published = null, DateTime? updated = null, List<string> fields = null)
+        {
+            //constructs the url for the HTTP request based on the user specifications
+            bool first = true;
+            string url = placesUrl;
+            if (published != null)
+            {
+                url += "?published=" + jiveDateFormat((DateTime)published);
+                first = false;
+            }
+            if (updated != null)
+            {
+                if (first) url += "?updated=" + jiveDateFormat((DateTime)updated);
+                else url += "&updated=" + jiveDateFormat((DateTime)updated);
+                first = false;
+            }
+            if (fields != null && fields.Count > 0)
+            {
+                if (first == true)
+                {
+                    url += "?fields=";
+                    first = false;
+                }
+                else url += "&fields=";
+
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                //remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+
+            //converts the place to be added into JSON format and makes the HTTP request
+            string json = JsonConvert.SerializeObject(new_place, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore, Formatting = Formatting.Indented });
+            string result;
+            try
+            {
+                result = PostAbsolute(url, json);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "An input field is malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "You are not allowed to access the specified place");
+                    case 409:
+                        throw new HttpException(e.WebEventCode, "The new entity would conflict with system restrictions (such as two places of the same type with the same name");
+                    default:
+                        throw;
+                }
+            }
+
+            //converts the returned JSON into a Place object and returns it to the user
+            JObject Json = JObject.Parse(result);
+            return Json.ToObject<T>();
+        }
+
+        /// <summary>
+        /// Create a new announcement associated with this place. An appropriate parent field will be calculated and injected automatically.
+        /// </summary>
+        /// <param name="placeID">ID of the place for which to create an announcement</param>
+        /// <param name="announcement">Announcement object describing the announcement to be created</param>
+        /// <param name="fields">Fields to include in the returned Announcement object</param>
+        /// <returns>Announcement object representing the newly created announcement</returns>
+        public Announcement CreatePlaceAnnouncement(int placeID, Announcement announcement, List<string> fields = null)
+        {
+            //constructs the url for the HTTP request based on the user specifications
+            string url = placesUrl + "/" + placeID.ToString() + "/announcements";
+            if (fields != null && fields.Count > 0)
+            {
+                url += "?fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+
+            //converts the announcement to be added into JSON format and makes the HTTP request
+            string json = JsonConvert.SerializeObject(announcement, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore, Formatting = Formatting.Indented });
+            string result;
+            try
+            {
+                result = PostAbsolute(url, json);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "An input field is missing or malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "You are not allowed to create announcements in the specified place");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "The specified parent place cannot be found");
+                    default:
+                        throw;
+                }
+            }
+
+            //converts the returned JSON into an Announcement object and returns it to the user
+            JObject Json = JObject.Parse(result);
+            return Json.ToObject<Announcement>();
+        }
+
+        /// <summary>
         /// Create a new category for a place with specified characteristics, and return an entity representing the newly created category.
         /// </summary>
         /// <param name="placeID">ID of the place for which to create a category</param>
@@ -180,6 +300,34 @@ namespace Net.Pokeshot.JiveSdk.Clients
             //convert the returned JSON into a Category object and return to the user
             JObject Json = JObject.Parse(result);
             return Json.ToObject<Category>();
+        }
+
+        /// <summary>
+        /// Delete the specified place.
+        /// </summary>
+        /// <param name="placeID">ID of the place to be deleted</param>
+        public void DestroyPlace(int placeID)
+        {
+            string url = placesUrl + "/" + placeID.ToString();
+
+            try
+            {
+                DeleteAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "An input field is malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "You are not allowed to access the specified place");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "The specified place does not exist");
+                    default:
+                        throw;
+                }
+            }
         }
 
         /// <summary>
@@ -314,6 +462,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
         /// <returns>GenericPlace</returns>
         public GenericPlace GetPlace(int placeID, List<string> fields = null)
         {
+            //construct the url for the HTTP request based on the user specifications
             string url = placesUrl + "/" + placeID.ToString();
             if (fields != null && fields.Count > 0)
             {
@@ -351,7 +500,70 @@ namespace Net.Pokeshot.JiveSdk.Clients
             return results.ToObject<GenericPlace>();
         }
 
-        //GetPlaceAnnouncements()
+        /// <summary>
+        /// Return a paginated list of announcements related to the specified place.
+        /// </summary>
+        /// <param name="placeID">ID of the place for which to return announcements</param>
+        /// <param name="count">Maximum number of elements to be returned per Jive HTTP request</param>
+        /// <param name="startIndex">Zero-relative index of the first announcement to be returned</param>
+        /// <param name="activeOnly">True if only active (non-expired) announcements should be returned</param>
+        /// <param name="fields">Fields to be included in returned announcements</param>
+        /// <returns>an Announcement object list of the announcements for the specified place</returns>
+        public List<Announcement> GetPlaceAnnouncements(int placeID, int count = 25, int startIndex = 0, bool activeOnly = true, List<string> fields = null)
+        {
+            List<Announcement> announcementList = new List<Announcement>();
+
+            //construct the url for the HTTP request based on the user specifications
+            string url = placesUrl + "/" + placeID.ToString() + "/announcements";
+            url += "?count=" + count.ToString();
+            url += "&startIndex=" + startIndex.ToString();
+            url += "&activeOnly=" + activeOnly.ToString();
+            if (fields != null && fields.Count > 0)
+            {
+                url += "&fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+
+            // jive returns a paginated list, so we have to loop through all of the pages.
+            string json;
+            JObject results;
+            while (true)
+            {
+                try
+                {
+                    json = GetAbsolute(url);
+                }
+                catch (HttpException e)
+                {
+                    switch (e.GetHttpCode())
+                    {
+                        case 400:
+                            throw new HttpException(e.WebEventCode, "An input field is missing or malformed");
+                        case 403:
+                            throw new HttpException(e.WebEventCode, "You are not allowed to access the requested announcements");
+                        default:
+                            throw;
+                    }
+                }
+
+                results = JObject.Parse(json);
+
+                announcementList.AddRange(results["list"].ToObject<List<Announcement>>());
+
+                if (results["links"] == null || results["links"]["next"] == null)
+                    break;
+                else
+                    url = results["links"]["next"].ToString();
+            }
+
+            return announcementList;
+        }
+
         //GetPlaceAvatar()
 
         /// <summary>
