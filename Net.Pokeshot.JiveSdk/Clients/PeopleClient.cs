@@ -422,6 +422,38 @@ namespace Net.Pokeshot.JiveSdk.Clients
         }
 
         /// <summary>
+        /// Trigger a background task to delete the specified person, and all of their content. Returns an HTTP 202 (Accepted) status to indicate that the deletion request
+        /// has been accepted. The only way that a client can tell it has been completed is by trying a GET on the person URI, and waiting until a NotFoundException is returned.
+        /// WARNING = It is possible that errors during the deletion process might cause the delete to be abandoned.
+        /// </summary>
+        /// <param name="personID">ID of the person to be deleted</param>
+        public void DestoryPerson(int personID)
+        {
+            string url = peopleUrl + "/" + personID.ToString();
+
+            try
+            {
+                DeleteAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "Specified ID is malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "Requesting user is not authorized to delete this user (Jive admin only)");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "ID does not identity a valid user");
+                    case 501:
+                        throw new HttpException(e.WebEventCode, "User deletion is not supported in this Jive instance");
+                    default:
+                        throw;
+                }
+            }
+        }
+
+        /// <summary>
         /// Return the specified profile activities for the specified user.
         /// </summary>
         /// <param name="personID">ID of the user for which to return profile activities</param>
