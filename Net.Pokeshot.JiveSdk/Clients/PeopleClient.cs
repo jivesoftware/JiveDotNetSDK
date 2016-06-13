@@ -333,6 +333,34 @@ namespace Net.Pokeshot.JiveSdk.Clients
         }
 
         /// <summary>
+        /// Delete the active avatar for the specified user. Only uploaded avatars can be deleted. The system avatar will be selected for the user after the delete operation is completed.
+        /// </summary>
+        /// <param name="personID">ID of the specified user</param>
+        public void DestroyAvatar(int personID)
+        {
+            string url = peopleUrl + "/" + personID.ToString() + "/avatar";
+
+            try
+            {
+                DeleteAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "Requesting user is not authorized to perform this operation");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "Specified user or profile image cannot be found");
+                    case 409:
+                        throw new HttpException(e.WebEventCode, "Attempt to delete an avatar that cannot be deleted");
+                    default:
+                        throw;
+                }
+            }
+        }
+
+        /// <summary>
         /// Remove an expertise tag from a person, where the name of the tag is specified via a query string.
         /// This alternative version allows backslashes in the tag name.
         /// </summary>
