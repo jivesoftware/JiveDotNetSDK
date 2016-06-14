@@ -321,27 +321,24 @@ namespace Net.Pokeshot.JiveSdk.Clients
         // remember to use the jiveDateFormat(DateTime time) function to use the correct format
         public GenericContent CreateContent(GenericContent content, DateTime? published = null, DateTime? updated = null, List<string> fields = null)
         {
-            DateTime tmp;
             //adds the query strings to the url if present
             string url = contentUrl;
             bool first = true;
             if (published != null)
             {
-                tmp = (DateTime)published;
-                url += "?published=" + jiveDateFormat(tmp);
+                url += "?published=" + jiveDateFormat((DateTime)published);
                 first = false;
             }
             if (updated != null)
             {
-                tmp = (DateTime)updated;
                 if (first == true)
                 {
-                    url += "?updated=" + jiveDateFormat(tmp);
+                    url += "?updated=" + jiveDateFormat((DateTime)updated);
                     first = false;
                 }
                 else
                 {
-                    url += "&updated=" + jiveDateFormat(tmp);
+                    url += "&updated=" + jiveDateFormat((DateTime)updated);
                 }
             }
             if (fields != null && fields.Count > 0)
@@ -1396,5 +1393,65 @@ namespace Net.Pokeshot.JiveSdk.Clients
         }
 
         //public GetUserEntitlements()
+
+        /// <summary>
+        /// Update an existing content with specified characteristics.
+        /// </summary>
+        /// <param name="contentID">ID of the content object to be updated</param>
+        /// <param name="content">GenericContent object describing the content to be updated</param>
+        /// <param name="minor">Flag indicating whether this update is a minor edit (true) or not (false)</param>
+        /// <param name="abridged">Flag indicating that if content.text is requested, it will be abridged (length shortened, HTML tags removed)</param>
+        /// <param name="updated">Date and time when this content object was most recently updated. Only set this field when importing content.</param>
+        /// <param name="fields">Fields to include in the returned entity</param>
+        /// <returns>GenericContent object representing the updated content object</returns>
+        public GenericContent UpdateContent(int contentID, GenericContent content, bool minor = true, bool abridged = false, DateTime? updated = null, List<string> fields = null)
+        {
+            //constructs the url for the HTTP request based on the user specifications
+            string url = contentUrl + "/" + contentID.ToString();
+            url += "?minor=" + minor.ToString();
+            url += "&abridged=" + abridged.ToString();
+            if (updated != null)
+            {
+                url += "&updated=" + jiveDateFormat((DateTime)updated);
+            }
+            if (fields != null && fields.Count > 0)
+            {
+                url += "&fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+
+            //converts the content into a JSON string and makes the HTTP request
+            string json = JsonConvert.SerializeObject(content, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore, Formatting = Formatting.Indented });
+            string result;
+            try
+            {
+                result = PutAbsolute(url, json);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "An input field is malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "You are not allowed to access the specified content object, or to make the requested change in content object state");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "The specified content does not exist");
+                    case 409:
+                        throw new HttpException(e.WebEventCode, "The new entity would conflict with system restrictions (such as two content objects of the same type with the same subject");
+                    default:
+                        throw;
+                }
+            }
+
+            //parses the result into a GenericContent object and returns it to the user
+            JObject Json = JObject.Parse(result);
+            return Json.ToObject<GenericContent>();
+        }
     }
 }
