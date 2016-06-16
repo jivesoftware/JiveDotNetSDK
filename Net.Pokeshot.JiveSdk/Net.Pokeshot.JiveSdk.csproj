@@ -122,6 +122,7 @@
     <Compile Include="Clients\CommentsClient.cs" />
     <Compile Include="Clients\ContentsClient.cs" />
     <Compile Include="Clients\DeletedObjectsClient.cs" />
+    <Compile Include="Clients\DESClient.cs" />
     <Compile Include="Models\Blog.cs" />
     <Compile Include="Models\Carousel.cs" />
     <Compile Include="Models\Discussion.cs" />
