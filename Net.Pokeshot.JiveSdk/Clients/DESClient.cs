@@ -24,7 +24,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
             List<JiveDEAActivityInstance> activityList = new List<JiveDEAActivityInstance>();
 
             string url = _desUrl + "/activity";
-            url += "?count=" + (count > 1000000000 ? 1000000000 : count).ToString();
+            url += "?count=" + (count > 1000 ? 1000 : count).ToString();
             url += "&show-all=" + showAll;
             if (after != null)
                 url += "&after=" + jiveDateFormat(after.Value);
