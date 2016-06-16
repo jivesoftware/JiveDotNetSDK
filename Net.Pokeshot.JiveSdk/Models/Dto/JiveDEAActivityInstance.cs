@@ -19,6 +19,8 @@ namespace Net.Pokeshot.JiveSdk.Models.Dto
         public int actionObjectType { get; set; }
         public JiveDEAActivityInstanceElement activity { get; set; }
         public bool isHistoricalReplay { get; set; }
-
+        public int containerId { get; set; }
+        public int containerType { get; set; }
+        public object payload { get; set; }
     }
 }

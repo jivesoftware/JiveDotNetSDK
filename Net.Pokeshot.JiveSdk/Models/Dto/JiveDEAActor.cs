@@ -29,5 +29,7 @@ namespace Net.Pokeshot.JiveSdk.Models.Dto
         public bool visible { get; set; }
         public string status { get; set; }
         public string url { get; set; }
+        public object extras { get; set; }
+
     }
 }

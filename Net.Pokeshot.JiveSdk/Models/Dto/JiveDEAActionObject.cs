@@ -25,6 +25,12 @@ namespace Net.Pokeshot.JiveSdk.Models.Dto
         public string fullPath { get; set; }
         public string normalizedPath { get; set; }
         public string combinedObjectTypeId { get; set; }
+        public string description { get; set; }
+        public string displayName { get; set; }
+        public object extras { get; set; }
+        public string name { get; set; }
+        public int parentId { get; set; }
+        public string parentType { get; set; }
 
     }
 }
