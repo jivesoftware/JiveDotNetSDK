@@ -14,8 +14,8 @@ namespace Net.Pokeshot.JiveSdk.Models.Dto
         public bool isDataAvailable { get; set; }
         public List<string> tags { get; set; }
         public string subject { get; set; }
-        public int creationDate { get; set; }
-        public int modifiedDate { get; set; }
+        public long creationDate { get; set; }
+        public long modifiedDate { get; set; }
         public int authorId { get; set; }
         public int containerId { get; set; }
         public string containerType { get; set; }
@@ -25,6 +25,14 @@ namespace Net.Pokeshot.JiveSdk.Models.Dto
         public string fullPath { get; set; }
         public string normalizedPath { get; set; }
         public string combinedObjectTypeId { get; set; }
+        public string description { get; set; }
+        public string displayName { get; set; }
+        public object extras { get; set; }
+        public string name { get; set; }
+        public int parentId { get; set; }
+        public string parentType { get; set; }
+        public long lastProfileUpdate { get; set; }
+        public long lastLoggedIn { get; set; }
 
     }
 }
