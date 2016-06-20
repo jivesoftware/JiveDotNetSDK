@@ -68,7 +68,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
             //construcs the correct url based on the user's specifications
             string url = ideaVotesUrl;
             url += "/" + contentID.ToString();
-            url += "?count=" + count.ToString();
+            url += "?count=" + (count > 1000 ? 1000 : count).ToString();
             if (startIndex != 0)
             {
                 url += "&startIndex=" + startIndex.ToString();
