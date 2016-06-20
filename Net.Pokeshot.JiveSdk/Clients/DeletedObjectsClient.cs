@@ -47,13 +47,13 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 typeString.Append(")");
                 filter.Add(typeString.ToString());
             };
+            if(since != null)
+                filter.Add("since(" + jiveDateFormat(since.Value) + ")");
 
             string url = deletedObjectsUrl + "/contents";
             url += "?sort=" + sort;
             url += "&startIndex=" + startIndex.ToString();
             url += "&count=" + (count > 100 ? 100 : count).ToString();
-            if(since != null)
-                url += "&since=" + jiveDateFormat(since.Value);
             if (fields != null && fields.Count > 0)
             {
                 url += "&fields=";
@@ -66,13 +66,10 @@ namespace Net.Pokeshot.JiveSdk.Clients
             }
             if (filter != null && filter.Count > 0)
             {
-                url += "&filter=";
                 foreach (var item in filter)
                 {
-                    url += item + ",";
+                    url += "&filter=" + item;
                 }
-                // remove last comma
-                url = url.Remove(url.Length - 1);
             }
 
             while (true)
@@ -105,19 +102,206 @@ namespace Net.Pokeshot.JiveSdk.Clients
             return deletedObjectsList;
         }
 
-        public DeletedObject GetDeletedObject()
+        /// <summary>
+        /// Return the specified deleted object entity with the specified fields.
+        /// </summary>
+        /// <param name="deletedObjectId">UUID of the deleted object entity to be returned</param>
+        /// <param name="fields">Fields to be returned</param>
+        /// <returns>DeletedObject</returns>
+        public DeletedObject GetDeletedObject(string deletedObjectId, List<string> fields = null)
         {
-            throw new System.NotImplementedException();
+            string url = deletedObjectsUrl + "/" + deletedObjectId;
+            if (fields != null && fields.Count > 0)
+            {
+                url += "?fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+
+            string json;
+            try
+            {
+                json = GetAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "An input field is malformed");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "The specified deleted object entity does not exist");
+                    default:
+                        throw;
+                }
+            }
+
+            JObject results = JObject.Parse(json);
+
+            return results.ToObject<DeletedObject>();
         }
 
-        public List<DeletedObject> GetDeletedPeople()
+        /// <summary>
+        /// Return a paginated list of entities, each representing a person object that has been deleted.
+        /// </summary>
+        /// <param name="since">Restricts results to contain entities representing deleted objects removed on or after this date.</param>
+        /// <param name="types">One or more content object types (discussion, post, file, ...).</param>
+        /// <param name="sort">Sort order; default returns the most recently deleted objects first.
+        /// eventDateAsc - Sort by the date the content object was removed, in ascending order.
+        /// eventDateDesc - Sort by the date the content object was removed, in descending order. Default if none was specified.</param>
+        /// <param name="startIndex">Zero-relative index of the first entity to be returned.</param>
+        /// <param name="count">Maximum number of entities to be returned from Jive at a time.</param>
+        /// <param name="fields">Fields to be returned in the selected entities.</param>
+        /// <returns>List of DeletedObjects</returns>>
+        public List<DeletedObject> GetDeletedPeople(DateTime? since = null, List<string> types = null, string sort = "eventDateDesc", int startIndex = 0, int count = 25, List<string> fields = null)
         {
-            throw new System.NotImplementedException();
+            List<DeletedObject> deletedObjectsList = new List<DeletedObject>();
+
+            List<string> filter = new List<string>();
+            if (since != null)
+                filter.Add("since(" + jiveDateFormat(since.Value) + ")");
+
+            string url = deletedObjectsUrl + "/people";
+            url += "?sort=" + sort;
+            url += "&startIndex=" + startIndex.ToString();
+            url += "&count=" + (count > 100 ? 100 : count).ToString();
+            if (fields != null && fields.Count > 0)
+            {
+                url += "&fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+            if (filter != null && filter.Count > 0)
+            {
+                foreach (var item in filter)
+                {
+                    url += "&filter=" + item;
+                }
+            }
+
+            while (true)
+            {
+                string json;
+                try
+                {
+                    json = GetAbsolute(url);
+                }
+                catch (HttpException e)
+                {
+                    switch (e.GetHttpCode())
+                    {
+                        case 400:
+                            throw new HttpException(e.WebEventCode, "An input field is malformed");
+                        default:
+                            throw;
+                    }
+                }
+
+                JObject results = JObject.Parse(json);
+
+                deletedObjectsList.AddRange(results["list"].ToObject<List<DeletedObject>>());
+
+                if (results["links"] == null || results["links"]["next"] == null)
+                    break;
+                else
+                    url = results["links"]["next"].ToString();
+            }
+            return deletedObjectsList;
         }
 
-        public List<DeletedObject> GetDeletedPlaces()
+        /// <summary>
+        /// Return a paginated list of entities, each representing a place object that has been deleted. 
+        /// </summary>
+        /// <param name="since">Restricts results to contain entities representing deleted objects removed on or after this date.</param>
+        /// <param name="types">One or more content object types (discussion, post, file, ...).</param>
+        /// <param name="sort">Sort order; default returns the most recently deleted objects first.
+        /// eventDateAsc - Sort by the date the content object was removed, in ascending order.
+        /// eventDateDesc - Sort by the date the content object was removed, in descending order. Default if none was specified.</param>
+        /// <param name="startIndex">Zero-relative index of the first entity to be returned.</param>
+        /// <param name="count">Maximum number of entities to be returned from Jive at a time.</param>
+        /// <param name="fields">Fields to be returned in the selected entities.</param>
+        /// <returns>List of DeletedObjects</returns>
+        public List<DeletedObject> GetDeletedPlaces(DateTime? since = null, List<string> types = null, string sort = "eventDateDesc", int startIndex = 0, int count = 25, List<string> fields = null)
         {
-            throw new System.NotImplementedException();
+            List<DeletedObject> deletedObjectsList = new List<DeletedObject>();
+
+            var filter = new List<string>();
+            if (types != null && types.Count > 0)
+            {
+                StringBuilder typeString = new StringBuilder();
+                typeString.Append("type(");
+
+                foreach (var type in types)
+                {
+                    typeString.Append(type + ",");
+                }
+
+                // Remove last comma.
+                typeString.Remove(typeString.Length - 1, 1);
+                typeString.Append(")");
+                filter.Add(typeString.ToString());
+            };
+            if (since != null)
+                filter.Add("since(" + jiveDateFormat(since.Value) + ")");
+
+            string url = deletedObjectsUrl + "/places";
+            url += "?sort=" + sort;
+            url += "&startIndex=" + startIndex.ToString();
+            url += "&count=" + (count > 100 ? 100 : count).ToString();
+            if (fields != null && fields.Count > 0)
+            {
+                url += "&fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+            if (filter != null && filter.Count > 0)
+            {
+                foreach (var item in filter)
+                {
+                    url += "&filter=" + item;
+                }
+            }
+
+            while (true)
+            {
+                string json;
+                try
+                {
+                    json = GetAbsolute(url);
+                }
+                catch (HttpException e)
+                {
+                    switch (e.GetHttpCode())
+                    {
+                        case 400:
+                            throw new HttpException(e.WebEventCode, "An input field is malformed");
+                        default:
+                            throw;
+                    }
+                }
+
+                JObject results = JObject.Parse(json);
+
+                deletedObjectsList.AddRange(results["list"].ToObject<List<DeletedObject>>());
+
+                if (results["links"] == null || results["links"]["next"] == null)
+                    break;
+                else
+                    url = results["links"]["next"].ToString();
+            }
+            return deletedObjectsList;
         }
     }
 }
