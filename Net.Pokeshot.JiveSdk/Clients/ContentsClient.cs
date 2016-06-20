@@ -771,7 +771,6 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 }
                 catch (HttpException e)
                 {
-                    Console.WriteLine(e.Message);
                     switch (e.GetHttpCode())
                     {
                         case 400:
