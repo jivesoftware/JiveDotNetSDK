@@ -48,12 +48,17 @@ namespace Net.Pokeshot.JiveSdk.Clients
                     try
                     {
                         CreatePlaceCategory(placeID, newCategory);
+                        addedList.Add(category);
                     }
                     catch (HttpException e)
                     {
-                        if (e.GetHttpCode() == 400) throw;
+                        if (e.GetHttpCode() != 400) throw;
+                        else
+                        {
+                            Console.WriteLine("max number of categories reached for placeID: " + placeID + ", some categories omitted from result");
+                            throw;
+                        }
                     }
-                    addedList.Add(category);
                 }
             }
 
