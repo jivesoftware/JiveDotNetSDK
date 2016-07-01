@@ -16,13 +16,29 @@ namespace Net.Pokeshot.JiveSdk.Clients
     {
         private NetworkCredential _credential;
         protected string JiveCommunityUrl;
-
+        private int? imposter = null;
+        
         public JiveClient(string communityUrl, NetworkCredential cred)
         {
             JiveCommunityUrl = communityUrl;
             _credential = cred;
         }
 
+        /// <summary>
+        /// Run a method as another Jive User. You're Jive instance must support the X-Jive-Run-As header. You must be authenticated as admin.
+        /// </summary>
+        /// <typeparam name="T">The return type of method</typeparam>
+        /// <param name="personId">The personId of the person to impersonate.</param>
+        /// <param name="method">The method to invoke as the user. This method must be a member of the Jive Client instance that calls RunAs.</param>
+        /// <returns></returns>
+        public T RunAs<T>(int personId, Func<T> method)
+        {
+            imposter = personId;
+            var returnVal = method();
+            imposter = null;
+
+            return returnVal;
+        }
 
         protected string GetAbsolute(string url)
         {      
@@ -51,6 +67,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
 
             HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
             requestMessage.Headers.Add("Authorization", authorization);
+
+            if(imposter != null)
+            {
+                requestMessage.Headers.Add("X-Jive-Run-As", "userid " + imposter);
+            }
 
             HttpResponseMessage activityResponse = httpClient.SendAsync(requestMessage).Result;
 
@@ -90,6 +111,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
 
             HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
 
+            if (imposter != null)
+            {
+                requestMessage.Headers.Add("X-Jive-Run-As", "userid " + imposter);
+            }
+
             HttpResponseMessage activityResponse = httpClient.SendAsync(requestMessage).Result;
 
             if (!activityResponse.IsSuccessStatusCode)
@@ -128,6 +154,12 @@ namespace Net.Pokeshot.JiveSdk.Clients
             httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
             HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, url);
+
+            if (imposter != null)
+            {
+                requestMessage.Headers.Add("X-Jive-Run-As", "userid " + imposter);
+            }
+
             requestMessage.Content = new StringContent(json, Encoding.UTF8, "application/json");
             HttpResponseMessage activityResponse = httpClient.SendAsync(requestMessage).Result;
 
@@ -169,6 +201,12 @@ namespace Net.Pokeshot.JiveSdk.Clients
             httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
             HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Put, url);
+
+            if (imposter != null)
+            {
+                requestMessage.Headers.Add("X-Jive-Run-As", "userid " + imposter);
+            }
+
             requestMessage.Content = new StringContent(json, Encoding.UTF8, "application/json");
             HttpResponseMessage activityResponse = httpClient.SendAsync(requestMessage).Result;
 
@@ -208,6 +246,12 @@ namespace Net.Pokeshot.JiveSdk.Clients
             httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", base64);
 
             HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Delete, url);
+
+            if (imposter != null)
+            {
+                requestMessage.Headers.Add("X-Jive-Run-As", "userid " + imposter);
+            }
+
             HttpResponseMessage activityResponse = httpClient.SendAsync(requestMessage).Result;
 
             if (!activityResponse.IsSuccessStatusCode)
