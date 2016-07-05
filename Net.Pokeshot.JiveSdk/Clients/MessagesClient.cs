@@ -72,11 +72,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                     switch (e.GetHttpCode())
                     {
                         case 400:
-                            throw new HttpException(e.WebEventCode, "An input field is malformed");
+                            throw new HttpException(e.WebEventCode, "An input field is malformed", e);
                         case 403:
-                            throw new HttpException(e.WebEventCode, "You are not allowed to access the specified content object or its messages");
+                            throw new HttpException(e.WebEventCode, "You are not allowed to access the specified content object or its messages", e);
                         case 404:
-                            throw new HttpException(e.WebEventCode, "The specified content object does not exist");
+                            throw new HttpException(e.WebEventCode, "The specified content object does not exist", e);
                         default:
                             throw;
                     }
@@ -131,11 +131,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "An input field is missing or malformed");
+                        throw new HttpException(e.WebEventCode, "An input field is missing or malformed", e);
                     case 403:
-                        throw new HttpException(e.WebEventCode, "You are not allowed to access the specified comment");
+                        throw new HttpException(e.WebEventCode, "You are not allowed to access the specified comment", e);
                     case 404:
-                        throw new HttpException(e.WebEventCode, "The specified comment does not exist");
+                        throw new HttpException(e.WebEventCode, "The specified comment does not exist", e);
                     default:
                         throw;
                 }
@@ -208,11 +208,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                     switch (e.GetHttpCode())
                     {
                         case 400:
-                            throw new HttpException(e.WebEventCode, "An input field is malformed");
+                            throw new HttpException(e.WebEventCode, "An input field is malformed", e);
                         case 403:
-                            throw new HttpException(e.WebEventCode, "You are not allowed to access the specified message or its replies");
+                            throw new HttpException(e.WebEventCode, "You are not allowed to access the specified message or its replies", e);
                         case 404:
-                            throw new HttpException(e.WebEventCode, "The specified message does not exist");
+                            throw new HttpException(e.WebEventCode, "The specified message does not exist", e);
                         default:
                             throw;
                     }

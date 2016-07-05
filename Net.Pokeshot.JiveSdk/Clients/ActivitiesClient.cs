@@ -61,9 +61,9 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "An input field is missing or malformed");
+                        throw new HttpException(e.WebEventCode, "An input field is missing or malformed", e);
                     case 403:
-                        throw new HttpException(e.WebEventCode, "You are not allowed to create this activity stream entry");
+                        throw new HttpException(e.WebEventCode, "You are not allowed to create this activity stream entry", e);
                     default:
                         throw;
                 }
@@ -120,11 +120,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
             {
                 switch (e.GetHttpCode()) {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "The specified stream ID is missing or malformed");
+                        throw new HttpException(e.WebEventCode, "The specified stream ID is missing or malformed", e);
                     case 403:
-                        throw new HttpException(e.WebEventCode, "The requesting user is not allowed to retrieve activities for the specified stream");
+                        throw new HttpException(e.WebEventCode, "The requesting user is not allowed to retrieve activities for the specified stream", e);
                     case 404:
-                        throw new HttpException(e.WebEventCode, "The activities or the specified stream is not found");
+                        throw new HttpException(e.WebEventCode, "The activities or the specified stream is not found", e);
                     default:
                         throw;
                 }
@@ -158,7 +158,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "An input field is missing or malformed");
+                        throw new HttpException(e.WebEventCode, "An input field is missing or malformed", e);
                     default:
                         throw;
                 }
@@ -196,11 +196,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "Any required parameters are missing or malformed");
+                        throw new HttpException(e.WebEventCode, "Any required parameters are missing or malformed", e);
                     case 403:
-                        throw new HttpException(e.WebEventCode, "The requesting user is not allowed to retrieve recently viewed places");
+                        throw new HttpException(e.WebEventCode, "The requesting user is not allowed to retrieve recently viewed places", e);
                     case 404:
-                        throw new HttpException(e.WebEventCode, "The places are not found");
+                        throw new HttpException(e.WebEventCode, "The places are not found", e);
                     default:
                         throw;
                 }
@@ -250,11 +250,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "Any required parameters are missing or malformed");
+                        throw new HttpException(e.WebEventCode, "Any required parameters are missing or malformed", e);
                     case 403:
-                        throw new HttpException(e.WebEventCode, "The requesting user is not allowed to retrieve frequently viewed content");
+                        throw new HttpException(e.WebEventCode, "The requesting user is not allowed to retrieve frequently viewed content", e);
                     case 404:
-                        throw new HttpException(e.WebEventCode, "The content is not found");
+                        throw new HttpException(e.WebEventCode, "The content is not found", e);
                     default:
                         throw;
                 }
@@ -294,11 +294,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "Any required parameters are missing or malformed");
+                        throw new HttpException(e.WebEventCode, "Any required parameters are missing or malformed", e);
                     case 403:
-                        throw new HttpException(e.WebEventCode, "The requesting user is not allowed to retrieve frequently viewed people");
+                        throw new HttpException(e.WebEventCode, "The requesting user is not allowed to retrieve frequently viewed people", e);
                     case 404:
-                        throw new HttpException(e.WebEventCode, "The people are not found");
+                        throw new HttpException(e.WebEventCode, "The people are not found", e);
                     default:
                         throw;
                 }
@@ -338,11 +338,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "The required parameters are missing or malformed");
+                        throw new HttpException(e.WebEventCode, "The required parameters are missing or malformed", e);
                     case 403:
-                        throw new HttpException(e.WebEventCode, "The requesting user is not allowed to retrieve frequently viewed places");
+                        throw new HttpException(e.WebEventCode, "The requesting user is not allowed to retrieve frequently viewed places", e);
                     case 404:
-                        throw new HttpException(e.WebEventCode, "The places are not found");
+                        throw new HttpException(e.WebEventCode, "The places are not found", e);
                     default:
                         throw;
                 }
@@ -395,11 +395,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "Any required parameters are missing or malformed");
+                        throw new HttpException(e.WebEventCode, "Any required parameters are missing or malformed", e);
                     case 403:
-                        throw new HttpException(e.WebEventCode, "The requesting user is not allowed to retrieve recently viewed content");
+                        throw new HttpException(e.WebEventCode, "The requesting user is not allowed to retrieve recently viewed content", e);
                     case 404:
-                        throw new HttpException(e.WebEventCode, "The content is not found");
+                        throw new HttpException(e.WebEventCode, "The content is not found", e);
                     default:
                         throw;
                 }
@@ -439,11 +439,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "Any required parameters are missing or malformed");
+                        throw new HttpException(e.WebEventCode, "Any required parameters are missing or malformed", e);
                     case 403:
-                        throw new HttpException(e.WebEventCode, "The requesting user is not allowed to retrieve recently viewed people");
+                        throw new HttpException(e.WebEventCode, "The requesting user is not allowed to retrieve recently viewed people", e);
                     case 404:
-                        throw new HttpException(e.WebEventCode, "The people are not found");
+                        throw new HttpException(e.WebEventCode, "The people are not found", e);
                     default:
                         throw;
                 }
@@ -483,11 +483,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "Any required parameters are missing or malformed");
+                        throw new HttpException(e.WebEventCode, "Any required parameters are missing or malformed", e);
                     case 403:
-                        throw new HttpException(e.WebEventCode, "The requesting user is not allowed to retrieve recently viewed places");
+                        throw new HttpException(e.WebEventCode, "The requesting user is not allowed to retrieve recently viewed places", e);
                     case 404:
-                        throw new HttpException(e.WebEventCode, "The places are not found");
+                        throw new HttpException(e.WebEventCode, "The places are not found", e);
                     default:
                         throw;
                 }
@@ -529,9 +529,9 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "An input field is malformed");
+                        throw new HttpException(e.WebEventCode, "An input field is malformed", e);
                     case 403:
-                        throw new HttpException(e.WebEventCode, "The requesting user is not authorize to retrieve this information");
+                        throw new HttpException(e.WebEventCode, "The requesting user is not authorize to retrieve this information", e);
                     default:
                         throw;
                 }
@@ -571,11 +571,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "Any required parameters are missing or malformed");
+                        throw new HttpException(e.WebEventCode, "Any required parameters are missing or malformed", e);
                     case 403:
-                        throw new HttpException(e.WebEventCode, "The requesting user is not allowed to retrieve frequently viewed people");
+                        throw new HttpException(e.WebEventCode, "The requesting user is not allowed to retrieve frequently viewed people", e);
                     case 404:
-                        throw new HttpException(e.WebEventCode, "The people are not found");
+                        throw new HttpException(e.WebEventCode, "The people are not found", e);
                     default:
                         throw;
                 }

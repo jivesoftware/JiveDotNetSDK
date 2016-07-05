@@ -38,11 +38,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.GetHttpCode(), "An input field is missing or malformed");
+                        throw new HttpException(e.WebEventCode, "An input field is missing or malformed", e);
                     case 403:
-                        throw new HttpException(e.GetHttpCode(), "You are not allowed to access or mark this content as abusive");
+                        throw new HttpException(e.WebEventCode, "You are not allowed to access or mark this content as abusive", e);
                     case 404:
-                        throw new HttpException(e.GetHttpCode(), "The specified content does not exist");
+                        throw new HttpException(e.WebEventCode, "The specified content does not exist", e);
                     default:
                         throw;
                 }
@@ -82,11 +82,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.GetHttpCode(), "An input field is missing or malformed");
+                        throw new HttpException(e.WebEventCode, "An input field is missing or malformed", e);
                     case 403:
-                        throw new HttpException(e.GetHttpCode(), "You are not allowed to access or mark this content as abusive");
+                        throw new HttpException(e.WebEventCode, "You are not allowed to access or mark this content as abusive", e);
                     case 404:
-                        throw new HttpException(e.GetHttpCode(), "The specified content does not exist");
+                        throw new HttpException(e.WebEventCode, "The specified content does not exist", e);
                     default:
                         throw;
                 }
@@ -137,11 +137,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                     switch (e.GetHttpCode())
                     {
                         case 400:
-                            throw new HttpException(e.GetHttpCode(), "An input field is missing or malformed");
+                            throw new HttpException(e.WebEventCode, "An input field is missing or malformed", e);
                         case 403:
-                            throw new HttpException(e.GetHttpCode(), "You are not allowed to access this comment");
+                            throw new HttpException(e.WebEventCode, "You are not allowed to access this comment", e);
                         case 404:
-                            throw new HttpException(e.GetHttpCode(), "The specified comment does not exist");
+                            throw new HttpException(e.WebEventCode, "The specified comment does not exist", e);
                         default:
                             throw;
                     }
@@ -211,11 +211,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.GetHttpCode(), "An input field is missing or malformed");
+                        throw new HttpException(e.WebEventCode, "An input field is missing or malformed", e);
                     case 403:
-                        throw new HttpException(e.GetHttpCode(), "You are not allowed to perform this operation");
+                        throw new HttpException(e.WebEventCode, "You are not allowed to perform this operation", e);
                     case 404:
-                        throw new HttpException(e.GetHttpCode(), "The specified parent content object (or comment) cannot be found");
+                        throw new HttpException(e.WebEventCode, "The specified parent content object (or comment) cannot be found", e);
                     default:
                         throw;
                 }
@@ -287,13 +287,13 @@ namespace Net.Pokeshot.JiveSdk.Clients
                     switch (e.GetHttpCode())
                     {
                         case 400:
-                            throw new HttpException(e.GetHttpCode(), "An input field is malformed");
+                            throw new HttpException(e.WebEventCode, "An input field is malformed", e);
                         case 403:
-                            throw new HttpException(e.GetHttpCode(), "You are not allowed to access the specified content object or comments");
+                            throw new HttpException(e.WebEventCode, "You are not allowed to access the specified content object or comments", e);
                         case 404:
-                            throw new HttpException(e.GetHttpCode(), "The specified content object does not exist");
+                            throw new HttpException(e.WebEventCode, "The specified content object does not exist", e);
                         case 501:
-                            throw new HttpException(e.GetHttpCode(), "The specified content object is of a type that does not support comments");
+                            throw new HttpException(e.WebEventCode, "The specified content object is of a type that does not support comments", e);
                         default:
                             throw;
                     }
@@ -369,11 +369,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.GetHttpCode(), "An input field is malformed");
+                        throw new HttpException(e.WebEventCode, "An input field is malformed", e);
                     case 403:
-                        throw new HttpException(e.GetHttpCode(), "You are not allowed to access the specified content");
+                        throw new HttpException(e.WebEventCode, "You are not allowed to access the specified content", e);
                     case 409:
-                        throw new HttpException(e.GetHttpCode(), "The new entity would conflict with system restrictions (such as two contents of the same type with the same name)");
+                        throw new HttpException(e.WebEventCode, "The new entity would conflict with system restrictions (such as two contents of the same type with the same name)", e);
                 }
             }
 
@@ -401,11 +401,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
             {
                 switch (e.GetHttpCode()){
                     case 400:
-                        throw new HttpException(e.GetHttpCode(), "An input field is malformed");
+                        throw new HttpException(e.WebEventCode, "An input field is malformed", e);
                     case 403:
-                        throw new HttpException(e.GetHttpCode(), "You are not allowed to access the specified content object");
+                        throw new HttpException(e.WebEventCode, "You are not allowed to access the specified content object", e);
                     case 404:
-                        throw new HttpException(e.GetHttpCode(), "The specified content does not exist");
+                        throw new HttpException(e.WebEventCode, "The specified content does not exist", e);
                 }
             }
 
@@ -444,11 +444,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.GetHttpCode(), "An input field is malformed");
+                        throw new HttpException(e.WebEventCode, "An input field is malformed", e);
                     case 403:
-                        throw new HttpException(e.GetHttpCode(), "You are not allowed to access the specified content object");
+                        throw new HttpException(e.WebEventCode, "You are not allowed to access the specified content object", e);
                     case 404:
-                        throw new HttpException(e.GetHttpCode(), "The specified content does not exist");
+                        throw new HttpException(e.WebEventCode, "The specified content does not exist", e);
                     default:
                         throw;
                 }
@@ -478,11 +478,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 403:
-                        throw new HttpException(e.GetHttpCode(), "The requesting user is not allowed to retrieve this binary data");
+                        throw new HttpException(e.WebEventCode, "The requesting user is not allowed to retrieve this binary data", e);
                     case 404:
-                        throw new HttpException(e.GetHttpCode(), "Specified content object does not exist");
+                        throw new HttpException(e.WebEventCode, "Specified content object does not exist", e);
                     case 409:
-                        throw new HttpException(e.GetHttpCode(), "Attempted to return binary data for a non-file content object");
+                        throw new HttpException(e.WebEventCode, "Attempted to return binary data for a non-file content object", e);
                     default:
                         throw;
                 }
@@ -529,11 +529,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                     switch (e.GetHttpCode())
                     {
                         case 400:
-                            throw new HttpException(e.GetHttpCode(), "The request criteria are malformed");
+                            throw new HttpException(e.WebEventCode, "The request criteria are malformed", e);
                         case 403:
-                            throw new HttpException(e.GetHttpCode(), "The requesting user is not authorize to retrieve this user information");
+                            throw new HttpException(e.WebEventCode, "The requesting user is not authorize to retrieve this user information", e);
                         case 404:
-                            throw new HttpException(e.GetHttpCode(), "The specified user cannot be found");
+                            throw new HttpException(e.WebEventCode, "The specified user cannot be found", e);
                         default:
                             throw;
                     }
@@ -570,13 +570,13 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.GetHttpCode(), "An input field is malformed");
+                        throw new HttpException(e.WebEventCode, "An input field is malformed", e);
                     case 403:
-                        throw new HttpException(e.GetHttpCode(), "You are not allowed to access or like this content object");
+                        throw new HttpException(e.WebEventCode, "You are not allowed to access or like this content object", e);
                     case 404:
-                        throw new HttpException(e.GetHttpCode(), "The specified content object does not exist");
+                        throw new HttpException(e.WebEventCode, "The specified content object does not exist", e);
                     case 409:
-                        throw new HttpException(e.GetHttpCode(), "You are not allowed to like this content object (e.g. own content cannot be liked)");
+                        throw new HttpException(e.WebEventCode, "You are not allowed to like this content object (e.g. own content cannot be liked)", e);
                     default:
                         throw;
                 }
@@ -602,13 +602,13 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.GetHttpCode(), "An input field is malformed");
+                        throw new HttpException(e.WebEventCode, "An input field is malformed", e);
                     case 403:
-                        throw new HttpException(e.GetHttpCode(), "You are not allowed to access or unlike this content object");
+                        throw new HttpException(e.WebEventCode, "You are not allowed to access or unlike this content object", e);
                     case 404:
-                        throw new HttpException(e.GetHttpCode(), "The specified content object does not exist");
+                        throw new HttpException(e.WebEventCode, "The specified content object does not exist", e);
                     case 409:
-                        throw new HttpException(e.GetHttpCode(), "You do not currently have a like registered for this content object");
+                        throw new HttpException(e.WebEventCode, "You do not currently have a like registered for this content object", e);
                     default:
                         throw;
                 }
@@ -655,11 +655,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                     switch (e.GetHttpCode())
                     {
                         case 400:
-                            throw new HttpException(e.GetHttpCode(), "An input field is malformed");
+                            throw new HttpException(e.WebEventCode, "An input field is malformed", e);
                         case 403:
-                            throw new HttpException(e.GetHttpCode(), "You are not allowed to access this content object");
+                            throw new HttpException(e.WebEventCode, "You are not allowed to access this content object", e);
                         case 404:
-                            throw new HttpException(e.GetHttpCode(), "The specified content object does not exist");
+                            throw new HttpException(e.WebEventCode, "The specified content object does not exist", e);
                         default:
                             throw;
                     }
@@ -774,7 +774,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
                     switch (e.GetHttpCode())
                     {
                         case 400:
-                            throw new HttpException(e.GetHttpCode(), "An input field is malformed");
+                            throw new HttpException(e.WebEventCode, "An input field is malformed", e);
                         default:
                             throw;
                     }
@@ -860,11 +860,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                     switch (e.GetHttpCode())
                     {
                         case 400:
-                            throw new HttpException(e.GetHttpCode(), "An input field is malformed");
+                            throw new HttpException(e.WebEventCode, "An input field is malformed", e);
                         case 403:
-                            throw new HttpException(e.GetHttpCode(), "You are not allowed to access this content object");
+                            throw new HttpException(e.WebEventCode, "You are not allowed to access this content object", e);
                         case 404:
-                            throw new HttpException(e.GetHttpCode(), "The specified place in the filter does not exist");
+                            throw new HttpException(e.WebEventCode, "The specified place in the filter does not exist", e);
                         default:
                             throw;
                     }
@@ -928,11 +928,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                     switch (e.GetHttpCode())
                     {
                         case 400:
-                            throw new HttpException(e.GetHttpCode(), "An input field is missing or malformed");
+                            throw new HttpException(e.WebEventCode, "An input field is missing or malformed", e);
                         case 403:
-                            throw new HttpException(e.GetHttpCode(), "You are not allowed to access this comment");
+                            throw new HttpException(e.WebEventCode, "You are not allowed to access this comment", e);
                         case 404:
-                            throw new HttpException(e.GetHttpCode(), "The specified comment does not exist");
+                            throw new HttpException(e.WebEventCode, "The specified comment does not exist", e);
                         default:
                             throw;
                     }
@@ -982,7 +982,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 403:
-                        throw new HttpException(e.GetHttpCode(), "You are not allowed to access the specified content object");
+                        throw new HttpException(e.WebEventCode, "You are not allowed to access the specified content object", e);
                     default:
                         throw;
                 }
@@ -1012,13 +1012,13 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.GetHttpCode(), "An input field is missing or malformed");
+                        throw new HttpException(e.WebEventCode, "An input field is missing or malformed", e);
                     case 403:
-                        throw new HttpException(e.GetHttpCode(), "You are not allowed to access or mark this content as helpful");
+                        throw new HttpException(e.WebEventCode, "You are not allowed to access or mark this content as helpful", e);
                     case 404:
-                        throw new HttpException(e.GetHttpCode(), "The specified content object does not exist");
+                        throw new HttpException(e.WebEventCode, "The specified content object does not exist", e);
                     case 409:
-                        throw new HttpException(e.GetHttpCode(), "This type of content cannot be marked as helpful");
+                        throw new HttpException(e.WebEventCode, "This type of content cannot be marked as helpful", e);
                     default:
                         throw;
                 }
@@ -1045,13 +1045,13 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.GetHttpCode(), "An input field is missing or malformed");
+                        throw new HttpException(e.WebEventCode, "An input field is missing or malformed", e);
                     case 403:
-                        throw new HttpException(e.GetHttpCode(), "You are not allowed to access or mark this content as unhelpful");
+                        throw new HttpException(e.WebEventCode, "You are not allowed to access or mark this content as unhelpful", e);
                     case 404:
-                        throw new HttpException(e.GetHttpCode(), "The specified content object does not exist");
+                        throw new HttpException(e.WebEventCode, "The specified content object does not exist", e);
                     case 409:
-                        throw new HttpException(e.GetHttpCode(), "This type of content cannot be marked as unhelpful");
+                        throw new HttpException(e.WebEventCode, "This type of content cannot be marked as unhelpful", e);
                     default:
                         throw;
                 }
@@ -1077,13 +1077,13 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.GetHttpCode(), "An input field is malformed");
+                        throw new HttpException(e.WebEventCode, "An input field is malformed", e);
                     case 403:
-                        throw new HttpException(e.GetHttpCode(), "You are not allowed to access or remove the registration of this content as helpful");
+                        throw new HttpException(e.WebEventCode, "You are not allowed to access or remove the registration of this content as helpful", e);
                     case 404:
-                        throw new HttpException(e.GetHttpCode(), "The specified content does not exist");
+                        throw new HttpException(e.WebEventCode, "The specified content does not exist", e);
                     case 409:
-                        throw new HttpException(e.GetHttpCode(), "You do not currently have a helpful mark registered for this content");
+                        throw new HttpException(e.WebEventCode, "You do not currently have a helpful mark registered for this content", e);
                     default:
                         throw;
                 }
@@ -1109,13 +1109,13 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.GetHttpCode(), "An input field is malformed");
+                        throw new HttpException(e.WebEventCode, "An input field is malformed", e);
                     case 403:
-                        throw new HttpException(e.GetHttpCode(), "You are not allowed to access or remove the registration of this content as unhelpful");
+                        throw new HttpException(e.WebEventCode, "You are not allowed to access or remove the registration of this content as unhelpful", e);
                     case 404:
-                        throw new HttpException(e.GetHttpCode(), "The specified content does not exist");
+                        throw new HttpException(e.WebEventCode, "The specified content does not exist", e);
                     case 409:
-                        throw new HttpException(e.GetHttpCode(), "You do not currently have a unhelpful mark registered for this content");
+                        throw new HttpException(e.WebEventCode, "You do not currently have a unhelpful mark registered for this content", e);
                     default:
                         throw;
                 }
@@ -1153,11 +1153,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.GetHttpCode(), "An input field is malformed");
+                        throw new HttpException(e.WebEventCode, "An input field is malformed", e);
                     case 403:
-                        throw new HttpException(e.GetHttpCode(), "You are not allowed to view the content or its preview");
+                        throw new HttpException(e.WebEventCode, "You are not allowed to view the content or its preview", e);
                     case 404:
-                        throw new HttpException(e.GetHttpCode(), "The specified content does not exist or a preview does not exist for the content item");
+                        throw new HttpException(e.WebEventCode, "The specified content does not exist or a preview does not exist for the content item", e);
                     default:
                         throw;
                 }
@@ -1225,13 +1225,13 @@ namespace Net.Pokeshot.JiveSdk.Clients
                     switch (e.GetHttpCode())
                     {
                         case 400:
-                            throw new HttpException(e.GetHttpCode(), "An input field is malformed");
+                            throw new HttpException(e.WebEventCode, "An input field is malformed", e);
                         case 403:
-                            throw new HttpException(e.GetHttpCode(), "You are not allowed to access the specified content object");
+                            throw new HttpException(e.WebEventCode, "You are not allowed to access the specified content object", e);
                         case 404:
-                            throw new HttpException(e.GetHttpCode(), "The specified place in the filter does not exist");
+                            throw new HttpException(e.WebEventCode, "The specified place in the filter does not exist", e);
                         case 410:
-                            throw new HttpException(e.GetHttpCode(), "Recommendation feature is disabled");
+                            throw new HttpException(e.WebEventCode, "Recommendation feature is disabled", e);
                         default:
                             throw;
                     }
@@ -1293,7 +1293,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
                     switch (e.GetHttpCode())
                     {
                         case 403:
-                            throw new HttpException(e.GetHttpCode(), "You are not allowed to access the specified content object");
+                            throw new HttpException(e.WebEventCode, "You are not allowed to access the specified content object", e);
                         default:
                             throw;
                     }
@@ -1366,13 +1366,13 @@ namespace Net.Pokeshot.JiveSdk.Clients
                     switch (e.GetHttpCode())
                     {
                         case 400:
-                            throw new HttpException(e.GetHttpCode(), "An input field is malformed");
+                            throw new HttpException(e.WebEventCode, "An input field is malformed", e);
                         case 403:
-                            throw new HttpException(e.GetHttpCode(), "You are not allowed to access the specified content object");
+                            throw new HttpException(e.WebEventCode, "You are not allowed to access the specified content object", e);
                         case 404:
-                            throw new HttpException(e.GetHttpCode(), "The specified place in the filter does not exist");
+                            throw new HttpException(e.WebEventCode, "The specified place in the filter does not exist", e);
                         case 410:
-                            throw new HttpException(e.GetHttpCode(), "Recommendation feature is disabled");
+                            throw new HttpException(e.WebEventCode, "Recommendation feature is disabled", e);
                         default:
                             throw;
                     }
@@ -1436,13 +1436,13 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.GetHttpCode(), "An input field is malformed");
+                        throw new HttpException(e.WebEventCode, "An input field is malformed", e);
                     case 403:
-                        throw new HttpException(e.GetHttpCode(), "You are not allowed to access the specified content object, or to make the requested change in content object state");
+                        throw new HttpException(e.WebEventCode, "You are not allowed to access the specified content object, or to make the requested change in content object state", e);
                     case 404:
-                        throw new HttpException(e.GetHttpCode(), "The specified content does not exist");
+                        throw new HttpException(e.WebEventCode, "The specified content does not exist", e);
                     case 409:
-                        throw new HttpException(e.GetHttpCode(), "The new entity would conflict with system restrictions (such as two content objects of the same type with the same subject");
+                        throw new HttpException(e.WebEventCode, "The new entity would conflict with system restrictions (such as two content objects of the same type with the same subject", e);
                     default:
                         throw;
                 }
