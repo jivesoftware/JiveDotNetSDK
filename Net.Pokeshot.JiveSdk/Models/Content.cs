@@ -9,7 +9,7 @@ namespace Net.Pokeshot.JiveSdk.Models
     public class Content
     {
         public Person author { get; set; }
-        public Attachment attachments { get; set; }
+        public List<Attachment> attachments { get; set; }
         public List<string> categories { get; set; }
         public ContentBody content { get; set; }
         public string contentID { get; set; }
@@ -22,6 +22,7 @@ namespace Net.Pokeshot.JiveSdk.Models
         public string highlightTags { get; set; }
         public string iconCss { get; set; }
         public string id { get; set; }
+        public DateTime lastActivityDate { get; set; }
         public int likeCount { get; set; }
         public Object outcomeCounts { get; set; }
         public List<string> outcomeTypeNames { get; set; }
@@ -33,7 +34,7 @@ namespace Net.Pokeshot.JiveSdk.Models
         public Boolean parentVisible { get; set; }
         public DateTime published { get; set; }
         public int replyCount { get; set; }
-        public Object recources { get; set; }
+        public Resources.Resources resources { get; set; }
         public string status { get; set; }
         public string subject { get; set; }
         public List<string> tags { get; set; }

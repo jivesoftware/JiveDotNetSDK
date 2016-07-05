@@ -10,7 +10,7 @@ namespace Net.Pokeshot.JiveSdk.Models.Dto
         public JiveDEAActor actor { get; set; }
         public string action { get; set; }
         public JiveDEAActionObject actionObject { get; set; }
-        public int activityTime { get; set; }
+        public long activityTime { get; set; }
         public JiveDEADestination destination { get; set; }
 
     }

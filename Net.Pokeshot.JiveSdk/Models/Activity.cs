@@ -8,7 +8,7 @@ namespace Net.Pokeshot.JiveSdk.Models
 {
     public class Activity
     {
-        public ActivityObject actor { get; set; }
+        public PersonActivityObject actor { get; set; }
         public string content { get; set; }
         public ActivityObject generator { get; set; }
         public MediaLink icon { get; set; }
@@ -108,6 +108,19 @@ namespace Net.Pokeshot.JiveSdk.Models
     {
         public string gadget { get; set; }
         public string previewImage { get; set; }
+        public string url { get; set; }
+    }
+    public class PersonActivityObject
+    {
+        public string displayName { get; set; }
+        public string email { get; set; }
+        public string id { get; set; }
+        public MediaLink image { get; set; }
+        public JivePerson jive { get; set; }
+        public Name name { get; set; }
+        public string objectType { get; set; }
+        public DateTime published { get; set; }
+        public DateTime updated { get; set; }
         public string url { get; set; }
     }
 }
