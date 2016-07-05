@@ -93,9 +93,9 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 403:
-                        throw new HttpException(e.WebEventCode, "Specified user is not the authenticated user");
+                        throw new HttpException(e.GetHttpCode(), "Specified user is not the authenticated user");
                     case 404:
-                        throw new HttpException(e.WebEventCode, "Specified user does not exist");
+                        throw new HttpException(e.GetHttpCode(), "Specified user does not exist");
                     default:
                         throw;
                 }
@@ -129,13 +129,13 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "An input field was malformed");
+                        throw new HttpException(e.GetHttpCode(), "An input field was malformed");
                     case 403:
-                        throw new HttpException(e.WebEventCode, "You are not allowed to perfrom this operation");
+                        throw new HttpException(e.GetHttpCode(), "You are not allowed to perfrom this operation");
                     case 404:
-                        throw new HttpException(e.WebEventCode, "Specified user does not exist");
+                        throw new HttpException(e.GetHttpCode(), "Specified user does not exist");
                     case 410:
-                        throw new HttpException(e.WebEventCode, "Expertise feature is disabled");
+                        throw new HttpException(e.GetHttpCode(), "Expertise feature is disabled");
                     default:
                         throw;
                 }
@@ -162,11 +162,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 403:
-                        throw new HttpException(e.WebEventCode, "You are not allowed to perform this operation");
+                        throw new HttpException(e.GetHttpCode(), "You are not allowed to perform this operation");
                     case 404:
-                        throw new HttpException(e.WebEventCode, "Specified tag or person does not exist");
+                        throw new HttpException(e.GetHttpCode(), "Specified tag or person does not exist");
                     case 410:
-                        throw new HttpException(e.WebEventCode, "Expertise feature is disabled");
+                        throw new HttpException(e.GetHttpCode(), "Expertise feature is disabled");
                     default:
                         throw;
                 }
@@ -193,9 +193,9 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 403:
-                        throw new HttpException(e.WebEventCode, "Requesting user is not allowed to create this relationship");
+                        throw new HttpException(e.GetHttpCode(), "Requesting user is not allowed to create this relationship");
                     case 404:
-                        throw new HttpException(e.WebEventCode, "One of both of the specified users cannot be found");
+                        throw new HttpException(e.GetHttpCode(), "One of both of the specified users cannot be found");
                     default:
                         throw;
                 }
@@ -224,13 +224,13 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "An input field was malformed");
+                        throw new HttpException(e.GetHttpCode(), "An input field was malformed");
                     case 403:
-                        throw new HttpException(e.WebEventCode, "Specified user is not the authenticated user");
+                        throw new HttpException(e.GetHttpCode(), "Specified user is not the authenticated user");
                     case 404:
-                        throw new HttpException(e.WebEventCode, "Specified user does not exist");
+                        throw new HttpException(e.GetHttpCode(), "Specified user does not exist");
                     case 409:
-                        throw new HttpException(e.WebEventCode, "Requested change would cause business rules to be violated");
+                        throw new HttpException(e.GetHttpCode(), "Requested change would cause business rules to be violated");
                     default:
                         throw;
                 }
@@ -282,17 +282,17 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "Any of the input fields are malformed");
+                        throw new HttpException(e.GetHttpCode(), "Any of the input fields are malformed");
                     case 403:
-                        throw new HttpException(e.WebEventCode, "Requesting user is not authorized to make changes to the specified user");
+                        throw new HttpException(e.GetHttpCode(), "Requesting user is not authorized to make changes to the specified user");
                     case 404:
-                        throw new HttpException(e.WebEventCode, "Specified user does not exist");
+                        throw new HttpException(e.GetHttpCode(), "Specified user does not exist");
                     case 409:
-                        throw new HttpException(e.WebEventCode, "Requested change would cause business rules to be violated (such as more than one user with the same email address");
+                        throw new HttpException(e.GetHttpCode(), "Requested change would cause business rules to be violated (such as more than one user with the same email address");
                     case 500:
-                        throw new HttpException(e.WebEventCode, "Internal server error (e.g. username must be valid email address)");
+                        throw new HttpException(e.GetHttpCode(), "Internal server error (e.g. username must be valid email address)");
                     case 501:
-                        throw new HttpException(e.WebEventCode, "User creation is not supported in this Jive instance");
+                        throw new HttpException(e.GetHttpCode(), "User creation is not supported in this Jive instance");
                     default:
                         throw;
                 }
@@ -321,9 +321,9 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 403:
-                        throw new HttpException(e.WebEventCode, "You are not allowed to perform this operation");
+                        throw new HttpException(e.GetHttpCode(), "You are not allowed to perform this operation");
                     case 404:
-                        throw new HttpException(e.WebEventCode, "Specified tag or person does not exist");
+                        throw new HttpException(e.GetHttpCode(), "Specified tag or person does not exist");
                     default:
                         throw;
                 }
@@ -349,11 +349,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 403:
-                        throw new HttpException(e.WebEventCode, "Requesting user is not authorized to perform this operation");
+                        throw new HttpException(e.GetHttpCode(), "Requesting user is not authorized to perform this operation");
                     case 404:
-                        throw new HttpException(e.WebEventCode, "Specified user or profile image cannot be found");
+                        throw new HttpException(e.GetHttpCode(), "Specified user or profile image cannot be found");
                     case 409:
-                        throw new HttpException(e.WebEventCode, "Attempt to delete an avatar that cannot be deleted");
+                        throw new HttpException(e.GetHttpCode(), "Attempt to delete an avatar that cannot be deleted");
                     default:
                         throw;
                 }
@@ -379,9 +379,9 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 403:
-                        throw new HttpException(e.WebEventCode, "You are not allowed to perform this operation");
+                        throw new HttpException(e.GetHttpCode(), "You are not allowed to perform this operation");
                     case 404:
-                        throw new HttpException(e.WebEventCode, "Specified tag or person does not exist");
+                        throw new HttpException(e.GetHttpCode(), "Specified tag or person does not exist");
                     default:
                         throw;
                 }
@@ -408,11 +408,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 403:
-                        throw new HttpException(e.WebEventCode, "Requesting user is not allowed to delete this relationship");
+                        throw new HttpException(e.GetHttpCode(), "Requesting user is not allowed to delete this relationship");
                     case 404:
-                        throw new HttpException(e.WebEventCode, "One of both of the specified users cannot be found");
+                        throw new HttpException(e.GetHttpCode(), "One of both of the specified users cannot be found");
                     case 409:
-                        throw new HttpException(e.WebEventCode, "Following relationship does not exist between these two users");
+                        throw new HttpException(e.GetHttpCode(), "Following relationship does not exist between these two users");
                     default:
                         throw;
                 }
@@ -440,13 +440,13 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "Specified ID is malformed");
+                        throw new HttpException(e.GetHttpCode(), "Specified ID is malformed");
                     case 403:
-                        throw new HttpException(e.WebEventCode, "Requesting user is not authorized to delete this user (Jive admin only)");
+                        throw new HttpException(e.GetHttpCode(), "Requesting user is not authorized to delete this user (Jive admin only)");
                     case 404:
-                        throw new HttpException(e.WebEventCode, "ID does not identity a valid user");
+                        throw new HttpException(e.GetHttpCode(), "ID does not identity a valid user");
                     case 501:
-                        throw new HttpException(e.WebEventCode, "User deletion is not supported in this Jive instance");
+                        throw new HttpException(e.GetHttpCode(), "User deletion is not supported in this Jive instance");
                     default:
                         throw;
                 }
@@ -500,11 +500,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "Specified user ID is missing or malformed");
+                        throw new HttpException(e.GetHttpCode(), "Specified user ID is missing or malformed");
                     case 403:
-                        throw new HttpException(e.WebEventCode, "The requesting user is not allowed to retrieve activities for the specified user");
+                        throw new HttpException(e.GetHttpCode(), "The requesting user is not allowed to retrieve activities for the specified user");
                     case 404:
-                        throw new HttpException(e.WebEventCode, "The activities or the specified user is not found");
+                        throw new HttpException(e.GetHttpCode(), "The activities or the specified user is not found");
                     default:
                         throw;
                 }
@@ -714,9 +714,9 @@ namespace Net.Pokeshot.JiveSdk.Clients
                     switch (e.GetHttpCode())
                     {
                         case 400:
-                            throw new HttpException(e.WebEventCode, "Request criteria are malformed");
+                            throw new HttpException(e.GetHttpCode(), "Request criteria are malformed");
                         case 403:
-                            throw new HttpException(e.WebEventCode, "Requesting user is not authorize to retrieve this user information");
+                            throw new HttpException(e.GetHttpCode(), "Requesting user is not authorize to retrieve this user information");
                         default:
                             throw;
                     }
@@ -764,11 +764,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "Specified ID is malformed");
+                        throw new HttpException(e.GetHttpCode(), "Specified ID is malformed");
                     case 403:
-                        throw new HttpException(e.WebEventCode, "Requesting user is not authorize to retrieve this user");
+                        throw new HttpException(e.GetHttpCode(), "Requesting user is not authorize to retrieve this user");
                     case 404:
-                        throw new HttpException(e.WebEventCode, "ID does not identify a valid user");
+                        throw new HttpException(e.GetHttpCode(), "ID does not identify a valid user");
                     default:
                         throw;
                 }
@@ -809,11 +809,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "Specified email address is malformed");
+                        throw new HttpException(e.GetHttpCode(), "Specified email address is malformed");
                     case 403:
-                        throw new HttpException(e.WebEventCode, "Requesting user is not authorize to retrieve this user");
+                        throw new HttpException(e.GetHttpCode(), "Requesting user is not authorize to retrieve this user");
                     case 404:
-                        throw new HttpException(e.WebEventCode, "Email address does not identify a valid user");
+                        throw new HttpException(e.GetHttpCode(), "Email address does not identify a valid user");
                     default:
                         throw;
                 }
@@ -857,11 +857,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "Specified username is malformed");
+                        throw new HttpException(e.GetHttpCode(), "Specified username is malformed");
                     case 403:
-                        throw new HttpException(e.WebEventCode, "Requesting user is not authorize to retrieve this user");
+                        throw new HttpException(e.GetHttpCode(), "Requesting user is not authorize to retrieve this user");
                     case 404:
-                        throw new HttpException(e.WebEventCode, "username does not identify a valid user");
+                        throw new HttpException(e.GetHttpCode(), "username does not identify a valid user");
                     default:
                         throw;
                 }

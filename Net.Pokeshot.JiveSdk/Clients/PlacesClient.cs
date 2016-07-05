@@ -121,11 +121,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "An input field is malformed");
+                        throw new HttpException(e.GetHttpCode(), "An input field is malformed");
                     case 403:
-                        throw new HttpException(e.WebEventCode, "You are not allowed to access the specified content or place");
+                        throw new HttpException(e.GetHttpCode(), "You are not allowed to access the specified content or place");
                     case 409:
-                        throw new HttpException(e.WebEventCode, "The new entity would conflict with system restrictions (such as two contents of the same type with the same name");
+                        throw new HttpException(e.GetHttpCode(), "The new entity would conflict with system restrictions (such as two contents of the same type with the same name");
                     default:
                         throw;
                 }
@@ -192,11 +192,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "An input field is malformed");
+                        throw new HttpException(e.GetHttpCode(), "An input field is malformed");
                     case 403:
-                        throw new HttpException(e.WebEventCode, "You are not allowed to access the specified place");
+                        throw new HttpException(e.GetHttpCode(), "You are not allowed to access the specified place");
                     case 409:
-                        throw new HttpException(e.WebEventCode, "The new entity would conflict with system restrictions (such as two places of the same type with the same name");
+                        throw new HttpException(e.GetHttpCode(), "The new entity would conflict with system restrictions (such as two places of the same type with the same name");
                     default:
                         throw;
                 }
@@ -241,11 +241,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "An input field is missing or malformed");
+                        throw new HttpException(e.GetHttpCode(), "An input field is missing or malformed");
                     case 403:
-                        throw new HttpException(e.WebEventCode, "You are not allowed to create announcements in the specified place");
+                        throw new HttpException(e.GetHttpCode(), "You are not allowed to create announcements in the specified place");
                     case 404:
-                        throw new HttpException(e.WebEventCode, "The specified parent place cannot be found");
+                        throw new HttpException(e.GetHttpCode(), "The specified parent place cannot be found");
                     default:
                         throw;
                 }
@@ -292,11 +292,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "An input field is malformed or max number of categories has been reached");
+                        throw new HttpException(e.GetHttpCode(), "An input field is malformed or max number of categories has been reached");
                     case 403:
-                        throw new HttpException(e.WebEventCode, "You are not allowed to manage categories for the place");
+                        throw new HttpException(e.GetHttpCode(), "You are not allowed to manage categories for the place");
                     case 409:
-                        throw new HttpException(e.WebEventCode, "The new entity would conflict with system restrictions (such as two categories with the same name");
+                        throw new HttpException(e.GetHttpCode(), "The new entity would conflict with system restrictions (such as two categories with the same name");
                     default:
                         throw;
                 }
@@ -324,11 +324,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "An input field is malformed");
+                        throw new HttpException(e.GetHttpCode(), "An input field is malformed");
                     case 403:
-                        throw new HttpException(e.WebEventCode, "You are not allowed to access the specified place");
+                        throw new HttpException(e.GetHttpCode(), "You are not allowed to access the specified place");
                     case 404:
-                        throw new HttpException(e.WebEventCode, "The specified place does not exist");
+                        throw new HttpException(e.GetHttpCode(), "The specified place does not exist");
                     default:
                         throw;
                 }
@@ -353,11 +353,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "An input field is malformed");
+                        throw new HttpException(e.GetHttpCode(), "An input field is malformed");
                     case 403:
-                        throw new HttpException(e.WebEventCode, "You are not allowed to delete this image");
+                        throw new HttpException(e.GetHttpCode(), "You are not allowed to delete this image");
                     case 404:
-                        throw new HttpException(e.WebEventCode, "The specified place or image does not exist");
+                        throw new HttpException(e.GetHttpCode(), "The specified place or image does not exist");
                     default:
                         throw;
                 }
@@ -432,11 +432,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                     switch (e.GetHttpCode())
                     {
                         case 400:
-                            throw new HttpException(e.WebEventCode, "An input field is malformed");
+                            throw new HttpException(e.GetHttpCode(), "An input field is malformed");
                         case 403:
-                            throw new HttpException(e.WebEventCode, "You are not allowed to access the specified content object or place");
+                            throw new HttpException(e.GetHttpCode(), "You are not allowed to access the specified content object or place");
                         case 404:
-                            throw new HttpException(e.WebEventCode, "The specified place does not exist");
+                            throw new HttpException(e.GetHttpCode(), "The specified place does not exist");
                         default:
                             throw;
                     }
@@ -490,11 +490,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "An input field is malformed");
+                        throw new HttpException(e.GetHttpCode(), "An input field is malformed");
                     case 403:
-                        throw new HttpException(e.WebEventCode, "You are not allowed to access the specified place");
+                        throw new HttpException(e.GetHttpCode(), "You are not allowed to access the specified place");
                     case 404:
-                        throw new HttpException(e.WebEventCode, "The specified place does not exist");
+                        throw new HttpException(e.GetHttpCode(), "The specified place does not exist");
                     default:
                         throw;
                 }
@@ -548,9 +548,9 @@ namespace Net.Pokeshot.JiveSdk.Clients
                     switch (e.GetHttpCode())
                     {
                         case 400:
-                            throw new HttpException(e.WebEventCode, "An input field is missing or malformed");
+                            throw new HttpException(e.GetHttpCode(), "An input field is missing or malformed");
                         case 403:
-                            throw new HttpException(e.WebEventCode, "You are not allowed to access the requested announcements");
+                            throw new HttpException(e.GetHttpCode(), "You are not allowed to access the requested announcements");
                         default:
                             throw;
                     }
@@ -608,7 +608,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
                     switch (e.GetHttpCode())
                     {
                         case 400:
-                            throw new HttpException(e.WebEventCode, "An input field is malformed");
+                            throw new HttpException(e.GetHttpCode(), "An input field is malformed");
                         default:
                             throw;
                     }
@@ -659,9 +659,9 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "An input field is malformed");
+                        throw new HttpException(e.GetHttpCode(), "An input field is malformed");
                     case 404:
-                        throw new HttpException(e.WebEventCode, "If the specified category does not exist");
+                        throw new HttpException(e.GetHttpCode(), "If the specified category does not exist");
                     default:
                         throw;
                 }
@@ -776,11 +776,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                     switch (e.GetHttpCode())
                     {
                         case 400:
-                            throw new HttpException(e.WebEventCode, "An input field is malformed");
+                            throw new HttpException(e.GetHttpCode(), "An input field is malformed");
                         case 403:
-                            throw new HttpException(e.WebEventCode, "You are not allowed to access this place");
+                            throw new HttpException(e.GetHttpCode(), "You are not allowed to access this place");
                         case 404:
-                            throw new HttpException(e.WebEventCode, "The specified place does not exist");
+                            throw new HttpException(e.GetHttpCode(), "The specified place does not exist");
                         default:
                             throw;
                     }
@@ -897,9 +897,9 @@ namespace Net.Pokeshot.JiveSdk.Clients
                     switch (e.GetHttpCode())
                     {
                         case 400:
-                            throw new HttpException(e.WebEventCode, "An input field is malformed");
+                            throw new HttpException(e.GetHttpCode(), "An input field is malformed");
                         case 403:
-                            throw new HttpException(e.WebEventCode, "You are not allowed to access this place");
+                            throw new HttpException(e.GetHttpCode(), "You are not allowed to access this place");
                         default:
                             throw;
                     }
