@@ -38,15 +38,15 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "If any input field is malformed, or the ID does not specify an idea");
+                        throw new HttpException(e.WebEventCode, "If any input field is malformed, or the ID does not specify an idea", e);
                     case 403:
-                        throw new HttpException(e.WebEventCode, "If you are not allowed to access the specified content object");
+                        throw new HttpException(e.WebEventCode, "If you are not allowed to access the specified content object", e);
                     case 404:
-                        throw new HttpException(e.WebEventCode, "If the specified content object does not exist");
+                        throw new HttpException(e.WebEventCode, "If the specified content object does not exist", e);
                     case 409:
-                        throw new HttpException(e.WebEventCode, "You attempted to vote on an issue for which voting has been disabled");
+                        throw new HttpException(e.WebEventCode, "You attempted to vote on an issue for which voting has been disabled", e);
                     case 410:
-                        throw new HttpException(e.WebEventCode, "If this Jive instance is not licensed for the Ideation module");
+                        throw new HttpException(e.WebEventCode, "If this Jive instance is not licensed for the Ideation module", e);
                 }
             }
 
@@ -97,13 +97,13 @@ namespace Net.Pokeshot.JiveSdk.Clients
                     switch (e.GetHttpCode())
                     {
                         case 400:
-                            throw new HttpException(e.WebEventCode, "If any input field is malformed, or the ID does not specify an idea");
+                            throw new HttpException(e.WebEventCode, "If any input field is malformed, or the ID does not specify an idea", e);
                         case 403:
-                            throw new HttpException(e.WebEventCode, "If you are not allowed to access the specified content object");
+                            throw new HttpException(e.WebEventCode, "If you are not allowed to access the specified content object", e);
                         case 404:
-                            throw new HttpException(e.WebEventCode, "If the specified content object does not exist");
+                            throw new HttpException(e.WebEventCode, "If the specified content object does not exist", e);
                         case 410:
-                            throw new HttpException(e.WebEventCode, "If this Jive instance is not licensed for the Ideation module");
+                            throw new HttpException(e.WebEventCode, "If this Jive instance is not licensed for the Ideation module", e);
                         default:
                             throw;
                     }
