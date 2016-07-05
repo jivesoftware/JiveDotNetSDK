@@ -84,7 +84,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
                     switch (e.GetHttpCode())
                     {
                         case 400:
-                            throw new HttpException(e.WebEventCode, "An input field is malformed");
+                            throw new HttpException(e.WebEventCode, "An input field is malformed", e);
                         default:
                             throw;
                     }
@@ -132,9 +132,9 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "An input field is malformed");
+                        throw new HttpException(e.WebEventCode, "An input field is malformed", e);
                     case 404:
-                        throw new HttpException(e.WebEventCode, "The specified deleted object entity does not exist");
+                        throw new HttpException(e.WebEventCode, "The specified deleted object entity does not exist", e);
                     default:
                         throw;
                 }
@@ -199,7 +199,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
                     switch (e.GetHttpCode())
                     {
                         case 400:
-                            throw new HttpException(e.WebEventCode, "An input field is malformed");
+                            throw new HttpException(e.WebEventCode, "An input field is malformed", e);
                         default:
                             throw;
                     }
@@ -286,7 +286,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
                     switch (e.GetHttpCode())
                     {
                         case 400:
-                            throw new HttpException(e.WebEventCode, "An input field is malformed");
+                            throw new HttpException(e.WebEventCode, "An input field is malformed", e);
                         default:
                             throw;
                     }

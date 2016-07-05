@@ -63,13 +63,13 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "An input field is missing or malformed");
+                        throw new HttpException(e.WebEventCode, "An input field is missing or malformed", e);
                     case 403:
-                        throw new HttpException(e.WebEventCode, "You are not allowed to perform this operation");
+                        throw new HttpException(e.WebEventCode, "You are not allowed to perform this operation", e);
                     case 404:
-                        throw new HttpException(e.WebEventCode, "The specified parent object (or comment) could not be found");
+                        throw new HttpException(e.WebEventCode, "The specified parent object (or comment) could not be found", e);
                     case 409:
-                        throw new HttpException(e.WebEventCode, "Attempt to add a comment to a content object that does not support them, or for which comments have been closed");
+                        throw new HttpException(e.WebEventCode, "Attempt to add a comment to a content object that does not support them, or for which comments have been closed", e);
                 }
             }
 
@@ -110,11 +110,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "An input field is missing or malformed");
+                        throw new HttpException(e.WebEventCode, "An input field is missing or malformed", e);
                     case 403:
-                        throw new HttpException(e.WebEventCode, "You are not allowed to access the specified comment");
+                        throw new HttpException(e.WebEventCode, "You are not allowed to access the specified comment", e);
                     case 404:
-                        throw new HttpException(e.WebEventCode, "The specified comment does not exist");
+                        throw new HttpException(e.WebEventCode, "The specified comment does not exist", e);
                     default:
                         throw;
                 }

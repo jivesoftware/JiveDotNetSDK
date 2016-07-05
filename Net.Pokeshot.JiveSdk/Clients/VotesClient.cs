@@ -35,11 +35,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 switch (e.GetHttpCode())
                 {
                     case 400:
-                        throw new HttpException(e.WebEventCode, "An input field is missing or malformed");
+                        throw new HttpException(e.WebEventCode, "An input field is missing or malformed", e);
                     case 403:
-                        throw new HttpException(e.WebEventCode, "You are not allowed to access the specified poll");
+                        throw new HttpException(e.WebEventCode, "You are not allowed to access the specified poll", e);
                     case 404:
-                        throw new HttpException(e.WebEventCode, "The specified poll does not exist");
+                        throw new HttpException(e.WebEventCode, "The specified poll does not exist", e);
                     default:
                         throw;
                 }
