@@ -76,6 +76,56 @@ namespace Net.Pokeshot.JiveSdk.Clients
         }
 
         /// <summary>
+        /// Method used for importing content from another site and an author for the content is required. The method first checks to see if any user
+        /// with the external user's email is already present on the site, and returns it if present, otherwise getting or creating and returning
+        /// a default "anonymous" user to be used for the import.
+        /// Note: this will print an error message to the console if the email tried isn't present, this can be commented out in GetAbsolute in JiveClient
+        /// </summary>
+        /// <param name="email">the email from the external site (usually the author of the external content)</param>
+        /// <returns>a Person object that can be used as the author for the newly imported content</returns>
+        public Person FindPersonByEmail(string email)
+        {
+            Person person = null;
+            bool found = false;
+            try
+            {
+                person = GetPersonByEmail(email);
+                found = true;
+            }
+            catch (HttpException)
+            {
+                found = false; //shouldn't be necessary, but just to make sure found isn't set to true when no user is found
+            }
+            if (!found)
+            {
+                try
+                {
+                    person = GetPersonByUsername("anonymous@test.com");
+                }
+                catch (HttpException)
+                {
+                    person = new Person();
+                    person.emails = new List<ProfileEntry>();
+                    person.emails.Add(new ProfileEntry());
+                    person.emails[0].value = "anonymous@test.com"; //use some dummy address here, Jive requires this field not be null
+                    person.emails[0].jive_label = "Email";
+                    person.emails[0].primary = true;
+                    person.emails[0].type = "work";
+                    person.jive = new JivePerson();
+                    person.jive.username = "anonymous";
+                    person.jive.password = "guest";
+                    person.name = new Name();
+                    person.name.familyName = "Guest";
+                    person.name.givenName = "Anonymous";
+                    person.type = "person";
+                    person = CreatePerson(person);
+                }
+            }
+
+            return person;
+        }
+
+        /// <summary>
         /// Accept the terms and conditions for the authenticated user.
         /// </summary>
         /// <param name="personID">Authenticated user. User @me or the ID of the authenticated user.</param>
