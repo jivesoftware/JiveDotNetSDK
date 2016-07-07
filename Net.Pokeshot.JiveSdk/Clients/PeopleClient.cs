@@ -100,7 +100,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
             {
                 try
                 {
-                    person = GetPersonByUsername("anonymous@test.com");
+                    person = GetPersonByUsername("anonymous");
                 }
                 catch (HttpException)
                 {
