@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net;
+using System.Threading;
 using System.Web;
 using Newtonsoft.Json.Linq;
 using Net.Pokeshot.JiveSdk.Models;
@@ -14,15 +15,45 @@ namespace Net.Pokeshot.JiveSdk.Clients
 {
     public abstract class JiveClient
     {
-        private NetworkCredential _credential;
+        private readonly NetworkCredential _credential;
         protected string JiveCommunityUrl;
-        private int? imposter = null;
-        
-        public JiveClient(string communityUrl, NetworkCredential cred)
+        private int? _imposter = null;
+        private static int _numGets = 0;
+        private static int _numPosts = 0;
+        private static int _numPuts = 0;
+        private static int _numDeletes = 0;
+
+        protected JiveClient(string communityUrl, NetworkCredential cred)
         {
             JiveCommunityUrl = communityUrl;
             _credential = cred;
         }
+
+        /// <summary>
+        /// The number of Get Requests made by ALL of the SDK methods from any instance of JiveClient.
+        /// The counter is thread safe.
+        /// </summary>
+        // The CompareExchange is used to ensure that the most recent value gets returned.
+        public static int NumGets => Interlocked.CompareExchange(ref _numGets, 0, 0);
+
+        /// <summary>
+        /// The number of Post Requests made by ALL of the SDK methods from any instance of JiveClient.
+        /// The counter is thread safe.
+        /// </summary>
+        public static int NumPosts => Interlocked.CompareExchange(ref _numPosts, 0, 0);
+
+        /// <summary>
+        /// The number of Put Requests made by ALL of the SDK methods from any instance of JiveClient.
+        /// The counter is thread safe.
+        /// </summary>
+        public static int NumPuts => Interlocked.CompareExchange(ref _numPuts, 0, 0);
+
+        /// <summary>
+        /// The number of Delete Requests made by ALL of the SDK methods from any instance of JiveClient.
+        /// The counter is thread safe.
+        /// </summary>
+        public static int NumDeletes => Interlocked.CompareExchange(ref _numDeletes, 0, 0);
+
 
         /// <summary>
         /// Run a method as another Jive User. You're Jive instance must support the X-Jive-Run-As header. You must be authenticated as admin.
@@ -33,9 +64,9 @@ namespace Net.Pokeshot.JiveSdk.Clients
         /// <returns></returns>
         public T RunAs<T>(int personId, Func<T> method)
         {
-            imposter = personId;
+            _imposter = personId;
             var returnVal = method();
-            imposter = null;
+            _imposter = null;
 
             return returnVal;
         }
@@ -68,9 +99,9 @@ namespace Net.Pokeshot.JiveSdk.Clients
             HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
             requestMessage.Headers.Add("Authorization", authorization);
 
-            if(imposter != null)
+            if(_imposter != null)
             {
-                requestMessage.Headers.Add("X-Jive-Run-As", "userid " + imposter);
+                requestMessage.Headers.Add("X-Jive-Run-As", "userid " + _imposter);
             }
 
             HttpResponseMessage activityResponse = httpClient.SendAsync(requestMessage).Result;
@@ -88,6 +119,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
             //Remove the string Jive includes in every response from the REST API  
             string cleanResponseActivities = myActivityResponse.Replace("throw 'allowIllegalResourceCall is false.';", "");
 
+            Interlocked.Increment(ref _numGets);
             return cleanResponseActivities;
         }
 
@@ -111,9 +143,9 @@ namespace Net.Pokeshot.JiveSdk.Clients
 
             HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
 
-            if (imposter != null)
+            if (_imposter != null)
             {
-                requestMessage.Headers.Add("X-Jive-Run-As", "userid " + imposter);
+                requestMessage.Headers.Add("X-Jive-Run-As", "userid " + _imposter);
             }
 
             HttpResponseMessage activityResponse = httpClient.SendAsync(requestMessage).Result;
@@ -129,6 +161,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
 
             Byte[] myActivityResponse = activityResponse.Content.ReadAsByteArrayAsync().Result;
 
+            Interlocked.Increment(ref _numGets);
             return myActivityResponse;
         }
 
@@ -155,9 +188,9 @@ namespace Net.Pokeshot.JiveSdk.Clients
 
             HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, url);
 
-            if (imposter != null)
+            if (_imposter != null)
             {
-                requestMessage.Headers.Add("X-Jive-Run-As", "userid " + imposter);
+                requestMessage.Headers.Add("X-Jive-Run-As", "userid " + _imposter);
             }
 
             requestMessage.Content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -176,6 +209,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
             //Remove the string Jive includes in every response from the REST API  
             string cleanResponseActivities = myActivityResponse.Replace("throw 'allowIllegalResourceCall is false.';", "");
 
+            Interlocked.Increment(ref _numPosts);
             return cleanResponseActivities;
         }
 
@@ -202,9 +236,9 @@ namespace Net.Pokeshot.JiveSdk.Clients
 
             HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Put, url);
 
-            if (imposter != null)
+            if (_imposter != null)
             {
-                requestMessage.Headers.Add("X-Jive-Run-As", "userid " + imposter);
+                requestMessage.Headers.Add("X-Jive-Run-As", "userid " + _imposter);
             }
 
             requestMessage.Content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -223,6 +257,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
             //Remove the string Jive includes in every response from the REST API  
             string cleanResponseActivities = myActivityResponse.Replace("throw 'allowIllegalResourceCall is false.';", "");
 
+            Interlocked.Increment(ref _numPuts);
             return cleanResponseActivities;
         }
 
@@ -247,9 +282,9 @@ namespace Net.Pokeshot.JiveSdk.Clients
 
             HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Delete, url);
 
-            if (imposter != null)
+            if (_imposter != null)
             {
-                requestMessage.Headers.Add("X-Jive-Run-As", "userid " + imposter);
+                requestMessage.Headers.Add("X-Jive-Run-As", "userid " + _imposter);
             }
 
             HttpResponseMessage activityResponse = httpClient.SendAsync(requestMessage).Result;
@@ -267,6 +302,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
             //Remove the string Jive includes in every response from the REST API  
             string cleanResponseActivities = myActivityResponse.Replace("throw 'allowIllegalResourceCall is false.';", "");
 
+            Interlocked.Increment(ref _numDeletes);
             return cleanResponseActivities;
         }
 
