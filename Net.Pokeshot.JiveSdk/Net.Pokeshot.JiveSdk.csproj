@@ -207,7 +207,7 @@
     <Compile Include="Models\Dto\JiveDEAActivity.cs" />
     <Compile Include="Models\Dto\JiveDEAActivityInstance.cs" />
     <Compile Include="Models\Dto\JiveDEAActivityInstanceElement.cs" />
-    <Compile Include="Models\Dto\JiveDEAActor.cs" />
+    <Compile Include="Models\Dto\JiveDEAPerson.cs" />
     <Compile Include="Models\Dto\JiveDEAActorProfile.cs" />
     <Compile Include="Models\Dto\JiveDEAContext.cs" />
     <Compile Include="Models\Dto\JiveDEADestination.cs" />
