@@ -56,6 +56,17 @@ namespace Net.Pokeshot.JiveSdk.Clients
 
 
         /// <summary>
+        /// Resets the counters to 0. This function is thread safe.
+        /// </summary>
+        public static void ResetApiCounters()
+        {
+            Interlocked.Exchange(ref _numGets, 0);
+            Interlocked.Exchange(ref _numPosts, 0);
+            Interlocked.Exchange(ref _numPuts, 0);
+            Interlocked.Exchange(ref _numDeletes, 0);
+        }
+
+        /// <summary>
         /// Run a method as another Jive User. You're Jive instance must support the X-Jive-Run-As header. You must be authenticated as admin.
         /// </summary>
         /// <typeparam name="T">The return type of method</typeparam>

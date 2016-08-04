@@ -21,6 +21,11 @@ namespace Net.Pokeshot.JiveSdk.Clients
         public List<JiveDEAActivityInstance> GetActivity(List<string> filter = null, int count = 100, List<string> fields = null, DateTime? before = null, DateTime? after = null,
             bool showAll = false)
         {
+            // Jive's DES server seems to off by a few seconds. When making calls using before or after, if either is ahead of the Jive's server, we get a 400 Bad Request Error.
+            // For that reason, we push back the these values by 20 seconds. It should be noted that this is problem may get resolved later or not appear on certain clients.
+            before = before?.AddSeconds(-20);
+            after = after?.AddSeconds(-20);
+
             List<JiveDEAActivityInstance> activityList = new List<JiveDEAActivityInstance>();
 
             string url = _desUrl + "/activity";
