@@ -33,6 +33,7 @@ namespace Net.Pokeshot.JiveSdk.Models.Dto
         public string parentType { get; set; }
         public long lastProfileUpdate { get; set; }
         public long lastLoggedIn { get; set; }
+        public JiveDEAPerson author { get; set; }
 
     }
 }

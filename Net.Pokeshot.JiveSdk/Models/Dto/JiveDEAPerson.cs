@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Net.Pokeshot.JiveSdk.Models.Dto
 {
-    public class JiveDEAActor
+    public class JiveDEAPerson
     {
         public string @class { get; set; }    
         public string objectType {get;set;}
