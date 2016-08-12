@@ -32,7 +32,7 @@ namespace Net.Pokeshot.JiveSdk.Models
 
         // Specific to File
         public List<Person> authors { get; set; }
-        public string autorship { get; set; }
+        //public string authorship { get; set; }
         public string binaryURL { get; set; }
         public string contentType { get; set; }
         //public Boolean restrictComments { get; set; }

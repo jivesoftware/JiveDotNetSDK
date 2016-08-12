@@ -172,7 +172,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
         /// </summary>
         /// <param name="fields">Fields to be included in returned place entities</param>
         /// <returns></returns>
-        public List<Activity> GetDiscoveryChannel(List<string> fields = null)
+        public List<Place> GetDiscoveryChannel(List<string> fields = null)
         {
             string url = JiveCommunityUrl + "/api/core/v3/activities/discovery";
             if (fields != null && fields.Count > 0)
@@ -207,7 +207,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
             }
             JObject results = JObject.Parse(json);
 
-            return results["list"].ToObject<List<Activity>>();
+            return results["list"].ToObject<List<Place>>();
         }
         /// <summary>
         /// Return the most frequently viewed content that is visible to the requesting person.

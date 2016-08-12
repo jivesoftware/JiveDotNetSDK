@@ -15,7 +15,7 @@ namespace Net.Pokeshot.JiveSdk.Models
         public string contentID { get; set; }
         public List<Image> contentImages { get; set; }
         public List<ContentVideo> contentVideos { get; set; }
-        public List<Person> extendendAuthors { get; set; }
+        public List<Person> extendedAuthors { get; set; }
         public int followerCount { get; set; }
         public string highlightBody { get; set; }
         public string highlightSubject { get; set; }

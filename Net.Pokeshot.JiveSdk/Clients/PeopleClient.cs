@@ -100,7 +100,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
             {
                 try
                 {
-                    person = GetPersonByUsername("anonymous");
+                    person = GetPersonByUsername("anonymous@test.com");
                 }
                 catch (HttpException)
                 {
@@ -353,6 +353,52 @@ namespace Net.Pokeshot.JiveSdk.Clients
         }
 
         /// <summary>
+        /// Create a personal task.
+        /// </summary>
+        /// <param name="personID">ID of the user for which to create a task</param>
+        /// <param name="task">Task object containing information describing the personal task</param>
+        /// <param name="fields">fields to return in the returned Task object</param>
+        /// <returns>a Task object representing the created task</returns>
+        public Models.Task CreateTask(int personID, Models.Task task, List<string> fields = null)
+        {
+            string url = peopleUrl + "/" + personID.ToString() + "/tasks";
+            if (fields != null && fields.Count > 0)
+            {
+                url += "?fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+
+            string json = JsonConvert.SerializeObject(task, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore, Formatting = Formatting.Indented });
+            string result;
+            try
+            {
+                result = PostAbsolute(url, json);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "Any of the input fields are malformed", e);
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "You are not allowed to access the specified content", e);
+                    case 409:
+                        throw new HttpException(e.WebEventCode, "New entity would conflict with system restrictions (such as two contents of the same type with the same name", e);
+                    default:
+                        throw;
+                }
+            }
+
+            JObject Json = JObject.Parse(result);
+            return Json.ToObject<Models.Task>();
+        }
+
+        /// <summary>
         /// Remove an expertise tag from a person.
         /// Note: backslashes are not allowed in the tagName string.
         /// </summary>
@@ -445,7 +491,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
         /// </summary>
         /// <param name="personID">ID of the user who is following</param>
         /// <param name="followedPersonID">ID of the user who is followed</param>
-        public void DestoryFollowing(int personID, int followedPersonID)
+        public void DestroyFollowing(int personID, int followedPersonID)
         {
             string url = peopleUrl + "/" + personID.ToString() + "/@following/" + followedPersonID.ToString();
 
@@ -477,7 +523,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
         /// WARNING = It is possible that errors during the deletion process might cause the delete to be abandoned.
         /// </summary>
         /// <param name="personID">ID of the person to be deleted</param>
-        public void DestoryPerson(int personID)
+        public void DestroyPerson(int personID)
         {
             string url = peopleUrl + "/" + personID.ToString();
 
@@ -497,6 +543,70 @@ namespace Net.Pokeshot.JiveSdk.Clients
                         throw new HttpException(e.WebEventCode, "ID does not identity a valid user", e);
                     case 501:
                         throw new HttpException(e.WebEventCode, "User deletion is not supported in this Jive instance", e);
+                    default:
+                        throw;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Delete the specified profile image for the specified user.
+        /// </summary>
+        /// <param name="personID">ID of the specified user</param>
+        /// <param name="index">1-relative index of the specified profile image</param>
+        public void DestroyProfileImage(int personID, int index)
+        {
+            string url = peopleUrl + "/";
+            url += personID.ToString() + "/images/";
+            url += index.ToString();
+
+            try
+            {
+                DeleteAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "Specified index is out of range", e);
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "Specified user or profile image cannot be found", e);
+                    case 410:
+                        throw new HttpException(e.WebEventCode, "Profile images are not enabled in this Jive instance", e);
+                    default:
+                        throw;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Delete (i.e. retire) an existing manager-report relationship between the specified manager user and the specified report user.
+        /// </summary>
+        /// <param name="personID">ID of the user which is the manager in the existing relationship</param>
+        /// <param name="reportPersonID">ID of the user which is the direct report in the existing relationship</param>
+        public void DestroyReport(int personID, int reportPersonID)
+        {
+            string url = peopleUrl + "/";
+            url += personID.ToString() + "/@reports/";
+            url += reportPersonID.ToString();
+
+            try
+            {
+                DeleteAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "Requesting user is not allowed to delete this relationship", e);
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "One or both of the specified users cannot be found", e);
+                    case 409:
+                        throw new HttpException(e.WebEventCode, "Manager-report relationship does not currently exist between these two users", e);
+                    case 410:
+                        throw new HttpException(e.WebEventCode, "Organization Chart relationships are not supported by this Jive instance", e);
                     default:
                         throw;
                 }
@@ -564,27 +674,727 @@ namespace Net.Pokeshot.JiveSdk.Clients
             return results["list"].ToObject<List<Activity>>();
         }
 
-        //GetAllPeople()
-        //GetAvatar()
-        //GetAvatarDeactivated()
-        //GetBlog()
-        //GetColleagues()
-        //GetCommonBidirectional()
+        /// <summary>
+        /// Return a paginated list of Persons for users that match the specified criteria. Users will be sorted by userID ascending.
+        /// </summary>
+        /// <param name="count">Maximum number of instances to be returned per Jive HTTP request</param>
+        /// <param name="startIndex">Zero-relative index of the first instance to be returned</param>
+        /// <param name="fields">Fields to be returned (or null for summary fields)</param>
+        /// <param name="includeDisabled">Include deactivated users (default=false)</param>
+        /// <param name="includeExternal">Include external users (default=false). These are users that represent external systems or are external people that have been invited to join a place.</param>
+        /// <param name="visibleOnly">Do not include invisible users (default=true means only visible users)</param>
+        /// <returns>a list of Person objects for users that match the specified criteria</returns>
+        public List<Person> GetAllPeople(int count = 25, int startIndex = 0, List<string> fields = null, bool includeDisabled = false, bool includeExternal = false,
+            bool visibleOnly = true)
+        {
+            List<Person> peopleList = new List<Person>();
+
+            //check for user provided filters for the request
+            List<string> filter = new List<string>();
+            if (includeDisabled == true) filter.Add("include-disabled(true)");
+            if (includeExternal == true) filter.Add("include-external(true)");
+            if (visibleOnly == false) filter.Add("visible-only(false)");
+
+            //construct the url for the HTTP request based on the user provided specifications
+            string url = peopleUrl + "/@all";
+            url += "?count=" + count.ToString();
+            if (startIndex != 0) url += "&startIndex=" + startIndex.ToString();
+            if (filter != null && filter.Count > 0)
+            {
+                foreach (var item in filter)
+                {
+                    url += "&filter=" + item;
+                }
+            }
+            if (fields != null && fields.Count > 0)
+            {
+                url += "&fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+
+            //Jive returns a paginated list that must be looped through
+            while (true)
+            {
+                string json;
+                try
+                {
+                    json = GetAbsolute(url);
+                }
+                catch (HttpException e)
+                {
+                    Console.WriteLine(e.Message);
+                    switch (e.GetHttpCode())
+                    {
+                        case 400:
+                            throw new HttpException(e.WebEventCode, "Request criteria are malformed", e);
+                        case 403:
+                            throw new HttpException(e.WebEventCode, "Requesting user is not authorized to retrieve this user information", e);
+                        default:
+                            throw;
+                    }
+                }
+
+                JObject results = JObject.Parse(json);
+
+                peopleList.AddRange(results["list"].ToObject<List<Person>>());
+
+                if (results["links"] == null || results["links"]["next"] == null)
+                    break;
+                else
+                    url = results["links"]["next"].ToString();
+            }
+
+            return peopleList;
+        }
+
+        /// <summary>
+        /// Return the binary content of the avatar image for the specified user.
+        /// </summary>
+        /// <param name="personID">ID of the user for which to return an avatar</param>
+        /// <param name="width">Suggested width for resizing the image. If image is small than the requested size then original size is preserved.</param>
+        /// <param name="height">Suggested height for resizing the image. If image is small than the requested size then original size is preserved.</param>
+        /// <param name="preserveAspectRatio">boolean indicating whether to preserve the original image's aspect ratio</param>
+        /// <returns>Binary content of the avatar image</returns>
+        public byte[] GetAvatar(int personID, int? width = null, int? height = null, bool? preserveAspectRatio = null)
+        {
+            //constructs the url for the HTTP request based on the user specifications
+            bool first = true;
+            string url = peopleUrl + "/" + personID.ToString() + "/avatar";
+            if (width != null)
+            {
+                url += "?width=" + width.Value.ToString();
+                first = false;
+            }
+            if (height != null)
+            {
+                if (first) url += "?height=" + height.Value.ToString();
+                else url += "&height=" + height.Value.ToString();
+                first = false;
+            }
+            if (preserveAspectRatio != null)
+            {
+                if (first) url += "?preserveAspectRatio=" + preserveAspectRatio.Value.ToString();
+                else url += "&preserveAspectRatio=" + preserveAspectRatio.Value.ToString();
+                first = false;
+            }
+
+            byte[] data;
+            try
+            {
+                data = GetBytesAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "Specified user ID is missing or malformed", e);
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "Requesting user is not allowed to retrieve the avatar for the specified user", e);
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "Avatar image for the specified user was not found", e);
+                    default:
+                        throw;
+                }
+            }
+
+            return data;
+        }
+
+        /// <summary>
+        /// Return the binary content of the avatar image for deactivated users.
+        /// </summary>
+        /// <param name="width">Suggested width for resizing the image (must be less than original width)</param>
+        /// <param name="height">Suggested height for resizing the image (must be less than original height)</param>
+        /// <param name="preserveAspectRatio">boolean indicating whether to preserve the original image's aspect ratio</param>
+        /// <returns>Binary content of the avatar image</returns>
+        public byte[] GetAvatarDeactivated(int? width = null, int? height = null, bool? preserveAspectRatio = null)
+        {
+            //constructs the url for the HTTP request based on the user specifications
+            bool first = true;
+            string url = peopleUrl + "/avatar/deactivated";
+            if (width != null)
+            {
+                url += "?width=" + width.Value.ToString();
+                first = false;
+            }
+            if (height != null)
+            {
+                if (first) url += "?height=" + height.Value.ToString();
+                else url += "&height=" + height.Value.ToString();
+                first = false;
+            }
+            if (preserveAspectRatio != null)
+            {
+                if (first) url += "?preserveAspectRatio=" + preserveAspectRatio.Value.ToString();
+                else url += "&preserveAspectRatio=" + preserveAspectRatio.Value.ToString();
+                first = false;
+            }
+
+            byte[] data;
+            try
+            {
+                data = GetBytesAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 500:
+                        throw new HttpException(e.WebEventCode, "Processing error occurred accessing the avatar image", e);
+                    default:
+                        throw;
+                }
+            }
+
+            return data;
+        }
+
+        /// <summary>
+        /// Return the personal blog for the specified user.
+        /// </summary>
+        /// <param name="personID">ID of the user for which to return a personal blog</param>
+        /// <param name="fields">Fields to be returned (default is @all)</param>
+        /// <returns>Blog object containing the person's blog</returns>
+        public Blog GetBlog(int personID, List<string> fields = null)
+        {
+            //constucts the url for the HTTP request based on the user specifications
+            string url = peopleUrl + "/" + personID.ToString() + "/blog";
+            if (fields != null && fields.Count > 0)
+            {
+                url += "?fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+
+            string json;
+            try
+            {
+                json = GetAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "Any input field was malformed", e);
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "You are not allowed to retrieve the blog for this user", e);
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "Specified user or blog does not exist", e);
+                    default:
+                        throw;
+                }
+            }
+
+            JObject Json = JObject.Parse(json);
+            return Json.ToObject<Blog>();
+        }
+
+        /// <summary>
+        /// Return a paginated list of Person objects about colleagues of the specified person (i.e. those who report to the same manager that this person does).
+        /// </summary>
+        /// <param name="personID">ID of the specified Jive user</param>
+        /// <param name="count">Maximum number of instances to be returned per Jive HTTP request (i.e. the page size)</param>
+        /// <param name="startIndex">Zero-relative index of the first instance to be returned</param>
+        /// <param name="fields">Fields to be returned (or null the summary fields)</param>
+        /// <returns>a list of Person objects listing the colleagues of the specified user</returns>
+        public List<Person> GetColleagues(int personID, int count = 25, int startIndex = 0, List<string> fields = null)
+        {
+            List<Person> peopleList = new List<Person>();
+
+            //constructs the url for the HTTP request based on the user specifications
+            string url = peopleUrl + "/" + personID.ToString() + "/@colleagues";
+            url += "?count=" + (count > 100 ? 100 : count).ToString();
+            url += "&startIndex=" + startIndex.ToString();
+            if (fields != null && fields.Count > 0)
+            {
+                url += "&fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+
+            //this loop repeats as many times as necessary to retrieve all of the objects
+            while (true)
+            {
+                string json;
+                try
+                {
+                    json = GetAbsolute(url);
+                }
+                catch (HttpException e)
+                {
+                    Console.WriteLine(e.Message);
+                    switch (e.GetHttpCode())
+                    {
+                        case 400:
+                            throw new HttpException(e.WebEventCode, "Request criteria are malformed", e);
+                        case 403:
+                            throw new HttpException(e.WebEventCode, "Requesting user is not authorized to retrieve this user information", e);
+                        case 404:
+                            throw new HttpException(e.WebEventCode, "Specified user cannot be found", e);
+                        case 410:
+                            throw new HttpException(e.WebEventCode, "Organization Chart relationships are not supported by this Jive instance", e);
+                        default:
+                            throw;
+                    }
+                }
+
+                JObject results = JObject.Parse(json);
+
+                peopleList.AddRange(results["list"].ToObject<List<Person>>());
+
+                if (results["links"] == null || results["links"]["next"] == null)
+                    break;
+                else
+                    url = results["links"]["next"].ToString();
+            }
+            return peopleList;
+        }
+
+        /// <summary>
+        /// Return a paginated list of Persons about bidirectionally related users that you and the specified person have in common
+        /// (i.e. any person whom you and the specified person are both following, and who is following both you and specified person).
+        /// </summary>
+        /// <param name="personID">ID of the specified Jive user</param>
+        /// <param name="count">Maximum number of instances to be returned per Jive HTTP request (i.e. the page size)</param>
+        /// <param name="startIndex">Zero-relative index of the first element returned</param>
+        /// <param name="fields">Fields to be returned (or null for summary fields)</param>
+        /// <returns>a list of Person objects listing the common bidirectionally related users</returns>
+        public List<Person> GetCommonBidirectional(int personID, int count = 25, int startIndex = 0, List<string> fields = null)
+        {
+            List<Person> peopleList = new List<Person>();
+
+            //constructs the url for the HTTP request based on the user specifications
+            string url = peopleUrl + "/" + personID.ToString() + "/@common";
+            url += "?count=" + (count > 100 ? 100 : count).ToString();
+            url += "&startIndex=" + startIndex.ToString();
+            if (fields != null && fields.Count > 0)
+            {
+                url += "&fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+
+            //this loop repeats as many times as necessary to retrieve all of the objects
+            while (true)
+            {
+                string json;
+                try
+                {
+                    json = GetAbsolute(url);
+                }
+                catch (HttpException e)
+                {
+                    Console.WriteLine(e.Message);
+                    switch (e.GetHttpCode())
+                    {
+                        case 400:
+                            throw new HttpException(e.WebEventCode, "Request criteria are malformed", e);
+                        case 403:
+                            throw new HttpException(e.WebEventCode, "Requesting user is not authorized to retrieve this user information", e);
+                        case 404:
+                            throw new HttpException(e.WebEventCode, "Specified user cannot be found", e);
+                        default:
+                            throw;
+                    }
+                }
+
+                JObject results = JObject.Parse(json);
+
+                peopleList.AddRange(results["list"].ToObject<List<Person>>());
+
+                if (results["links"] == null || results["links"]["next"] == null)
+                    break;
+                else
+                    url = results["links"]["next"].ToString();
+            }
+            return peopleList;
+        }
+
         //GetExtProps()
-        //GetExrPropsForAddOn()
-        //GetFeaturedContent()
-        //GetFilterableFields()
-        //GetFollowers()
-        //GetFollowing()
+        //GetExtPropsForAddOn()
+
+        /// <summary>
+        /// Return a list of featured content objects for the specified person.
+        /// </summary>
+        /// <param name="personID">ID of the person for which to retrieve featured content</param>
+        /// <param name="types">one or more object types of desired contained content objects (document, discussion, post, poll)</param>
+        /// <param name="fields">Fields to be returned on each content</param>
+        /// <param name="abridged">Flag indicating that if content.text is requested, it will be abridged (length shortened, HTML tags removed)</param>
+        /// <returns>a list of GenericContent objects containing the matched content objects</returns>
+        public List<GenericContent> GetFeaturedContent(int personID, List<string> types = null, List<string> fields = null, bool abridged = false)
+        {
+            List<GenericContent> contentList = new List<GenericContent>();
+            var filter = new List<string>();
+
+            if (types != null)
+            {
+                string typeFilter = "type(";
+                foreach (var type in types)
+                {
+                    typeFilter += type + ",";
+                }
+                // remove last comma
+                typeFilter = typeFilter.Remove(typeFilter.Length - 1);
+                typeFilter += ")";
+                filter.Add(typeFilter);
+            }
+
+            string url = peopleUrl + "/" + personID.ToString() + "/@featuredContent";
+            url += "?abridged=" + abridged.ToString();
+            if (filter != null && filter.Count > 0)
+            {
+                foreach (var item in filter)
+                {
+                    url += "&filter=" + item;
+                }
+            }
+            if (fields != null && fields.Count > 0)
+            {
+                url += "&fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+
+            //this loop repeats as many times as necessary to retrieve all of the objects
+            while (true)
+            {
+                string json;
+                try
+                {
+                    json = GetAbsolute(url);
+                }
+                catch (HttpException e)
+                {
+                    Console.WriteLine(e.Message);
+                    switch (e.GetHttpCode())
+                    {
+                        case 400:
+                            throw new HttpException(e.WebEventCode, "An input field was malformed", e);
+                        case 403:
+                            throw new HttpException(e.WebEventCode, "You are not allowed to access the specified content object", e);
+                        case 404:
+                            throw new HttpException(e.WebEventCode, "Specified person does not exist, or their container is missing", e);
+                        default:
+                            throw;
+                    }
+                }
+
+                JObject results = JObject.Parse(json);
+
+                contentList.AddRange(results["list"].ToObject<List<GenericContent>>());
+
+                if (results["links"] == null || results["links"]["next"] == null)
+                    break;
+                else
+                    url = results["links"]["next"].ToString();
+            }
+            return contentList;
+        }
+
+        /// <summary>
+        /// Return the set of fields that can be used for filtering users in this Jive instance.
+        /// </summary>
+        /// <returns>a list of strings</returns>
+        public List<string> GetFilterableFields()
+        {
+            string url = peopleUrl + "/@filterableFields";
+
+            string json;
+            try
+            {
+                json = GetAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+
+            json = "{result: " + json + "}";
+            JObject results = JObject.Parse(json);
+            return results["result"].ToObject<List<string>>();
+        }
+
+        /// <summary>
+        /// Return a paginated list of Persons about people who are following the specified person.
+        /// </summary>
+        /// <param name="personID">ID of the specified person</param>
+        /// <param name="count">Maximum number of instances to be returned (i.e. the page size)</param>
+        /// <param name="startIndex">Zero-relative index of the first instance to be returned</param>
+        /// <param name="fields">Fields to be returned (or null for summary fields)</param>
+        /// <returns>a list of Person objects listing the people following the specified person</returns>
+        public List<Person> GetFollowers(int personID, int count = 25, int startIndex = 0, List<string> fields = null)
+        {
+            List<Person> peopleList = new List<Person>();
+
+            //constructs the url for the HTTP request based on the user specifications
+            string url = peopleUrl + "/" + personID.ToString() + "/@followers";
+            url += "?count=" + (count > 100 ? 100 : count).ToString();
+            url += "&startIndex=" + startIndex.ToString();
+            if (fields != null && fields.Count > 0)
+            {
+                url += "&fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+
+            //this loop repeats as many times as necessary to retrieve all of the objects
+            while (true)
+            {
+                string json;
+                try
+                {
+                    json = GetAbsolute(url);
+                }
+                catch (HttpException e)
+                {
+                    switch (e.GetHttpCode())
+                    {
+                        case 400:
+                            throw new HttpException(e.WebEventCode, "Request criteria are malformed", e);
+                        case 403:
+                            throw new HttpException(e.WebEventCode, "Requesting user is not authorized to retrieve this user information", e);
+                        case 404:
+                            throw new HttpException(e.WebEventCode, "Specified user cannot be found", e);
+                        default:
+                            throw;
+                    }
+                }
+
+                JObject results = JObject.Parse(json);
+
+                peopleList.AddRange(results["list"].ToObject<List<Person>>());
+
+                if (results["links"] == null || results["links"]["next"] == null)
+                    break;
+                else
+                    url = results["links"]["next"].ToString();
+            }
+            return peopleList;
+        }
+
+        /// <summary>
+        /// Return a paginated list of Persons about people the specified person is following.
+        /// </summary>
+        /// <param name="personID">ID of the specified person</param>
+        /// <param name="count">Maximum number of instances to be returned (i.e. the page size)</param>
+        /// <param name="startIndex">Zero-relative index of the first instance to be returned</param>
+        /// <param name="fields">Fields to be returned (or null for summary fields)</param>
+        /// <returns>a list of Person objects listing the people the specified person is following</returns>
+        public List<Person> GetFollowing(int personID, int count = 25, int startIndex = 0, List<string> fields = null)
+        {
+            List<Person> peopleList = new List<Person>();
+
+            //constructs the url for the HTTP request based on the user specifications
+            string url = peopleUrl + "/" + personID.ToString() + "/@following";
+            url += "?count=" + (count > 100 ? 100 : count).ToString();
+            url += "&startIndex=" + startIndex.ToString();
+            if (fields != null && fields.Count > 0)
+            {
+                url += "&fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+
+            //this loop repeats as many times as necessary to retrieve all of the objects
+            while (true)
+            {
+                string json;
+                try
+                {
+                    json = GetAbsolute(url);
+                }
+                catch (HttpException e)
+                {
+                    switch (e.GetHttpCode())
+                    {
+                        case 400:
+                            throw new HttpException(e.WebEventCode, "Request criteria are malformed", e);
+                        case 403:
+                            throw new HttpException(e.WebEventCode, "Requesting user is not authorized to retrieve this user information", e);
+                        case 404:
+                            throw new HttpException(e.WebEventCode, "Specified user cannot be found", e);
+                        default:
+                            throw;
+                    }
+                }
+
+                JObject results = JObject.Parse(json);
+
+                peopleList.AddRange(results["list"].ToObject<List<Person>>());
+
+                if (results["links"] == null || results["links"]["next"] == null)
+                    break;
+                else
+                    url = results["links"]["next"].ToString();
+            }
+            return peopleList;
+        }
+
         //GetFollowingIn()
-        //GetFollowingPerson()
-        //GetManager()
+
+        /// <summary>
+        /// Return a Person describing the followed person, if a following relationship from the specified person exists.
+        /// </summary>
+        /// <param name="personID">ID of the specified person</param>
+        /// <param name="followedPersonID">ID of the followed person (if any)</param>
+        /// <param name="fields">Fields to be returned (or null for all fields)</param>
+        /// <returns>Person object describing the followed person</returns>
+        public Person GetFollowingPerson(int personID, int followedPersonID, List<string> fields = null)
+        {
+            //constructs the url for the HTTP request based on the user specifications
+            string url = peopleUrl + "/" + personID.ToString() + "/@following/" + followedPersonID.ToString();
+            if (fields != null && fields.Count > 0)
+            {
+                url += "?fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+
+            string json;
+            try
+            {
+                json = GetAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "Following relationship does not exist between these two users", e);
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "Requesting user is not allowed to retrieve this user information", e);
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "One or both of the specified users cannot be found", e);
+                    default:
+                        throw;
+                }
+            }
+
+            JObject result = JObject.Parse(json);
+            return result.ToObject<Person>();
+        }
+
+        /// <summary>
+        /// Return a Person describing the manager of the specified person.
+        /// </summary>
+        /// <param name="personID">ID of the specified Jive use</param>
+        /// <param name="fields">Fields to be returned (or null for all fields)</param>
+        /// <returns>Person object describing the manager of the specified user</returns>
+        public Person GetManager(int personID, List<string> fields = null)
+        {
+            //constructs the url for the HTTP request based on the user specifications
+            string url = peopleUrl + "/" + personID.ToString() + "/@manager";
+            if (fields != null && fields.Count > 0)
+            {
+                url += "?fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+
+            string json;
+            try
+            {
+                json = GetAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "Request criteria are malformed", e);
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "Requesting user is not allowed to retrieve this user information", e);
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "Specified user cannot be found", e);
+                    case 410:
+                        throw new HttpException(e.WebEventCode, "Organization Chart relationships are not supported by this Jive instance", e);
+                    default:
+                        throw;
+                }
+            }
+
+            JObject result = JObject.Parse(json);
+            return result.ToObject<Person>();
+        }
+
         //GetMetadata()
         //GetNews()
-        //GetPages()
+
+        /// <summary>
+        /// Return a list of pages(currently only one) Page that a user has created with parent as user. currently you can only create one page with user as parent
+        /// </summary>
+        /// <param name="personID">Authenticated user. Use @me or the ID of the authenticated user.</param>
+        /// <returns>Page object for the authenticated user</returns>
+        public Page GetPages(int personID)
+        {
+            string url = peopleUrl + "/" + personID.ToString() + "/pages";
+
+            string json;
+            try
+            {
+                json = GetAbsolute(url);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "An input field was malformed");
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "Specified user is not the authenticated user");
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "Specified user does not exist");
+                    default:
+                        throw;
+                }
+            }
+
+            JObject result = JObject.Parse(json);
+            return result.ToObject<Page>();
+        }
+
         //GetPagesPrototype()
         //GetPendingExpertiseTags()
-
 
         /// <summary>
         /// Return a list of Persons for users that match the specified criteria.

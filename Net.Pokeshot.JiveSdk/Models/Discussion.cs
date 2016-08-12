@@ -27,7 +27,7 @@ namespace Net.Pokeshot.JiveSdk.Models
                 contentID = gc.contentID,
                 contentImages = gc.contentImages,
                 contentVideos = gc.contentVideos,
-                extendendAuthors = gc.extendendAuthors,
+                extendedAuthors = gc.extendedAuthors,
                 followerCount = gc.followerCount,
                 helpful = gc.helpful,
                 highlightBody = gc.highlightBody,
