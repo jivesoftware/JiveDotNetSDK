@@ -1416,7 +1416,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
         /// updatedAsc--Sort by the date this person was most recently updated, in ascending order.
         /// updatedDesc--Sort by the date this person was most recently updated, in descending order.</param>
         /// <param name="company">Single value to match against the Company profile field.</param>
-        /// <param name="deparment">Single value to match against the Department profile field.</param>
+        /// <param name="department">Single value to match against the Department profile field.</param>
         /// <param name="hireDate">One or two dates in ISO-8601 format. One date indicates selection of all people hired on or after the specified date. Two dates indicates selection of all people hired between the specified dates.</param>
         /// <param name="includeDisabled">Optional boolean value indicating whether disabled users should be returned (without a filter, defaults to false).</param>
         /// <param name="includeExternal">Optional boolean value indicating whether external (non-person) users should be returned (without a filter, defaults to false).</param>
@@ -1432,7 +1432,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
         /// <param name="updated">One or two timestamps in ISO-8601 format. If one timestamp is specified, all persons updated since that timestamp will be selected. If two timestamps are specified, all persons updated in the specified range will be selected.</param>
         /// <returns></returns>
         public List<Person> GetPeople(List<string> ids = null, List<string> query = null, int startIndex = 0, int count = 25, List<string> fields = null,
-            string sort = "firstNameAsc", string company = null, string deparment = null, Tuple<DateTime, DateTime?> hireDate = null, bool includeDisabled = false,
+            string sort = "firstNameAsc", string company = null, string department = null, Tuple<DateTime, DateTime?> hireDate = null, bool includeDisabled = false,
             bool includeExternal = false, bool includeOnline = false, bool includePartner = true, Tuple<DateTime, DateTime?> lastProfileUpdate = null, string location = null, bool nameonly = false,
             Tuple<DateTime, DateTime?> published = null, List<string> search = null, List<string> tag = null, string title = null, Tuple<DateTime, DateTime?> updated = null)
         {
@@ -1443,9 +1443,9 @@ namespace Net.Pokeshot.JiveSdk.Clients
             {
                 filter.Add("company(" + company + ")");
             }
-            if (deparment != null)
+            if (department != null)
             {
-                filter.Add("deparment(" + deparment + ")");
+                filter.Add("department(" + department + ")");
             }
             if (title != null)
             {
