@@ -1732,6 +1732,60 @@ namespace Net.Pokeshot.JiveSdk.Clients
             return results.ToObject<Person>();
         }
 
+        /// <summary>
+        /// Return a list of Streams for the specified user. Because the number of streams will generally be very small, pagination is not supported.
+        /// </summary>
+        /// <param name="personID">ID of the user for whom to return custom streams</param>
+        /// <param name="fields">Fields to be returned (default value is "@owned")</param>
+        /// <returns>Stream[]</returns>
+        public List<Stream> GetStreams(int personID, List<string> fields = null)
+        {
+            List<Stream> streamList = new List<Stream>();
+            
+            string url = peopleUrl + "/" + personID + "/streams";
+            if (fields != null && fields.Count > 0)
+            {
+                url += "?fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+            while (true)
+            {
+                string json;
+                try
+                {
+                    json = GetAbsolute(url);
+                }
+                catch (HttpException e)
+                {
+                    Console.WriteLine(e.Message);
+                    switch (e.GetHttpCode())
+                    {
+                        case 403:
+                            throw new HttpException(e.WebEventCode, "Requester is not allowed to view custom streams for the owning user", e);
+                        case 404:
+                            throw new HttpException(e.WebEventCode, "Specified user cannot be found", e);
+                        default:
+                            throw;
+                    }
+                }
+
+                JObject results = JObject.Parse(json);
+
+                streamList.AddRange(results["list"].ToObject<List<Stream>>());
+
+                if (results["links"] == null || results["links"]["next"] == null)
+                    break;
+                else
+                    url = results["links"]["next"].ToString();
+            }
+            return streamList;
+        }
+
         //GetProfileFieldPrivacy()
         //GetProfileFieldsPrivacy()
         //GetProfileImage()
@@ -1745,7 +1799,6 @@ namespace Net.Pokeshot.JiveSdk.Clients
         //GetRoles()
         //GetSecurityGroups()
         //GetSocialUsers()
-        //GetStreams()
         //GetSupportedFields()
         //GetTagsUserTaggedOnUser()
         //GetTasks()

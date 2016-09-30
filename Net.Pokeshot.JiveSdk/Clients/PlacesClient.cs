@@ -952,5 +952,52 @@ namespace Net.Pokeshot.JiveSdk.Clients
         //GetSuggestedPlaces()
         //GetTrendingPlaces()
 
+
+        public GenericPlace UpdatePlace(int placeID, GenericPlace place, DateTime? updated = null, List<string> fields = null)
+        {
+            string url = placesUrl + "/" + placeID.ToString();
+            if (updated != null)
+            {
+                url += "?updated=" + jiveDateFormat((DateTime)updated);
+            }
+            if (fields != null && fields.Count > 0)
+            {
+                if(updated != null)
+                    url += "&fields=";
+                else
+                    url += "?fields=";
+
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+
+            string json = JsonConvert.SerializeObject(place, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore, Formatting = Formatting.Indented });
+            string result;
+            try
+            {
+                result = PutAbsolute(url, json);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "An input field is malformed", e);
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "You are not allowed to access the specified place, or to make the requested change in place state", e);
+                    case 409:
+                        throw new HttpException(e.WebEventCode, "The new entity would conflict with system restrictions (such as two places of the same type with the same name)", e);
+                    default:
+                        throw;
+                }
+            }
+
+            JObject Json = JObject.Parse(result);
+            return Json.ToObject<GenericPlace>();
+        }
     }
 }

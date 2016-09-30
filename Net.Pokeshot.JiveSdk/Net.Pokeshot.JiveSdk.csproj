@@ -276,6 +276,7 @@
     <Compile Include="Models\Slide.cs" />
     <Compile Include="Models\Space.cs" />
     <Compile Include="Models\Stage.cs" />
+    <Compile Include="Models\Stream.cs" />
     <Compile Include="Models\Summary.cs" />
     <Compile Include="Models\Task.cs" />
     <Compile Include="Models\Update.cs" />
