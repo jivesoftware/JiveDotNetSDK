@@ -138,6 +138,7 @@
     <Compile Include="Models\Blog.cs" />
     <Compile Include="Models\Carousel.cs" />
     <Compile Include="Models\ContentBanner.cs" />
+    <Compile Include="Models\ContentTag.cs" />
     <Compile Include="Models\ContentVersion.cs" />
     <Compile Include="Models\DeletedObject.cs" />
     <Compile Include="Models\Discussion.cs" />
