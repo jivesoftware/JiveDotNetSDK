@@ -275,6 +275,7 @@
     <Compile Include="Models\Project.cs" />
     <Compile Include="Models\Resources\Resource.cs" />
     <Compile Include="Models\Resources\Resources.cs" />
+    <Compile Include="Models\SecurityGroup.cs" />
     <Compile Include="Models\Slide.cs" />
     <Compile Include="Models\Space.cs" />
     <Compile Include="Models\Stage.cs" />

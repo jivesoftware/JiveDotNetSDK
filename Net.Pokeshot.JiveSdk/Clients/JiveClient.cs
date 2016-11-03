@@ -115,7 +115,25 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 requestMessage.Headers.Add("X-Jive-Run-As", "userid " + _imposter);
             }
 
-            HttpResponseMessage activityResponse = httpClient.SendAsync(requestMessage).Result;
+            HttpResponseMessage activityResponse;
+            bool secondTry = false;
+            while (true) {
+                try
+                {
+                    activityResponse = httpClient.SendAsync(requestMessage).Result;
+                }
+                catch (AggregateException e)
+                {
+                    // If timed out, try once more.
+                    if (!secondTry)
+                    {
+                        secondTry = true;
+                        continue;
+                    }
+                    else throw;
+                }
+                break;
+            }
 
             if (!activityResponse.IsSuccessStatusCode)
             {
