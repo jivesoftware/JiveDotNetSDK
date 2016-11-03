@@ -150,6 +150,7 @@
     <Compile Include="Clients\ExtpropsClient.cs" />
     <Compile Include="Clients\ExtstreamDefsClient.cs" />
     <Compile Include="Clients\ExtstreamsClient.cs" />
+    <Compile Include="Models\Dto\ObjectType.cs" />
     <Compile Include="Models\Event.cs" />
     <Compile Include="Models\Favorite.cs" />
     <Compile Include="Models\File.cs" />
