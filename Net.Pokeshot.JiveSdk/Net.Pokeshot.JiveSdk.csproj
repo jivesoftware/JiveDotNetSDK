@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Net.Pokeshot.JiveSdk.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,50 +34,77 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'pi-square|AnyCPU'">
+    <OutputPath>bin\pi-square\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework">
-      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="EntityFramework.SqlServer">
-      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="NewRelic.Api.Agent">
-      <HintPath>..\packages\NewRelic.Agent.Api.3.9.146.0\lib\NewRelic.Api.Agent.dll</HintPath>
+    <Reference Include="NewRelic.Api.Agent, Version=5.20.61.0, Culture=neutral, PublicKeyToken=06552fced0b33d87, processorArchitecture=MSIL">
+      <HintPath>..\packages\NewRelic.Agent.Api.5.20.61.0\lib\NewRelic.Api.Agent.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.Helpers.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="System.Web.Mvc, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.2\lib\net45\System.Web.Mvc.dll</HintPath>
+    <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.3\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.2\lib\net45\System.Web.Razor.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.WebPages.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -86,6 +114,91 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Auth\SignedRequest.cs" />
+    <Compile Include="Clients\AbuseReportsClient.cs" />
+    <Compile Include="Clients\AcclaimClient.cs" />
+    <Compile Include="Clients\ActionsClient.cs" />
+    <Compile Include="Clients\ActivitiesClient.cs" />
+    <Compile Include="Clients\AddOnsClient.cs" />
+    <Compile Include="Clients\Admin_Plugins_Client.cs" />
+    <Compile Include="Clients\Admin_ProfileFields_Client.cs" />
+    <Compile Include="Clients\Admin_Properties_Client.cs" />
+    <Compile Include="Clients\AnnouncementClient.cs" />
+    <Compile Include="Clients\AttatchmentClient.cs" />
+    <Compile Include="Clients\CalendarClient.cs" />
+    <Compile Include="Clients\CheckpointsClient.cs" />
+    <Compile Include="Clients\CollaborationsClient.cs" />
+    <Compile Include="Clients\CommentsClient.cs" />
+    <Compile Include="Clients\ContentsClient.cs" />
+    <Compile Include="Clients\DeletedObjectsClient.cs" />
+    <Compile Include="Clients\DESClient.cs" />
+    <Compile Include="Models\Action.cs" />
+    <Compile Include="Models\AddOn.cs" />
+    <Compile Include="Models\Authorization.cs" />
+    <Compile Include="Models\BatchItem.cs" />
+    <Compile Include="Models\Blog.cs" />
+    <Compile Include="Models\Carousel.cs" />
+    <Compile Include="Models\ContentBanner.cs" />
+    <Compile Include="Models\ContentVersion.cs" />
+    <Compile Include="Models\DeletedObject.cs" />
+    <Compile Include="Models\Discussion.cs" />
+    <Compile Include="Clients\DmsClient.cs" />
+    <Compile Include="Models\Document.cs" />
+    <Compile Include="Clients\EventsClient.cs" />
+    <Compile Include="Clients\EventTypesClient.cs" />
+    <Compile Include="Clients\ExecuteBatchClient.cs" />
+    <Compile Include="Clients\ExtpropsClient.cs" />
+    <Compile Include="Clients\ExtstreamDefsClient.cs" />
+    <Compile Include="Clients\ExtstreamsClient.cs" />
+    <Compile Include="Models\Event.cs" />
+    <Compile Include="Models\Favorite.cs" />
+    <Compile Include="Models\File.cs" />
+    <Compile Include="Clients\IdeaVotesClient.cs" />
+    <Compile Include="Clients\ImagesClient.cs" />
+    <Compile Include="Clients\InboxClient.cs" />
+    <Compile Include="Clients\InvitesClient.cs" />
+    <Compile Include="Clients\Invites_Event_Client.cs" />
+    <Compile Include="Clients\JiveClient.cs" />
+    <Compile Include="Clients\MembersClient.cs" />
+    <Compile Include="Clients\MentionsClient.cs" />
+    <Compile Include="Clients\MessagesClient.cs" />
+    <Compile Include="Clients\Metadata_Locales_Client.cs" />
+    <Compile Include="Clients\Metadata_Objects_Client.cs" />
+    <Compile Include="Clients\Metadata_Properties_Client.cs" />
+    <Compile Include="Clients\Metadata_Properties_Public_Client.cs" />
+    <Compile Include="Clients\Metadata_Resources_Client.cs" />
+    <Compile Include="Clients\Metadata_Timezones_Client.cs" />
+    <Compile Include="Clients\ModerationClient.cs" />
+    <Compile Include="Clients\OembedClient.cs" />
+    <Compile Include="Clients\PagesClient.cs" />
+    <Compile Include="Clients\PeopleClient.cs" />
+    <Compile Include="Clients\PlacesClient.cs" />
+    <Compile Include="Clients\PlaceTemplateCategoriesClient.cs" />
+    <Compile Include="Clients\PlaceTemplatesClient.cs" />
+    <Compile Include="Clients\PlaceTopicsClient.cs" />
+    <Compile Include="Clients\ProfileImagesClient.cs" />
+    <Compile Include="Clients\PublicationsClient.cs" />
+    <Compile Include="Clients\QuestionsClient.cs" />
+    <Compile Include="Clients\RsvpClient.cs" />
+    <Compile Include="Clients\SearchClient.cs" />
+    <Compile Include="Clients\SecurityGroupsClient.cs" />
+    <Compile Include="Clients\SharesClient.cs" />
+    <Compile Include="Clients\SlidesClient.cs" />
+    <Compile Include="Clients\Solutions_SupportCenter_Client.cs" />
+    <Compile Include="Clients\StagesClient.cs" />
+    <Compile Include="Clients\StaticsClient.cs" />
+    <Compile Include="Clients\StreamEntriesClient.cs" />
+    <Compile Include="Clients\StreamsClient.cs" />
+    <Compile Include="Clients\TagsClient.cs" />
+    <Compile Include="Clients\TileDefsClient.cs" />
+    <Compile Include="Clients\TilesClient.cs" />
+    <Compile Include="Clients\Tiles_Categories_Client.cs" />
+    <Compile Include="Clients\UrlsClient.cs" />
+    <Compile Include="Clients\VersionsClient.cs" />
+    <Compile Include="Clients\VideosClient.cs" />
+    <Compile Include="Clients\VitalsClient.cs" />
+    <Compile Include="Clients\VotesClient.cs" />
+    <Compile Include="Clients\WebhooksClient.cs" />
+    <Compile Include="Models\AbuseReport.cs" />
     <Compile Include="Models\Activity.cs" />
     <Compile Include="Models\Announcement.cs" />
     <Compile Include="Models\Attachment.cs" />
@@ -94,8 +207,6 @@
     <Compile Include="Models\Content.cs" />
     <Compile Include="Models\ContentBody.cs" />
     <Compile Include="Models\ContentVideo.cs" />
-    <Compile Include="Models\Discussion.cs" />
-    <Compile Include="Models\Document.cs" />
     <Compile Include="Models\Dto\ErrorDto.cs" />
     <Compile Include="Models\Dto\HealthStatusDto.cs" />
     <Compile Include="Models\Dto\JiveAddonRegistrationDto.cs" />
@@ -103,7 +214,7 @@
     <Compile Include="Models\Dto\JiveDEAActivity.cs" />
     <Compile Include="Models\Dto\JiveDEAActivityInstance.cs" />
     <Compile Include="Models\Dto\JiveDEAActivityInstanceElement.cs" />
-    <Compile Include="Models\Dto\JiveDEAActor.cs" />
+    <Compile Include="Models\Dto\JiveDEAPerson.cs" />
     <Compile Include="Models\Dto\JiveDEAActorProfile.cs" />
     <Compile Include="Models\Dto\JiveDEAContext.cs" />
     <Compile Include="Models\Dto\JiveDEADestination.cs" />
@@ -120,36 +231,59 @@
     <Compile Include="Models\Dto\WebhookActivityDto.cs" />
     <Compile Include="Models\Dto\WorkflowDefinitionDto.cs" />
     <Compile Include="Models\ExternalStreamActivity.cs" />
-    <Compile Include="Models\Favorite.cs" />
     <Compile Include="Models\Field.cs" />
-    <Compile Include="Models\File.cs" />
     <Compile Include="Models\GenericContent.cs" />
+    <Compile Include="Models\GenericPlace.cs" />
+    <Compile Include="Models\Group.cs" />
     <Compile Include="Models\Idea.cs" />
+    <Compile Include="Models\IdeaVote.cs" />
     <Compile Include="Models\Image.cs" />
     <Compile Include="Models\ImageList.cs" />
+    <Compile Include="Models\InboxEntry.cs" />
     <Compile Include="Models\JiveAddon.cs" />
     <Compile Include="Models\JiveAddonRegistration.cs" />
     <Compile Include="Models\JiveContent.cs" />
     <Compile Include="Models\JiveInstance.cs" />
     <Compile Include="Models\JivePlace.cs" />
+    <Compile Include="Models\JiveProperty.cs" />
     <Compile Include="Models\JiveResources.cs" />
     <Compile Include="Models\JiveSdkContext.cs" />
     <Compile Include="Models\JiveTileInstance.cs" />
     <Compile Include="Models\JiveTileRegistration.cs" />
+    <Compile Include="Models\Message.cs" />
+    <Compile Include="Models\Metadata\Field.cs" />
+    <Compile Include="Models\Metadata\Locale.cs" />
+    <Compile Include="Models\Metadata\Outcome.cs" />
+    <Compile Include="Models\Metadata\OutcomeType.cs" />
+    <Compile Include="Models\Metadata\Property.cs" />
+    <Compile Include="Models\Metadata\Resource.cs" />
+    <Compile Include="Models\Metadata\TimeZone.cs" />
     <Compile Include="Models\OAuthRequest.cs" />
+    <Compile Include="Models\Metadata\Object.cs" />
+    <Compile Include="Models\Outcome.cs" />
     <Compile Include="Models\OutcomeType.cs" />
+    <Compile Include="Models\Page.cs" />
     <Compile Include="Models\Person.cs" />
     <Compile Include="Models\PeopleList.cs" />
+    <Compile Include="Models\Photo.cs" />
+    <Compile Include="Models\Place.cs" />
     <Compile Include="Models\Poll.cs" />
     <Compile Include="Models\PollOptionImage.cs" />
     <Compile Include="Models\Post.cs" />
+    <Compile Include="Models\Project.cs" />
+    <Compile Include="Models\Resources\Resource.cs" />
+    <Compile Include="Models\Resources\Resources.cs" />
     <Compile Include="Models\Slide.cs" />
+    <Compile Include="Models\Space.cs" />
     <Compile Include="Models\Stage.cs" />
+    <Compile Include="Models\Stream.cs" />
     <Compile Include="Models\Summary.cs" />
     <Compile Include="Models\Task.cs" />
     <Compile Include="Models\Update.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\Dto\WebhookDto.cs" />
+    <Compile Include="Models\Video.cs" />
+    <Compile Include="Models\Vote.cs" />
     <Compile Include="Models\Webhook.cs" />
     <Compile Include="Models\WebhookActivity.cs" />
     <Compile Include="Models\Workflow.cs" />
@@ -160,7 +294,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

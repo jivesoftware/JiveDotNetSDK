@@ -24,6 +24,7 @@ namespace Net.Pokeshot.JiveSdk.Models
         public List<ProfileEntry> photos { get; set; }
         public DateTime published { get; set; }
         public List<string> tags { get; set; }
+        public string type { get; set; }
         public JiveResources resources { get; set; }
 
 
@@ -34,17 +35,29 @@ namespace Net.Pokeshot.JiveSdk.Models
         public bool enabled { get; set; }
         public bool external { get; set; }
         public bool externalContributor { get; set; }
+        public List<ExternalIdentity> externalIdentities { get; set; }
         public bool federated { get; set; }
+        public DateTime lastAuthenticated { get; set; }
         public DateTime lastProfileUpdate { get; set; }
         public Level level { get; set; }
         public string locale { get; set; }
+        public string password { get; set; }
         public List<ProfileEntry> profile { get; set; }
+        public RoleBadge roleBadge { get; set; }
         public bool sendeable { get; set; }
         public bool termsAndConditionsRequired { get; set; }
         public string timeZone { get; set; }
         public string username { get; set; }
         public bool viewContent { get; set; }
         public bool visible { get; set; }
+    }
+
+    public class RoleBadge
+    {
+        public string groupBadgeRoleName { get; set; }
+        public string groupBadgeUri { get; set; }
+        public string id { get; set; }
+        public Resources.Resources resources { get; set; }
     }
 
     public class Level
@@ -67,5 +80,10 @@ namespace Net.Pokeshot.JiveSdk.Models
         public string familyName { get; set; }
         public string formatted { get; set; }
         public string givenName { get; set; }
+    }
+    public class ExternalIdentity
+    {
+        public string identity { get; set; }
+        public string identityType { get; set; }
     }
 }

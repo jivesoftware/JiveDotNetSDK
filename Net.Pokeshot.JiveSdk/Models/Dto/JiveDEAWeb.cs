@@ -20,6 +20,8 @@ namespace Net.Pokeshot.JiveSdk.Models.Dto
         public string partner { get; set; }
         public string federated { get; set; }
         public string flowId { get; set; }
+        public string appID { get; set; }
+        public int userID { get; set; }
 
     }
 }
