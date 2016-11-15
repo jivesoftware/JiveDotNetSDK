@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Net.Pokeshot.JiveSdk.Models
 {
     /// <summary>
-    /// Contains the properties of all Content subclasses. Can be used when the type of content is unknown.
+    /// Contains the properties of all Content subpublic classes. Can be used when the type of content is unknown.
     /// </summary>
     public class GenericContent : Content
     {

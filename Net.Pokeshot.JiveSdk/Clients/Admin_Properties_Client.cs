@@ -7,7 +7,7 @@ using System.Net;
 
 namespace Net.Pokeshot.JiveSdk.Clients
 {
-    class Admin_Properties_Client : JiveClient
+    public class Admin_Properties_Client : JiveClient
     {
         public Admin_Properties_Client(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
     }

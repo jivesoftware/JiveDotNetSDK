@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net.Pokeshot.JiveSdk", "Net.Pokeshot.JiveSdk\Net.Pokeshot.JiveSdk.csproj", "{FC8DA9F2-6C2D-4BD2-9623-F4B7E20C3AA2}"
 EndProject

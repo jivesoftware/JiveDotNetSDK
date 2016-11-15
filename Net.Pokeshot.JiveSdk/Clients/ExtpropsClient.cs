@@ -7,7 +7,7 @@ using System.Net;
 
 namespace Net.Pokeshot.JiveSdk.Clients
 {
-    class ExtpropsClient : JiveClient
+    public class ExtpropsClient : JiveClient
     {
         public ExtpropsClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
     }

@@ -7,7 +7,7 @@ using System.Net;
 
 namespace Net.Pokeshot.JiveSdk.Clients
 {
-    class CalendarClient : JiveClient
+    public class CalendarClient : JiveClient
     {
         public CalendarClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
     }

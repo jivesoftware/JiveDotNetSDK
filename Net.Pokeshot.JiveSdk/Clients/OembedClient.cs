@@ -7,7 +7,7 @@ using System.Net;
 
 namespace Net.Pokeshot.JiveSdk.Clients
 {
-    class OembedClient : JiveClient
+    public class OembedClient : JiveClient
     {
         public OembedClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
     }

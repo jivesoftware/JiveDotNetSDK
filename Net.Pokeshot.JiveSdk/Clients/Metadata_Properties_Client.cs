@@ -7,7 +7,7 @@ using System.Net;
 
 namespace Net.Pokeshot.JiveSdk.Clients
 {
-    class Metadata_Properties_Client: JiveClient
+    public class Metadata_Properties_Client: JiveClient
     {
         public Metadata_Properties_Client(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
     }
