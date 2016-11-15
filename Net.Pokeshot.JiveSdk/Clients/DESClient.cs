@@ -74,7 +74,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
                         case 403:
                             throw new HttpException(e.WebEventCode, "You are not allowed to access this", e);
                         case 401: // If the token happens to have expired, try once more before giving up.
-                            json = GetAbsolute(url, getAuthorization());
+                            json = retry(url);
                             break;
                         default:
                             throw;
@@ -93,6 +93,26 @@ namespace Net.Pokeshot.JiveSdk.Clients
             return activityList;
         }
 
+        private string retry(string url, int numTries = 0)
+        {
+            int maxTry = 10;
+            try
+            {
+                return GetAbsolute(url, getAuthorization());
+            }
+            catch (HttpException e)
+            {
+                if (e.GetHttpCode() == 401)
+                {
+                    if (numTries > maxTry)
+                        throw;
+
+                    return retry(url, ++numTries);
+                }
+                else
+                    throw;
+            }
+        }
 
         /// <summary>
         /// Gets the Authorization needed for downloading data from the DES. This method is thread safe.

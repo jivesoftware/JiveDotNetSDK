@@ -18,6 +18,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
         private readonly NetworkCredential _credential;
         protected string JiveCommunityUrl;
         private int? _imposter = null;
+        private bool _secondTry = false;
         private static int _numGets = 0;
         private static int _numPosts = 0;
         private static int _numPuts = 0;
@@ -116,23 +117,19 @@ namespace Net.Pokeshot.JiveSdk.Clients
             }
 
             HttpResponseMessage activityResponse;
-            bool secondTry = false;
-            while (true) {
-                try
+            try
+            {
+                activityResponse = httpClient.SendAsync(requestMessage).Result;
+            }
+            catch (Exception e)
+            {
+                // If timed out, try once more.
+                if (!_secondTry)
                 {
-                    activityResponse = httpClient.SendAsync(requestMessage).Result;
+                    _secondTry = true;
+                    return GetAbsolute(url, authorization);
                 }
-                catch (AggregateException e)
-                {
-                    // If timed out, try once more.
-                    if (!secondTry)
-                    {
-                        secondTry = true;
-                        continue;
-                    }
-                    else throw;
-                }
-                break;
+                else throw;
             }
 
             if (!activityResponse.IsSuccessStatusCode)
