@@ -7,7 +7,7 @@ using System.Net;
 
 namespace Net.Pokeshot.JiveSdk.Clients
 {
-    public class AcclaimClient : JiveClient
+    class AcclaimClient : JiveClient
     {
         public AcclaimClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
     }

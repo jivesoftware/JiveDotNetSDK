@@ -7,7 +7,7 @@ using System.Net;
 
 namespace Net.Pokeshot.JiveSdk.Clients
 {
-    public class TagsClient : JiveClient
+    class TagsClient : JiveClient
     {
         public TagsClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
     }

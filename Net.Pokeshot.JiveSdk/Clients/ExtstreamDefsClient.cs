@@ -7,7 +7,7 @@ using System.Net;
 
 namespace Net.Pokeshot.JiveSdk.Clients
 {
-    public class ExtstreamDefsClient : JiveClient
+    class ExtstreamDefsClient : JiveClient
     {
         public ExtstreamDefsClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
     }

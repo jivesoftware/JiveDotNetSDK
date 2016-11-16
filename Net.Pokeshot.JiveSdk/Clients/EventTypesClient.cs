@@ -7,7 +7,7 @@ using System.Net;
 
 namespace Net.Pokeshot.JiveSdk.Clients
 {
-    public class EventTypesClient : JiveClient
+    class EventTypesClient : JiveClient
     {
         public EventTypesClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
     }

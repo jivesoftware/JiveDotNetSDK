@@ -7,7 +7,7 @@ using System.Net;
 
 namespace Net.Pokeshot.JiveSdk.Clients
 {
-    public class RsvpClient : JiveClient
+    class RsvpClient : JiveClient
     {
         public RsvpClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
     }

@@ -7,7 +7,7 @@ using System.Net;
 
 namespace Net.Pokeshot.JiveSdk.Clients
 {
-    public class WebhooksClient : JiveClient
+    class WebhooksClient : JiveClient
     {
         public WebhooksClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
     }

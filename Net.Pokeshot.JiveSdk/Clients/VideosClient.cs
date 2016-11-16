@@ -7,7 +7,7 @@ using System.Net;
 
 namespace Net.Pokeshot.JiveSdk.Clients
 {
-    public class VideosClient : JiveClient
+    class VideosClient : JiveClient
     {
         public VideosClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
     }

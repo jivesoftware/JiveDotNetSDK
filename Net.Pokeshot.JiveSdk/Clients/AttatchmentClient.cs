@@ -7,7 +7,7 @@ using System.Net;
 
 namespace Net.Pokeshot.JiveSdk.Clients
 {
-    public class AttatchmentRetriever : JiveClient
+    class AttatchmentRetriever : JiveClient
     {
         public AttatchmentRetriever(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
     }

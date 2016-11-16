@@ -7,7 +7,7 @@ using System.Net;
 
 namespace Net.Pokeshot.JiveSdk.Clients
 {
-    public class ExecuteBatchClient : JiveClient
+    class ExecuteBatchClient : JiveClient
     {
         public ExecuteBatchClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
     }

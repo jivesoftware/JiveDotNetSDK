@@ -7,7 +7,7 @@ using System.Net;
 
 namespace Net.Pokeshot.JiveSdk.Clients
 {
-    public class ProfileImagesClient : JiveClient
+    class ProfileImagesClient : JiveClient
     {
         public ProfileImagesClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
     }

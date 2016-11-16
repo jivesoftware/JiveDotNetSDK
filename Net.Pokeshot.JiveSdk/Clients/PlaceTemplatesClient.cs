@@ -7,7 +7,7 @@ using System.Net;
 
 namespace Net.Pokeshot.JiveSdk.Clients
 {
-    public class PlaceTemplatesClient : JiveClient
+    class PlaceTemplatesClient : JiveClient
     {
         public PlaceTemplatesClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
     }

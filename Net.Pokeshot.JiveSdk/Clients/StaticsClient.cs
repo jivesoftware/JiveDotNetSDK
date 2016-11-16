@@ -7,7 +7,7 @@ using System.Net;
 
 namespace Net.Pokeshot.JiveSdk.Clients
 {
-    public class StaticsClient : JiveClient
+    class StaticsClient : JiveClient
     {
         public StaticsClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
     }
