@@ -15,6 +15,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
         string membersUrl { get { return JiveCommunityUrl + "/api/core/v3/members"; } }
 
         public MembersClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
+        public MembersClient(IJiveUrlAndCredentials jiveUrlAndCredentials) : base(jiveUrlAndCredentials) { }
 
 
         //CreateMember

@@ -29,6 +29,10 @@ namespace Net.Pokeshot.JiveSdk.Clients
             _credential = cred;
         }
 
+        protected JiveClient(IJiveUrlAndCredentials jiveUrlAndCredentials): this(jiveUrlAndCredentials.Url, jiveUrlAndCredentials.Credentials)
+        {
+        }
+
         /// <summary>
         /// The number of Get Requests made by ALL of the SDK methods from any instance of JiveClient.
         /// The counter is thread safe.

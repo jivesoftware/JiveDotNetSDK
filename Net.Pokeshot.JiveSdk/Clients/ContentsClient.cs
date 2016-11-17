@@ -16,6 +16,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
         string contentUrl { get { return JiveCommunityUrl + "/api/core/v3/contents"; } }
 
         public ContentsClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
+        public ContentsClient(IJiveUrlAndCredentials jiveUrlAndCredentials) : base(jiveUrlAndCredentials) { }
 
         /// <summary>
         /// Register that the requesting person considers the specified content as abusive.

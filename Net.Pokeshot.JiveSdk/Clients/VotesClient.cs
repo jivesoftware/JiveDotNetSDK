@@ -15,6 +15,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
         string votesUrl { get { return JiveCommunityUrl + "/api/core/v3/votes"; } }
 
         public VotesClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
+        public VotesClient(IJiveUrlAndCredentials jiveUrlAndCredentials) : base(jiveUrlAndCredentials) { }
 
         /// <summary>
         /// Return the number of votes cast for each poll option.

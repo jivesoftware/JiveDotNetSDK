@@ -15,6 +15,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
     {
         string placesUrl { get { return JiveCommunityUrl + "/api/core/v3/places"; } }
         public PlacesClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
+        public PlacesClient(IJiveUrlAndCredentials jiveUrlAndCredentials) : base(jiveUrlAndCredentials) { }
 
         /// <summary>
         /// Checks for the presence of the given categories in the given Place, and creates any that are not present.

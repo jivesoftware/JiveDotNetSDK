@@ -16,6 +16,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
         string commentUrl { get { return JiveCommunityUrl + "/api/core/v3/comments"; } }
 
         public CommentsClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
+        public CommentsClient(IJiveUrlAndCredentials jiveUrlAndCredentials) : base(jiveUrlAndCredentials) { }
 
         /// <summary>
         /// Register that the requesting person considers the specified comment as abusive.
