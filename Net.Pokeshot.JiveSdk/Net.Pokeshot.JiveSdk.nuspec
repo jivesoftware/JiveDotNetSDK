@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>JiveDotNetSDK</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>pokeshot, ryanrutan, cnorick, and doublerazr</authors>
+    <owners>ryanrutan</owners>
+    <licenseUrl>https://github.com/jivesoftware/JiveDotNetSDK</licenseUrl>
+    <projectUrl>https://github.com/jivesoftware/JiveDotNetSDK</projectUrl>
+    <iconUrl>https://www.jivesoftware.com/wp-content/themes/jive2015/images/brand/favicon32.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>C# wrapper for Jive's Rest API</description>
+    <tags>jive c# api</tags>
+  </metadata>
+</package>
