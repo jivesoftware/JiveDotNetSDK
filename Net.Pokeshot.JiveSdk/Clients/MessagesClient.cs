@@ -15,7 +15,6 @@ namespace Net.Pokeshot.JiveSdk.Clients
         string messagesUrl { get { return JiveCommunityUrl + "/api/core/v3/messages"; } }
 
         public MessagesClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
-        public MessagesClient(IJiveUrlAndCredentials jiveUrlAndCredentials) : base(jiveUrlAndCredentials) { }
 
         /// <summary>
         /// Return a list of messages for the specified content object, which must be a discussion, optionally limiting the results to direct replies only.

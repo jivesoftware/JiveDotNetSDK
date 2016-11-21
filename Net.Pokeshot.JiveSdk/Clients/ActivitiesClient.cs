@@ -23,8 +23,6 @@ namespace Net.Pokeshot.JiveSdk.Clients
         /// <param name="credential">The NetworkCredential containing the username and password for a user in the given Jive Community</param>
         public ActivitiesClient(string communityUrl, NetworkCredential credential) : base(communityUrl, credential) { }
 
-        public ActivitiesClient(IJiveUrlAndCredentials jiveUrlAndCredentials) : base(jiveUrlAndCredentials) { }
-
 
         /// <summary>
         /// Create a new activity stream entry based on the characteristics in the "activity" object.

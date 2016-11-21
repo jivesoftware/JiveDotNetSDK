@@ -16,7 +16,6 @@ namespace Net.Pokeshot.JiveSdk.Clients
         string ideaVotesUrl { get { return JiveCommunityUrl + "/api/core/ext/idea-type-plugin/v1/ideaVotes"; } }
 
         public IdeaVotesClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
-        public IdeaVotesClient(IJiveUrlAndCredentials jiveUrlAndCredentials) : base(jiveUrlAndCredentials) { }
 
         /// <summary>
         /// Cast a vote on the specified idea, replacing any previous vote by the requesting person. The incoming JSON must include a boolean "promote" field

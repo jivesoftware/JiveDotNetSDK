@@ -15,7 +15,6 @@ namespace Net.Pokeshot.JiveSdk.Clients
         string deletedObjectsUrl { get { return JiveCommunityUrl + "/api/core/v3/deletedObjects"; } }
 
         public DeletedObjectsClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
-        public DeletedObjectsClient(IJiveUrlAndCredentials jiveUrlAndCredentials) : base(jiveUrlAndCredentials) { }
 
         /// <summary>
         /// Return a list of entities, each representing a content object that has been deleted.

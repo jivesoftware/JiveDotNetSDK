@@ -15,7 +15,6 @@ namespace Net.Pokeshot.JiveSdk.Clients
     {
         string peopleUrl { get { return JiveCommunityUrl + "/api/core/v3/people"; } }
         public PeopleClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
-        public PeopleClient(IJiveUrlAndCredentials jiveUrlAndCredentials) : base(jiveUrlAndCredentials) { }
 
         /// <summary>
         /// Method used for importing content from another site and an author for the content is required. The method first checks to see if any user

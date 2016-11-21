@@ -14,7 +14,6 @@ namespace Net.Pokeshot.JiveSdk.Clients
         private string streamUrl { get { return JiveCommunityUrl + "/api/core/v3/streams"; } }
 
         public StreamsClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
-        public StreamsClient(IJiveUrlAndCredentials jiveUrlAndCredentials) : base(jiveUrlAndCredentials) { }
 
 
         public void CreateAssociations(int streamID, List<Uri> associations)
