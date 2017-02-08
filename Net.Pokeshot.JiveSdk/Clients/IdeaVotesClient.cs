@@ -18,20 +18,26 @@ namespace Net.Pokeshot.JiveSdk.Clients
         public IdeaVotesClient(string communityUrl, NetworkCredential credentials) : base(communityUrl, credentials) { }
 
         /// <summary>
-        /// Cast a vote on the specified idea, replacing any previous vote by the requesting person. The incoming JSON must include a boolean "promote" field
-        /// that is true if the requestor is promoting this idea, or false if the requestor is demoting it.
+        /// Cast a vote on the specified idea, replacing any previous vote by the included voter. The incoming JSON
+        /// must include a boolean "promote" field and an int "id" field within a People object named "voter" that 
+        /// is true if the voter is promoting this idea, or false if the voter is demoting it. This requires elevated
+        /// permissions if the requester does not match the voter.
         /// </summary>
-        /// <param name="contentID">The ID of the content object for which to cast a "promote" vote</param>
-        /// <param name="idea_vote">The vote entity containing the promote field (assumed to be true if not present)</param>
+        /// <param name="contentID">The ID of the content object for which to cast an idea vote</param>
+        /// <param name="idea_vote">The vote entity containing the promote field where true is promoting and false is demoting (assumed to be false if not present), and the voter's id within the voter field</param>
         public void CreateVote(int contentID, IdeaVote idea_vote)
         {
             string url = ideaVotesUrl;
             url += "/" + contentID.ToString();
 
-            string json = JsonConvert.SerializeObject(idea_vote, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            // Jive only looks at the authorization when creating the vote, not the voter passed in the json.
+            // Because of this, we use RunAs() and forget about most of the json.
+            // This entire function couldn't be run in a RunAs because it doesn't return anything and Func<T>
+            // must have a return type.
+            string json = "{\"promote\":" + (idea_vote.promote ? "true" : "false") + "}";
             try
             {
-                PostAbsolute(url, json);
+                RunAs(idea_vote.voter.id, () => PostAbsolute(url, json));
             }
             catch (HttpException e)
             {
@@ -47,6 +53,10 @@ namespace Net.Pokeshot.JiveSdk.Clients
                         throw new HttpException(e.WebEventCode, "You attempted to vote on an issue for which voting has been disabled", e);
                     case 410:
                         throw new HttpException(e.WebEventCode, "If this Jive instance is not licensed for the Ideation module", e);
+                    case 500:
+                        throw new HttpException(e.WebEventCode, "If there was an internal server error", e);
+                    default:
+                        throw;
                 }
             }
 
@@ -65,7 +75,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
         {
             List<IdeaVote> voteList = new List<IdeaVote>();
 
-            //construcs the correct url based on the user's specifications
+            //constructs the correct url based on the user's specifications
             string url = ideaVotesUrl;
             url += "/" + contentID.ToString();
             url += "?count=" + (count > 1000 ? 1000 : count).ToString();
