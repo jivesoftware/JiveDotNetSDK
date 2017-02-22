@@ -83,7 +83,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
         /// </summary>
         /// <param name="email">the email from the external site (usually the author of the external content)</param>
         /// <returns>a Person object that can be used as the author for the newly imported content</returns>
-        public Person FindPersonByEmail(string email)
+        public Person FindPersonByEmail(string email, bool createIfNotFound = true)
         {
             Person person = null;
             bool found = false;
@@ -98,6 +98,10 @@ namespace Net.Pokeshot.JiveSdk.Clients
             }
             if (!found)
             {
+                if (!createIfNotFound)
+                {
+                    return null;
+                }
                 try
                 {
                     person = GetPersonByUsername("anonymous@test.com");
