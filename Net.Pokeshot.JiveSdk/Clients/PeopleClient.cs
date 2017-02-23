@@ -353,6 +353,58 @@ namespace Net.Pokeshot.JiveSdk.Clients
         }
 
         /// <summary>
+        /// Create a Person object for a new user based on the contents of the specified Person. Only modifiable fields that actually provide a value
+        /// in the incoming entity are processed.
+        /// </summary>
+        /// <param name="person">Person containing our update information</param>
+        /// <param name="fields">The fields to include in the returned entity</param>
+        /// <returns>a Person object representing the created user</returns>
+        public Person UpdatePerson(Person person, List<string> fields = null)
+        {
+            DateTime tmp;
+
+            //construct the url for the HTTP request based on the user's specifications
+            string url = peopleUrl + "/" + person.id.ToString();
+
+            if (fields != null && fields.Count > 0)
+            {
+                url += "&fields=";
+                foreach (var field in fields)
+                {
+                    url += field + ",";
+                }
+                // remove last comma
+                url = url.Remove(url.Length - 1);
+            }
+
+            string json = JsonConvert.SerializeObject(person, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore, Formatting = Formatting.Indented });
+            string result;
+            try
+            {
+                result = PutAbsolute(url, json);
+            }
+            catch (HttpException e)
+            {
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "Any of the input fields are malformed", e);
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "Requesting user is not authorized to make changes to the specified user", e);
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "Specified user does not exist", e);
+                    case 409:
+                        throw new HttpException(e.WebEventCode, "Requested change would cause business rules to be violated (such as more than one user with the same email address", e);
+                    default:
+                        throw;
+                }
+            }
+
+            JObject Json = JObject.Parse(result);
+            return Json.ToObject<Person>();
+        }
+
+        /// <summary>
         /// Create a personal task.
         /// </summary>
         /// <param name="personID">ID of the user for which to create a task</param>
