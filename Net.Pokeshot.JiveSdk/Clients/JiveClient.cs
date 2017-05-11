@@ -77,9 +77,17 @@ namespace Net.Pokeshot.JiveSdk.Clients
         public T RunAs<T>(int personId, Func<T> method)
         {
             _imposter = personId;
-            var returnVal = method();
+            T returnVal = default(T);
+            try
+            {
+                returnVal = method();
+            }
+            catch (Exception ex)
+            {
+                _imposter = null;
+                throw;
+            }
             _imposter = null;
-
             return returnVal;
         }
 

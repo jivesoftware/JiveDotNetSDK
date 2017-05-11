@@ -97,7 +97,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
             {
                 try
                 {
-                    person = GetPersonByUsername("anonymous@test.com");
+                    person = GetPersonByEmail("anonymous@test.com");
                 }
                 catch (HttpException)
                 {
@@ -1662,7 +1662,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
             }
             catch (HttpException e)
             {
-                Console.WriteLine(e.Message);
+                //Console.WriteLine(e.Message);
                 switch (e.GetHttpCode())
                 {
                     case 400:
@@ -1836,6 +1836,40 @@ namespace Net.Pokeshot.JiveSdk.Clients
             JObject results = JObject.Parse(json);
 
             return results["list"].ToObject<List<SecurityGroup>>();
+        }
+
+        /// <summary>
+        /// Update the specified user based on the contents of updatedPerson. Only modifiable fields that actually provide a value in the incoming entity are processed
+        /// </summary>
+        /// <param name="updatedPerson">Updated person</param>
+        /// <returns>Person object reflecting the processed changes</returns>
+        public Person Update(Person updatedPerson)
+        {
+            string url = peopleUrl + "/" + updatedPerson.id;
+            string json = JsonConvert.SerializeObject(updatedPerson, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore, Formatting = Formatting.Indented });
+            try
+            {
+                json = PutAbsolute(url, json);
+            }
+            catch (HttpException e)
+            {
+                Console.WriteLine(e.Message);
+                switch (e.GetHttpCode())
+                {
+                    case 400:
+                        throw new HttpException(e.WebEventCode, "One or more of the input fields is malformed", e);
+                    case 403:
+                        throw new HttpException(e.WebEventCode, "Requesting user is not authorized to make changes to the specified user", e);
+                    case 404:
+                        throw new HttpException(e.WebEventCode, "Specified user does not exist", e);
+                    case 409:
+                        throw new HttpException(e.WebEventCode, "Requested change would cause business rules to be violated (such as more than one user with the same email address)", e);
+                    default:
+                        throw;
+                }
+            }
+
+            return JObject.Parse(json).ToObject<Person>();
         }
 
         //GetSocialUsers()
