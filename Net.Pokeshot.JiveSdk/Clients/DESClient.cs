@@ -27,8 +27,9 @@ namespace Net.Pokeshot.JiveSdk.Clients
         {
             // Jive's DES server seems to off by a few seconds. When making calls using before or after, if either is ahead of the Jive's server, we get a 400 Bad Request Error.
             // For that reason, we push back the these values by 20 seconds. It should be noted that this is problem may get resolved later or not appear on certain clients.
-            before = before?.AddSeconds(-20);
-            after = after?.AddSeconds(-20);
+            // Still getting these errors every once in a while, so bumping up to 30 seconds
+            before = before?.AddSeconds(-30);
+            after = after?.AddSeconds(-30);
 
             List<JiveDEAActivityInstance> activityList = new List<JiveDEAActivityInstance>();
 

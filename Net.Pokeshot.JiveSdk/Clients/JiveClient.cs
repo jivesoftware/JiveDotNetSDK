@@ -342,7 +342,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
 
         protected string jiveDateFormat(DateTime time)
         {
-            return time.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fff") + "%2B0000";
+            return time.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fff") + "Z";
         }
     }
 }
