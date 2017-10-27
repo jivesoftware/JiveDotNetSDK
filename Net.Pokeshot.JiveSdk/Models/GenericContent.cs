@@ -11,6 +11,7 @@ namespace Net.Pokeshot.JiveSdk.Models
     /// </summary>
     public class GenericContent : Content
     {
+        public string status { get; set; }
         // Specific to Discussions
         public string answer { get; set; }
         public List<string> helpful { get; set; }

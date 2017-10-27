@@ -18,6 +18,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
         private readonly NetworkCredential _credential;
         protected string JiveCommunityUrl;
         private int? _imposter = null;
+        private bool _secondTry = false;
         private static int _numGets = 0;
         private static int _numPosts = 0;
         private static int _numPuts = 0;
@@ -76,9 +77,17 @@ namespace Net.Pokeshot.JiveSdk.Clients
         public T RunAs<T>(int personId, Func<T> method)
         {
             _imposter = personId;
-            var returnVal = method();
+            T returnVal = default(T);
+            try
+            {
+                returnVal = method();
+            }
+            catch (Exception ex)
+            {
+                _imposter = null;
+                throw;
+            }
             _imposter = null;
-
             return returnVal;
         }
 
@@ -115,7 +124,21 @@ namespace Net.Pokeshot.JiveSdk.Clients
                 requestMessage.Headers.Add("X-Jive-Run-As", "userid " + _imposter);
             }
 
-            HttpResponseMessage activityResponse = httpClient.SendAsync(requestMessage).Result;
+            HttpResponseMessage activityResponse;
+            try
+            {
+                activityResponse = httpClient.SendAsync(requestMessage).Result;
+            }
+            catch (Exception e)
+            {
+                // If timed out, try once more.
+                if (!_secondTry)
+                {
+                    _secondTry = true;
+                    return GetAbsolute(url, authorization);
+                }
+                else throw;
+            }
 
             if (!activityResponse.IsSuccessStatusCode)
             {
@@ -319,7 +342,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
 
         protected string jiveDateFormat(DateTime time)
         {
-            return time.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fff") + "%2B0000";
+            return time.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fff") + "Z";
         }
     }
 }

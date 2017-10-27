@@ -125,7 +125,7 @@ namespace Net.Pokeshot.JiveSdk.Clients
                     case 403:
                         throw new HttpException(e.WebEventCode, "You are not allowed to access the specified content or place", e);
                     case 409:
-                        throw new HttpException(e.WebEventCode, "The new entity would conflict with system restrictions (such as two contents of the same type with the same name", e);
+                        throw new HttpException(e.WebEventCode, "The new entity would conflict with system restrictions (such as two contents of the same type with the same name) or would post content more than once every 90 seconds", e);
                     default:
                         throw;
                 }
