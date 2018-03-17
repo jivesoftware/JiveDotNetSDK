@@ -35,11 +35,11 @@ namespace Net.Pokeshot.JiveSdk.Models
 
     public class PlaceTopic
     {
-        public int creationDate { get; set; }
+        public Int64 creationDate { get; set; }
         public string displayNameLocalized { get; set; }
         public bool hidden { get; set; }
         public string id { get; set; }
-        public int modificationDate { get; set; }
+        public Int64 modificationDate { get; set; }
         public string name { get; set; }
     }
 }
